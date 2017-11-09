@@ -103,5 +103,7 @@ venv.bak/
 /site
 
 # mypy
-.mypy_cache/
 .idea/
+.mypy_cache/
+*.bat
+1701m.TXT
