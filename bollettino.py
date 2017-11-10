@@ -6,6 +6,9 @@ import datetime
 
 from pprint import pprint as pp
 
+# se tra un dato di pioggia rilevato ed un altro non supera questo tempo, allora la pioggia è continua
+DT_PIOGGIA = datetime.timedelta(minutes=30)
+
 
 class Bollettino(object):
     def __init__(self, mese):
@@ -44,7 +47,7 @@ class Bollettino(object):
                 tmin = row['TARANTO T Aria 2m (MIN) °C'] if row['TARANTO T Aria 2m (MIN) °C'] else None
                 tmax = row['TARANTO T Aria 2m (MAX) °C'] if row['TARANTO T Aria 2m (MAX) °C'] else None
                 pres = row['TARANTO PR 2m (MED) hPa'] if row['TARANTO PR 2m (MED) hPa'] else None
-                mm = row['TARANTO PLUV (MED) mm'] if row['TARANTO PLUV (MED) mm'] else None
+                mm = float(row['TARANTO PLUV (MED) mm']) if row['TARANTO PLUV (MED) mm'] else None
                 vvel = row['TARANTO VEL V 10m (MED) m/s'] if row['TARANTO VEL V 10m (MED) m/s'] else None
                 vdir = row['TARANTO DIR V 10m (MED) GN'] if row['TARANTO DIR V 10m (MED) GN'] else None
                 ur = row['TARANTO UM 2m (MED) %'] if row['TARANTO UM 2m (MED) %'] else None
@@ -71,7 +74,7 @@ class Bollettino(object):
                         for h in range(24)
                         if datetime.datetime(anno, mese, giorno, h) in self.__dati])
 
-            mm8, mm14, mm19, mm = self.__calcola_pioggia(anno, mese, giorno)
+            mm8, mm14, mm19, mm, durata_ore, durata_minuti = self.__calcola_pioggia(anno, mese, giorno)
 
             record = (
                 self.__dati[datetime.datetime(anno, mese, giorno, 8)]['pres'],
@@ -96,7 +99,9 @@ class Bollettino(object):
                 mm8,
                 mm14,
                 mm19,
-                mm
+                mm,
+                durata_ore,
+                durata_minuti
             )
 
     def __calcola_pioggia(self, anno, mese, giorno):
@@ -117,9 +122,35 @@ class Bollettino(object):
                     if dt14 < dt <= dt19 and float(self.__dati[dt]['mm'])])
 
         # todo: da chiarire cosa si intende per precipitazioni totale diurno
+        # ora è 19-19
         mm = mm8 + mm14 + mm19
 
-        return mm8, mm14, mm19, mm
+        # todo: da chiarire se la durata della pioggia è dalle 19-19 o dalle 0-24
+        # ora è 19-19
+        # estrae i dati di pioggia del giorno
+        durata = [rec
+                  for rec in self.__dati
+                  if dt19gp < rec <= dt19 and self.__dati[rec]['mm']]
+        durata.sort()
+
+        dt = datetime.timedelta(minutes=10)
+        if durata:
+            pp(durata)
+            # orari_piogge = [[dalle_1, alle_1], [dalle_2, alle_2], ...]
+            orari_piogge = [[durata[0] - dt, durata[0]]]
+
+            for rec in durata[1:]:
+
+                if rec - DT_PIOGGIA > orari_piogge[-1][1]:
+                    orari_piogge.append([rec - dt, rec])
+                else:
+                    orari_piogge[-1][1] = rec
+
+            durata_totale = sum([(al - dal).seconds for dal, al in orari_piogge])
+            durata_ore = durata_totale // (60 * 60)
+            durata_minuti = (durata_totale % (60 * 60)) // 60
+
+        return mm8, mm14, mm19, mm, durata_ore, durata_minuti
 
     def __bollettino(self):
         pass
