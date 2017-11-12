@@ -1,5 +1,6 @@
 # 09.11.17: rev0
 # 10.11.17
+# 12.11.17
 
 import csv
 
@@ -9,6 +10,7 @@ from pprint import pprint as pp
 
 # se tra un dato di pioggia rilevato ed un altro non supera questo tempo, allora la pioggia è continua
 DT_PIOGGIA = datetime.timedelta(minutes=30)
+FOUT = 'decadale.csv'
 
 
 class Bollettino(object):
@@ -98,22 +100,23 @@ class Bollettino(object):
                 self.__dati[datetime.datetime(anno, mese, giorno, 19)]['ur'],
                 '',
                 '',
-                tmin,
-                tmax,
+                '%.1f' % tmin,
+                '%.1f' % tmax,
                 '',
-                mm8,
-                mm14,
-                mm19,
-                mm,
-                durata_ore,
-                durata_minuti,
-                mm_pioggia_max,
+                '%.1f' % mm8,
+                '%.1f' % mm14,
+                '%.1f' % mm19,
+                '%.1f' % mm,
+                '%.0f' % durata_ore,
+                '%.0f' % durata_minuti,
+                '%.1f' % mm_pioggia_max,
                 '',
             )
 
             km, velocita_media, velocita_max, orario = self.__calcola_vento(anno, mese, giorno)
 
             #  todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
+            # todo: chidere unità di misura dell'eliofania MINUTI od ORE --- ora è ORE
             dt = datetime.datetime(anno, mese, giorno, 0)
             dt19gp = dt - datetime.timedelta(hours=5)
             dt19 = datetime.datetime(anno, mese, giorno, 19)
@@ -122,8 +125,7 @@ class Bollettino(object):
                              for dt in self.__dati
                              if dt19gp < dt <= dt19 and self.__dati[dt]['eliof']]) / 60
 
-            #  todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
-            # todo: trasformare W/m2 in Cal/cm2/min
+            # todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
             # 1 watt = 14.33075379765 cal/min
             # 1 m2 = 10000 cm2
             # 1 W/m2 = 00014.33075379765/10000 Cal/cm2/min = 0.001433075379765 Cal/cm2/min
@@ -133,25 +135,25 @@ class Bollettino(object):
 
             record2 = (
                 self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vdir'],
-                self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vvel'],
+                '%.1f' % self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vvel'],
                 self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vdir'],
-                self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vvel'],
+                '%.1f' % self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vvel'],
                 self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vdir'],
-                self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vvel'],
-                km,
-                velocita_media,
-                velocita_max,
+                '%.1f' % self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vvel'],
+                '%.1f' % km,
+                '%.1f' % velocita_media,
+                '%.1f' % velocita_max,
                 orario,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                eliofania,
-                radiazione
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '%.3f' % eliofania,
+                '%.3f' % radiazione
             )
 
             bollettino.append((giorno, record1, record2))
@@ -162,8 +164,6 @@ class Bollettino(object):
         #  todo: da chiarire se i km percorsi sono da dalle 19-19 o dalle 0-24 --- ora è 19-19
         dt = datetime.datetime(anno, mese, giorno, 0)
         dt19gp = dt - datetime.timedelta(hours=5)
-        dt8 = datetime.datetime(anno, mese, giorno, 8)
-        dt14 = datetime.datetime(anno, mese, giorno, 14)
         dt19 = datetime.datetime(anno, mese, giorno, 19)
 
         velocita = [self.__dati[dt]['vvel'] * 3.6
@@ -175,6 +175,7 @@ class Bollettino(object):
                      if dt19gp < dt <= dt19 if self.__dati[dt]['vvel']]) / 6
         velocita_media = 0 if not tempo else sum(velocita) / tempo
 
+        # todo: verificare se esiste il dato di velocità max
         velocita_max, orario = max([(self.__dati[dt]['vvel'] * 3.6, dt.strftime('%H:%M'))
                                     for dt in self.__dati
                                     if dt19gp < dt <= dt19])
@@ -240,4 +241,20 @@ class Bollettino(object):
         return mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max
 
     def __bollettino_decadale(self):
-        pass
+
+        for dal, al in ((0, 10), (10, 20), (20, None)):
+            tabella1 = []
+            tabella2 = []
+
+            for giorno, rec1, rec2 in self.__dati_bollettino_decadale[dal:al]:
+                rigo1 = '%2s\t%s' % (giorno, '\t'.join(rec1))
+                tabella1.append(rigo1)
+
+                rigo2 = '%2s\t%s' % (giorno, '\t'.join(rec2))
+                tabella2.append(rigo2)
+
+            tabella1 = '\n'.join(tabella1)
+            tabella2 = '\n'.join(tabella2)
+            print(tabella1)
+            print(tabella2)
+            print()
