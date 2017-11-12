@@ -17,8 +17,8 @@ class Bollettino(object):
         self.anno = 2000 + int(mese[:2])
         self.__fin = '%sm.txt' % mese
         self.__leggi_csv()
-        self.__analizza()
-        self.__bollettino()
+        self.__analizza_per_bollettino_decadale()
+        self.__bollettino_decadale()
 
     def __leggi_csv(self):
         with open(self.__fin) as f:
@@ -62,12 +62,13 @@ class Bollettino(object):
                     'vvel': vvel, 'vdir': vdir,
                     'eliof': eliof, 'pir': pir}
 
-    def __analizza(self):
+    def __analizza_per_bollettino_decadale(self):
         anno = self.anno
         mese = self.mese
         # todo: ngiorni da calcolare
         ngiorni = 31
 
+        bollettino = []
         for giorno in range(1, ngiorni + 1):
             tmin = min([float(self.__dati[datetime.datetime(anno, mese, giorno, h)]['tmin'])
                         for h in range(24)
@@ -117,10 +118,9 @@ class Bollettino(object):
             dt19gp = dt - datetime.timedelta(hours=5)
             dt19 = datetime.datetime(anno, mese, giorno, 19)
 
-            # todo: KeyError: '01:50'
-            # eliofania = sum([self.__dati[orario]['eliof']
-            #                  for orario in self.__dati
-            #                  if dt19gp < orario <= dt19] and self.__dati[orario]['eliof'])
+            eliofania = sum([self.__dati[dt]['eliof']
+                             for dt in self.__dati
+                             if dt19gp < dt <= dt19 and self.__dati[dt]['eliof']]) / 60
 
             #  todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
             # todo: trasformare W/m2 in Cal/cm2/min
@@ -150,9 +150,13 @@ class Bollettino(object):
                 None,
                 None,
                 None,
-                # eliofania,
+                eliofania,
                 radiazione
             )
+
+            bollettino.append((giorno, record1, record2))
+
+        self.__dati_bollettino_decadale = bollettino
 
     def __calcola_vento(self, anno, mese, giorno):
         #  todo: da chiarire se i km percorsi sono da dalle 19-19 o dalle 0-24 --- ora è 19-19
@@ -235,5 +239,5 @@ class Bollettino(object):
 
         return mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max
 
-    def __bollettino(self):
+    def __bollettino_decadale(self):
         pass
