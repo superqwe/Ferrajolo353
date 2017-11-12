@@ -1,4 +1,5 @@
 # 09.11.17: rev0
+# 10.11.17
 
 import csv
 
@@ -74,7 +75,8 @@ class Bollettino(object):
                         for h in range(24)
                         if datetime.datetime(anno, mese, giorno, h) in self.__dati])
 
-            mm8, mm14, mm19, mm, durata_ore, durata_minuti = self.__calcola_pioggia(anno, mese, giorno)
+            mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max= self.__calcola_pioggia(anno,
+                                                                                                   mese, giorno)
 
             record = (
                 self.__dati[datetime.datetime(anno, mese, giorno, 8)]['pres'],
@@ -101,7 +103,9 @@ class Bollettino(object):
                 mm19,
                 mm,
                 durata_ore,
-                durata_minuti
+                durata_minuti,
+                mm_pioggia_max,
+                '',
             )
 
     def __calcola_pioggia(self, anno, mese, giorno):
@@ -134,8 +138,8 @@ class Bollettino(object):
         durata.sort()
 
         dt = datetime.timedelta(minutes=10)
+        durata_ore = durata_minuti = 0
         if durata:
-            pp(durata)
             # orari_piogge = [[dalle_1, alle_1], [dalle_2, alle_2], ...]
             orari_piogge = [[durata[0] - dt, durata[0]]]
 
@@ -150,7 +154,19 @@ class Bollettino(object):
             durata_ore = durata_totale // (60 * 60)
             durata_minuti = (durata_totale % (60 * 60)) // 60
 
-        return mm8, mm14, mm19, mm, durata_ore, durata_minuti
+        # todo: da chiarire se la massima in un'ora à dalle 19-19 o dalle 0-24
+        # todo: cosa si intende per "ORA"
+        # ora è 19-19
+        pioggia = [self.__dati[rec]['mm']
+                   for rec in self.__dati
+                   if dt19gp < rec <= dt19]
+        pioggia_max = [sum(pioggia[i:i + 6])
+                       for i in range(len(pioggia) - 6)
+                       if sum(pioggia[i:i + 6])]
+
+        mm_pioggia_max = max(pioggia_max) if pioggia_max else 0
+
+        return mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max
 
     def __bollettino(self):
         pass
