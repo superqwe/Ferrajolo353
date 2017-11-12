@@ -49,11 +49,12 @@ class Bollettino(object):
                 tmax = row['TARANTO T Aria 2m (MAX) °C'] if row['TARANTO T Aria 2m (MAX) °C'] else None
                 pres = row['TARANTO PR 2m (MED) hPa'] if row['TARANTO PR 2m (MED) hPa'] else None
                 mm = float(row['TARANTO PLUV (MED) mm']) if row['TARANTO PLUV (MED) mm'] else None
-                vvel = row['TARANTO VEL V 10m (MED) m/s'] if row['TARANTO VEL V 10m (MED) m/s'] else None
+                vvel = float(row['TARANTO VEL V 10m (MED) m/s'] if row['TARANTO VEL V 10m (MED) m/s'] else
+                             None)
                 vdir = row['TARANTO DIR V 10m (MED) GN'] if row['TARANTO DIR V 10m (MED) GN'] else None
                 ur = row['TARANTO UM 2m (MED) %'] if row['TARANTO UM 2m (MED) %'] else None
-                eliof = row['TARANTO ELIOF (MED) min'] if row['TARANTO ELIOF (MED) min']  else None
-                pir = row['TARANTO PIR (MED) W/m2'] if row['TARANTO PIR (MED) W/m2'] else None
+                eliof = float(row['TARANTO ELIOF (MED) min']) if row['TARANTO ELIOF (MED) min']  else None
+                pir = float(row['TARANTO PIR (MED) W/m2']) if row['TARANTO PIR (MED) W/m2'] else None
 
                 self.__dati[data] = {
                     't': t, 'tmin': tmin, 'tmax': tmax,
@@ -75,10 +76,11 @@ class Bollettino(object):
                         for h in range(24)
                         if datetime.datetime(anno, mese, giorno, h) in self.__dati])
 
-            mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max= self.__calcola_pioggia(anno,
-                                                                                                   mese, giorno)
+            mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max = self.__calcola_pioggia(anno,
+                                                                                                    mese,
+                                                                                                    giorno)
 
-            record = (
+            record1 = (
                 self.__dati[datetime.datetime(anno, mese, giorno, 8)]['pres'],
                 self.__dati[datetime.datetime(anno, mese, giorno, 14)]['pres'],
                 self.__dati[datetime.datetime(anno, mese, giorno, 19)]['pres'],
@@ -108,6 +110,73 @@ class Bollettino(object):
                 '',
             )
 
+            km, velocita_media, velocita_max, orario = self.__calcola_vento(anno, mese, giorno)
+
+            #  todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
+            dt = datetime.datetime(anno, mese, giorno, 0)
+            dt19gp = dt - datetime.timedelta(hours=5)
+            dt19 = datetime.datetime(anno, mese, giorno, 19)
+
+            # todo: KeyError: '01:50'
+            # eliofania = sum([self.__dati[orario]['eliof']
+            #                  for orario in self.__dati
+            #                  if dt19gp < orario <= dt19] and self.__dati[orario]['eliof'])
+
+            #  todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
+            # todo: trasformare W/m2 in Cal/cm2/min
+            # 1 watt = 14.33075379765 cal/min
+            # 1 m2 = 10000 cm2
+            # 1 W/m2 = 00014.33075379765/10000 Cal/cm2/min = 0.001433075379765 Cal/cm2/min
+            radiazione = sum([self.__dati[dt]['pir']
+                              for dt in self.__dati
+                              if dt19gp < dt <= dt19 and self.__dati[dt]['pir']]) * 0.001433075379765
+
+            record2 = (
+                self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vdir'],
+                self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vvel'],
+                self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vdir'],
+                self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vvel'],
+                self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vdir'],
+                self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vvel'],
+                km,
+                velocita_media,
+                velocita_max,
+                orario,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                # eliofania,
+                radiazione
+            )
+
+    def __calcola_vento(self, anno, mese, giorno):
+        #  todo: da chiarire se i km percorsi sono da dalle 19-19 o dalle 0-24 --- ora è 19-19
+        dt = datetime.datetime(anno, mese, giorno, 0)
+        dt19gp = dt - datetime.timedelta(hours=5)
+        dt8 = datetime.datetime(anno, mese, giorno, 8)
+        dt14 = datetime.datetime(anno, mese, giorno, 14)
+        dt19 = datetime.datetime(anno, mese, giorno, 19)
+
+        velocita = [self.__dati[dt]['vvel'] * 3.6
+                    for dt in self.__dati
+                    if dt19gp < dt <= dt19]
+        km = sum(velocita) / 6
+        tempo = len([self.__dati[dt]['vvel']
+                     for dt in self.__dati
+                     if dt19gp < dt <= dt19 if self.__dati[dt]['vvel']]) / 6
+        velocita_media = 0 if not tempo else sum(velocita) / tempo
+
+        velocita_max, orario = max([(self.__dati[dt]['vvel'] * 3.6, dt.strftime('%H:%M'))
+                                    for dt in self.__dati
+                                    if dt19gp < dt <= dt19])
+
+        return km, velocita_media, velocita_max, orario
+
     def __calcola_pioggia(self, anno, mese, giorno):
         dt = datetime.datetime(anno, mese, giorno, 0)
         dt19gp = dt - datetime.timedelta(hours=5)
@@ -125,12 +194,10 @@ class Bollettino(object):
                     for dt in self.__dati
                     if dt14 < dt <= dt19 and float(self.__dati[dt]['mm'])])
 
-        # todo: da chiarire cosa si intende per precipitazioni totale diurno
-        # ora è 19-19
+        # todo: da chiarire cosa si intende per precipitazioni totale diurno --- ora è 19-19
         mm = mm8 + mm14 + mm19
 
-        # todo: da chiarire se la durata della pioggia è dalle 19-19 o dalle 0-24
-        # ora è 19-19
+        # todo: da chiarire se la durata della pioggia è dalle 19-19 o dalle 0-24  --- ora è 19-19
         # estrae i dati di pioggia del giorno
         durata = [rec
                   for rec in self.__dati
