@@ -10,6 +10,7 @@ from pprint import pprint as pp
 
 # se tra un dato di pioggia rilevato ed un altro non supera questo tempo, allora la pioggia è continua
 DT_PIOGGIA = datetime.timedelta(minutes=30)
+# nome file di output
 FOUT = 'decadale.csv'
 
 
@@ -72,6 +73,11 @@ class Bollettino(object):
 
         bollettino = []
         for giorno in range(1, ngiorni + 1):
+            # temperatura
+            t8 = float(self.__dati[datetime.datetime(anno, mese, giorno, 8)]['t'])
+            t14 = float(self.__dati[datetime.datetime(anno, mese, giorno, 14)]['t'])
+            t19 = float(self.__dati[datetime.datetime(anno, mese, giorno, 19)]['t'])
+
             tmin = min([float(self.__dati[datetime.datetime(anno, mese, giorno, h)]['tmin'])
                         for h in range(24)
                         if datetime.datetime(anno, mese, giorno, h) in self.__dati])
@@ -79,36 +85,46 @@ class Bollettino(object):
                         for h in range(24)
                         if datetime.datetime(anno, mese, giorno, h) in self.__dati])
 
+            tmedia = (t8 + t19 + tmin + tmax) / 4
+
+            # umidità
+            ur8 = float(self.__dati[datetime.datetime(anno, mese, giorno, 8)]['ur'])
+            ur14 = float(self.__dati[datetime.datetime(anno, mese, giorno, 14)]['ur'])
+            ur19 = float(self.__dati[datetime.datetime(anno, mese, giorno, 19)]['ur'])
+            ur_media = (ur8 + ur14 + ur19) / 3.0
+
+            # pioggia
             mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max = self.__calcola_pioggia(anno,
                                                                                                     mese,
                                                                                                     giorno)
 
             record1 = (
-                self.__dati[datetime.datetime(anno, mese, giorno, 8)]['pres'],
-                self.__dati[datetime.datetime(anno, mese, giorno, 14)]['pres'],
-                self.__dati[datetime.datetime(anno, mese, giorno, 19)]['pres'],
+                '%.1f' % float(self.__dati[datetime.datetime(anno, mese, giorno, 8)]['pres']),
+                '%.1f' % float(self.__dati[datetime.datetime(anno, mese, giorno, 14)]['pres']),
+                '%.1f' % float(self.__dati[datetime.datetime(anno, mese, giorno, 19)]['pres']),
+                '%.1f' % t8,
                 '',
                 '',
-                self.__dati[datetime.datetime(anno, mese, giorno, 14)]['t'],
+                '%.1f' % t14,
                 '',
                 '',
-                self.__dati[datetime.datetime(anno, mese, giorno, 19)]['t'],
+                '%.1f' % t19,
                 '',
                 '',
-                self.__dati[datetime.datetime(anno, mese, giorno, 8)]['ur'],
-                self.__dati[datetime.datetime(anno, mese, giorno, 14)]['ur'],
-                self.__dati[datetime.datetime(anno, mese, giorno, 19)]['ur'],
-                '',
+                '%.1f' % ur8,
+                '%.1f' % ur14,
+                '%.1f' % ur19,
+                '%.2f' % ur_media,
                 '',
                 '%.1f' % tmin,
                 '%.1f' % tmax,
-                '',
+                '%.1f' % tmedia,
                 '%.1f' % mm8,
                 '%.1f' % mm14,
                 '%.1f' % mm19,
                 '%.1f' % mm,
-                '%.0f' % durata_ore,
-                '%.0f' % durata_minuti,
+                '%.0f:%02.0f' % (durata_ore, durata_minuti),
+                '',
                 '%.1f' % mm_pioggia_max,
                 '',
             )
@@ -158,9 +174,18 @@ class Bollettino(object):
 
             bollettino.append((giorno, record1, record2))
 
-        self.__dati_bollettino_decadale = bollettino
+            self.__dati_bollettino_decadale = bollettino
 
     def __calcola_vento(self, anno, mese, giorno):
+        vdir8 = self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vdir'],
+        vvel8 = self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vvel'],
+        vdir8, vvel8 = self.__direzione_vento(vdir8,vvel8)
+
+        vdir14 = self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vdir'],
+        vdir14 = self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vvel'],
+        vdir19 = self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vdir'],
+        vdir19 = self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vvel'],
+
         #  todo: da chiarire se i km percorsi sono da dalle 19-19 o dalle 0-24 --- ora è 19-19
         dt = datetime.datetime(anno, mese, giorno, 0)
         dt19gp = dt - datetime.timedelta(hours=5)
@@ -181,6 +206,9 @@ class Bollettino(object):
                                     if dt19gp < dt <= dt19])
 
         return km, velocita_media, velocita_max, orario
+
+    def __direzione_vento(self, direzione, velocita):
+        return direzione, velocita
 
     def __calcola_pioggia(self, anno, mese, giorno):
         dt = datetime.datetime(anno, mese, giorno, 0)
@@ -241,20 +269,24 @@ class Bollettino(object):
         return mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max
 
     def __bollettino_decadale(self):
+        with open(FOUT, 'w') as fout:
 
-        for dal, al in ((0, 10), (10, 20), (20, None)):
-            tabella1 = []
-            tabella2 = []
+            for dal, al in ((0, 10), (10, 20), (20, None)):
+                tabella1 = []
+                tabella2 = []
 
-            for giorno, rec1, rec2 in self.__dati_bollettino_decadale[dal:al]:
-                rigo1 = '%2s\t%s' % (giorno, '\t'.join(rec1))
-                tabella1.append(rigo1)
+                for giorno, rec1, rec2 in self.__dati_bollettino_decadale[dal:al]:
+                    rigo1 = '%2s\t%s' % (giorno, '\t'.join(rec1))
+                    tabella1.append(rigo1)
 
-                rigo2 = '%2s\t%s' % (giorno, '\t'.join(rec2))
-                tabella2.append(rigo2)
+                    rigo2 = '%2s\t%s' % (giorno, '\t'.join(rec2))
+                    tabella2.append(rigo2)
 
-            tabella1 = '\n'.join(tabella1)
-            tabella2 = '\n'.join(tabella2)
-            print(tabella1)
-            print(tabella2)
-            print()
+                tabella1 = '\n'.join(tabella1)
+                tabella2 = '\n'.join(tabella2)
+
+                scheda = '%s%s%s%s' % (tabella1, '\n' * 12, tabella2, '\n' * 3)
+                scheda = scheda.replace('.', ',')
+                scheda = scheda.replace(':', '.')
+
+                fout.write(scheda)
