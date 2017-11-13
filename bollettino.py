@@ -353,14 +353,61 @@ class Bollettino(object):
                                   if dal < dt <= al and self.__dati[dt]['ur']])
 
             # vento
-            vdir, vel = self.__calcola_vento_bollettino_mensile(dal, al)
+            vdir, vvel = self.__calcola_vento_bollettino_mensile(dal, al)
+
+            # todo: fare stato cielo od in altermantiva eliofania relativa
+
+            # mare
+            if vvel <= 5:
+                mare = 'Calmo'
+            elif vvel <= 10:
+                mare = 'Poco Mosso'
+            elif vvel <= 15:
+                mare = 'Mosso'
+            else:
+                mare = 'Molto Mosso'
+
+            # pioggia
+            mm, durata = self.__calcola_pioggia_bollettino_mensile(dal, al)
+
+    def __calcola_pioggia_bollettino_mensile(self, dal, al):
+        mm = sum([float(self.__dati[dt]['mm'])
+                  for dt in self.__dati
+                  if dal < dt <= al])
+
+        # todo: correggere durata per piogge che iniziano e finiscono nei giorni contigui
+        durata = [rec
+                  for rec in self.__dati
+                  if dal < rec <= al and self.__dati[rec]['mm']]
+        durata.sort()
+
+        dt = datetime.timedelta(minutes=10)
+        if durata:
+            # orari_piogge = [[dalle_1, alle_1], [dalle_2, alle_2], ...]
+            orari_piogge = [[durata[0] - dt, durata[0]]]
+
+            for rec in durata[1:]:
+                if rec - DT_PIOGGIA > orari_piogge[-1][1]:
+                    orari_piogge.append([rec - dt, rec])
+                else:
+                    orari_piogge[-1][1] = rec
+
+            durata_totale = sum([(al - dal).seconds for dal, al in orari_piogge])
+            durata_ore = durata_totale // (60 * 60)
+            durata_minuti = (durata_totale % (60 * 60)) // 60
+            durata_totale = '%s:%s' % (durata_ore, durata_minuti)
+
+        else:
+            durata_totale = ''
+
+        return mm, durata_totale
 
     def __calcola_vento_bollettino_mensile(self, dal, al):
         velocita = statistics.mean([float(self.__dati[dt]['vvel'])
                                     for dt in self.__dati
                                     if dal < dt <= al]) * 3.6
         if velocita < 5.0:
-            print(dal.day, '-', velocita)
+            return ('-', velocita)
         else:
             vento = [(int(self.__dati[dt]['vdir']), float(self.__dati[dt]['vvel']))
                      for dt in self.__dati
@@ -373,9 +420,7 @@ class Bollettino(object):
 
             direzione_dominate = self.__vento_direzione_dominante(ldirezioni)
 
-            print(dal.day, direzione_dominate, velocita)
-
-        return None, None
+        return direzione_dominate, velocita
 
     def __vento_direzione_dominante(self, ldirezioni):
         direzioni = [(ldirezioni.count('N'), 'N'),
