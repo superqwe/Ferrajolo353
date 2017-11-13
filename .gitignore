@@ -67,7 +67,7 @@ venv.bak/
 .idea/
 .mypy_cache/
 *.bat
-*.ods
-*.ods#
+*.csv*
+*.ods*
 1701m.TXT
 

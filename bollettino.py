@@ -129,7 +129,9 @@ class Bollettino(object):
                 '',
             )
 
-            km, velocita_media, velocita_max, orario = self.__calcola_vento(anno, mese, giorno)
+            # vento
+            vdir8, vvel8, vdir14, vvel14, vdir19, vvel19, km, velocita_media, velocita_max, orario = self.__calcola_vento(
+                anno, mese, giorno)
 
             #  todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
             # todo: chidere unità di misura dell'eliofania MINUTI od ORE --- ora è ORE
@@ -150,12 +152,12 @@ class Bollettino(object):
                               if dt19gp < dt <= dt19 and self.__dati[dt]['pir']]) * 0.001433075379765
 
             record2 = (
-                self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vdir'],
-                '%.1f' % self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vvel'],
-                self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vdir'],
-                '%.1f' % self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vvel'],
-                self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vdir'],
-                '%.1f' % self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vvel'],
+                vdir8,
+                '%.1f' % vvel8,
+                vdir14,
+                '%.1f' % vvel14,
+                vdir19,
+                '%.1f' % vvel19,
                 '%.1f' % km,
                 '%.1f' % velocita_media,
                 '%.1f' % velocita_max,
@@ -177,37 +179,63 @@ class Bollettino(object):
             self.__dati_bollettino_decadale = bollettino
 
     def __calcola_vento(self, anno, mese, giorno):
-        vdir8 = self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vdir'],
-        vvel8 = self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vvel'],
-        vdir8, vvel8 = self.__direzione_vento(vdir8,vvel8)
+        vdir8 = self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vdir']
+        vvel8 = self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vvel']
+        vdir8, vvel8 = self.__direzione_vento(vdir8, vvel8)
 
-        vdir14 = self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vdir'],
-        vdir14 = self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vvel'],
-        vdir19 = self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vdir'],
-        vdir19 = self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vvel'],
+        vdir14 = self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vdir']
+        vvel14 = self.__dati[datetime.datetime(anno, mese, giorno, 14)]['vvel']
+        vdir14, vvel14 = self.__direzione_vento(vdir14, vvel14)
+
+        vdir19 = self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vdir']
+        vvel19 = self.__dati[datetime.datetime(anno, mese, giorno, 19)]['vvel']
+        vdir19, vvel19 = self.__direzione_vento(vdir19, vvel19)
 
         #  todo: da chiarire se i km percorsi sono da dalle 19-19 o dalle 0-24 --- ora è 19-19
         dt = datetime.datetime(anno, mese, giorno, 0)
         dt19gp = dt - datetime.timedelta(hours=5)
         dt19 = datetime.datetime(anno, mese, giorno, 19)
 
-        velocita = [self.__dati[dt]['vvel'] * 3.6
+        velocita = [self.__dati[dt]['vvel']
                     for dt in self.__dati
                     if dt19gp < dt <= dt19]
-        km = sum(velocita) / 6
+        km = sum(velocita) * 3.6 / 6
         tempo = len([self.__dati[dt]['vvel']
                      for dt in self.__dati
                      if dt19gp < dt <= dt19 if self.__dati[dt]['vvel']]) / 6
         velocita_media = 0 if not tempo else sum(velocita) / tempo
 
         # todo: verificare se esiste il dato di velocità max
-        velocita_max, orario = max([(self.__dati[dt]['vvel'] * 3.6, dt.strftime('%H:%M'))
+        velocita_max, orario = max([(self.__dati[dt]['vvel'], dt.strftime('%H:%M'))
                                     for dt in self.__dati
                                     if dt19gp < dt <= dt19])
 
-        return km, velocita_media, velocita_max, orario
+        return vdir8, vvel8, vdir14, vvel14, vdir19, vvel19, km, velocita_media, velocita_max, orario
 
     def __direzione_vento(self, direzione, velocita):
+        velocita = float(velocita)
+        if velocita * 3.6 <= 5.0:
+            return 'C', 0.0
+
+        direzione = int(direzione)
+        dg = 45 / 2
+        if 45 - dg <= direzione < 45 + dg:
+            direzione = 'NE'
+        elif 90 - dg <= direzione < 90 + dg:
+            direzione = 'E'
+        elif 135 - dg <= direzione < 135 + dg:
+            direzione = 'SE'
+        elif 180 - dg <= direzione < 180 + dg:
+            direzione = 'S'
+        elif 225 - dg <= direzione < 225 + dg:
+            direzione = 'SO'
+        elif 270 - dg <= direzione < 270 + dg:
+            direzione = 'O'
+        elif 315 - dg <= direzione < 315 + dg:
+            direzione = 'NO'
+        else:
+            direzione = 'N'
+
         return direzione, velocita
 
     def __calcola_pioggia(self, anno, mese, giorno):
