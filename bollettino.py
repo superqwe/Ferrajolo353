@@ -11,7 +11,8 @@ from pprint import pprint as pp
 # se tra un dato di pioggia rilevato ed un altro non supera questo tempo, allora la pioggia è continua
 DT_PIOGGIA = datetime.timedelta(minutes=30)
 # nome file di output
-FOUT = 'decadale.csv'
+FOUT_DECADALE = 'decadale.csv'
+FOUT_MENSILE_CSV = 'mensile.csv'
 
 
 class Bollettino(object):
@@ -23,6 +24,7 @@ class Bollettino(object):
         self.__analizza_per_bollettino_decadale()
         self.__bollettino_decadale()
         self.__analizza_per_bollettino_mensile()
+        self.__bollettino_mensile_csv()
 
     def __leggi_csv(self):
         with open(self.__fin) as f:
@@ -299,7 +301,7 @@ class Bollettino(object):
         return mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max
 
     def __bollettino_decadale(self):
-        with open(FOUT, 'w') as fout:
+        with open(FOUT_DECADALE, 'w') as fout:
 
             for dal, al in ((0, 10), (10, 20), (20, None)):
                 tabella1 = []
@@ -356,6 +358,7 @@ class Bollettino(object):
             vdir, vvel = self.__calcola_vento_bollettino_mensile(dal, al)
 
             # todo: fare stato cielo od in altermantiva eliofania relativa
+            eliofania = ''
 
             # mare
             if vvel <= 5:
@@ -369,6 +372,21 @@ class Bollettino(object):
 
             # pioggia
             mm, durata = self.__calcola_pioggia_bollettino_mensile(dal, al)
+
+            # formattazione
+            giorno = '%2i' % giorno
+            press = '%.0f' % press
+            t = '%.1f' % t
+            tmin = '%.1f' % tmin
+            tmax = '%.1f' % tmax
+            ur = '%.0f' % ur
+            vvel = '%.0f' % vvel
+            mm = '%.1f' % mm if mm else ''
+
+            rigo = (giorno, press, t, tmin, tmax, ur, vdir, vvel, eliofania, mare, mm, durata)
+            bollettino.append(rigo)
+
+        self.__dati_bollettino_mensile = bollettino
 
     def __calcola_pioggia_bollettino_mensile(self, dal, al):
         mm = sum([float(self.__dati[dt]['mm'])
@@ -435,3 +453,12 @@ class Bollettino(object):
         direzioni.sort(reverse=True)
 
         return direzioni[0][1]
+
+    def __bollettino_mensile_csv(self):
+        with open(FOUT_MENSILE_CSV, 'w') as fout:
+
+            for rigo in self.__dati_bollettino_mensile:
+
+                rigo = '%s\n' % ('\t'.join(rigo),)
+
+                fout.write(rigo)

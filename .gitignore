@@ -66,6 +66,7 @@ venv.bak/
 # mypy
 .idea/
 .mypy_cache/
+rptlab-reportlab-823a8c33ce43/
 *.bat
 *.csv*
 *.ods*
