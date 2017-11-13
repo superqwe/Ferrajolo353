@@ -3,8 +3,8 @@
 # 12.11.17
 
 import csv
-
 import datetime
+import statistics
 
 from pprint import pprint as pp
 
@@ -22,6 +22,7 @@ class Bollettino(object):
         self.__leggi_csv()
         self.__analizza_per_bollettino_decadale()
         self.__bollettino_decadale()
+        self.__analizza_per_bollettino_mensile()
 
     def __leggi_csv(self):
         with open(self.__fin) as f:
@@ -56,7 +57,7 @@ class Bollettino(object):
                              None)
                 vdir = row['TARANTO DIR V 10m (MED) GN'] if row['TARANTO DIR V 10m (MED) GN'] else None
                 ur = row['TARANTO UM 2m (MED) %'] if row['TARANTO UM 2m (MED) %'] else None
-                eliof = float(row['TARANTO ELIOF (MED) min']) if row['TARANTO ELIOF (MED) min']  else None
+                eliof = float(row['TARANTO ELIOF (MED) min']) if row['TARANTO ELIOF (MED) min'] else None
                 pir = float(row['TARANTO PIR (MED) W/m2']) if row['TARANTO PIR (MED) W/m2'] else None
 
                 self.__dati[data] = {
@@ -94,9 +95,10 @@ class Bollettino(object):
             ur_media = (ur8 + ur14 + ur19) / 3.0
 
             # pioggia
-            mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max = self.__calcola_pioggia(anno,
-                                                                                                    mese,
-                                                                                                    giorno)
+            mm8, mm14, mm19, mm, durata_ore, durata_minuti, mm_pioggia_max = self.__calcola_pioggia_bollettino_decadale(
+                anno,
+                mese,
+                giorno)
 
             record1 = (
                 '%.1f' % float(self.__dati[datetime.datetime(anno, mese, giorno, 8)]['pres']),
@@ -130,7 +132,7 @@ class Bollettino(object):
             )
 
             # vento
-            vdir8, vvel8, vdir14, vvel14, vdir19, vvel19, km, velocita_media, velocita_max, orario = self.__calcola_vento(
+            vdir8, vvel8, vdir14, vvel14, vdir19, vvel19, km, velocita_media, velocita_max, orario = self.__calcola_vento_bollettino_decadale(
                 anno, mese, giorno)
 
             #  todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
@@ -178,7 +180,7 @@ class Bollettino(object):
 
             self.__dati_bollettino_decadale = bollettino
 
-    def __calcola_vento(self, anno, mese, giorno):
+    def __calcola_vento_bollettino_decadale(self, anno, mese, giorno):
         vdir8 = self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vdir']
         vvel8 = self.__dati[datetime.datetime(anno, mese, giorno, 8)]['vvel']
         vdir8, vvel8 = self.__direzione_vento(vdir8, vvel8)
@@ -238,7 +240,7 @@ class Bollettino(object):
 
         return direzione, velocita
 
-    def __calcola_pioggia(self, anno, mese, giorno):
+    def __calcola_pioggia_bollettino_decadale(self, anno, mese, giorno):
         dt = datetime.datetime(anno, mese, giorno, 0)
         dt19gp = dt - datetime.timedelta(hours=5)
         dt8 = datetime.datetime(anno, mese, giorno, 8)
@@ -318,3 +320,73 @@ class Bollettino(object):
                 scheda = scheda.replace(':', '.')
 
                 fout.write(scheda)
+
+    def __analizza_per_bollettino_mensile(self):
+        anno = self.anno
+        mese = self.mese
+        # todo: ngiorni da calcolare
+        ngiorni = 31
+
+        bollettino = []
+        for giorno in range(1, ngiorni + 1):
+            dal = datetime.datetime(anno, mese, giorno, 0)
+            al = dal + datetime.timedelta(days=1)
+            # pressione
+            press = statistics.mean([float(self.__dati[dt]['pres'])
+                                     for dt in self.__dati
+                                     if dal < dt <= al and self.__dati[dt]['pres']])
+
+            # temperatura
+            t = statistics.mean([float(self.__dati[dt]['t'])
+                                 for dt in self.__dati
+                                 if dal < dt <= al and self.__dati[dt]['t']])
+            tmin = min([float(self.__dati[dt]['tmin'])
+                        for dt in self.__dati
+                        if dal < dt <= al and self.__dati[dt]['tmin']])
+            tmax = max([float(self.__dati[dt]['tmax'])
+                        for dt in self.__dati
+                        if dal < dt <= al and self.__dati[dt]['tmax']])
+
+            # umidita
+            ur = statistics.mean([float(self.__dati[dt]['ur'])
+                                  for dt in self.__dati
+                                  if dal < dt <= al and self.__dati[dt]['ur']])
+
+            # vento
+            vdir, vel = self.__calcola_vento_bollettino_mensile(dal, al)
+
+    def __calcola_vento_bollettino_mensile(self, dal, al):
+        velocita = statistics.mean([float(self.__dati[dt]['vvel'])
+                                    for dt in self.__dati
+                                    if dal < dt <= al]) * 3.6
+        if velocita < 5.0:
+            print(dal.day, '-', velocita)
+        else:
+            vento = [(int(self.__dati[dt]['vdir']), float(self.__dati[dt]['vvel']))
+                     for dt in self.__dati
+                     if dal < dt <= al]
+
+            ldirezioni = []
+            for vd, vv in vento:
+                d, v = self.__direzione_vento(vd, vv)
+                ldirezioni.append(d)
+
+            direzione_dominate = self.__vento_direzione_dominante(ldirezioni)
+
+            print(dal.day, direzione_dominate, velocita)
+
+        return None, None
+
+    def __vento_direzione_dominante(self, ldirezioni):
+        direzioni = [(ldirezioni.count('N'), 'N'),
+                     (ldirezioni.count('NO'), 'NO'),
+                     (ldirezioni.count('O'), 'O'),
+                     (ldirezioni.count('SO'), 'SO'),
+                     (ldirezioni.count('S'), 'S'),
+                     (ldirezioni.count('SE'), 'SE'),
+                     (ldirezioni.count('E'), 'E'),
+                     (ldirezioni.count('NE'), 'NE')
+                     ]
+        direzioni.sort(reverse=True)
+
+        return direzioni[0][1]
