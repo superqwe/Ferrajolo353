@@ -538,12 +538,12 @@ class Bollettino(object):
                 giorno_diverso = False
                 giorno = '  '
                 mm_gionalieri += mm
-                # durata_giornaliera += durata
+                durata_giornaliera += durata
             else:
                 giorno_diverso = True
-                giorno = '%2i' % giorno
+                giorno = '%i' % giorno
                 mm_gionalieri_p = mm_gionalieri
-                # durata_giornaliera_p = durata_giornaliera_p
+                durata_giornaliera_p = durata_giornaliera
                 mm_gionalieri = mm
                 durata_giornaliera = durata
 
@@ -560,16 +560,21 @@ class Bollettino(object):
 
             if giorno_diverso and mm_gionalieri_p:
                 mm_gionalieri_p = '%.1f' % mm_gionalieri_p
-                dati[i - 1].append(mm_gionalieri_p)
-                # ore_giornaliere = int(durata_giornaliera_p)
-                # minuti_giornalieri = (durata_giornaliera_p - ore_giornaliere) * 60
-                # durata_giornaliera_p = '%02i:%02.0f' % (ore_giornaliere, minuti_giornalieri)
 
-                # rigo.extend([mm_gionalieri_p, durata_giornaliera_p])
+                ore_giornaliere = int(durata_giornaliera_p)
+                minuti_giornalieri = (durata_giornaliera_p - ore_giornaliere) * 60
+                durata_giornaliera_p = '%02i:%02.0f' % (ore_giornaliere, minuti_giornalieri)
+
+                dati[i - 1].extend([mm_gionalieri_p, durata_giornaliera_p])
 
             dati.append(rigo)
 
         mm_gionalieri = '%.1f' % mm_gionalieri
+
+        ore_giornaliere = int(durata_giornaliera)
+        minuti_giornalieri = (durata_giornaliera - ore_giornaliere) * 60
+        durata_giornaliera = '%02i:%02.0f' % (ore_giornaliere, minuti_giornalieri)
+
         dati[i].extend([mm_gionalieri, durata_giornaliera])
 
         mm_totali = '%.1f' % mm_totali
