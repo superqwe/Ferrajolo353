@@ -68,7 +68,8 @@ venv.bak/
 .mypy_cache/
 rptlab-reportlab-823a8c33ce43/
 *.bat
-*.csv*
 *.ods*
+*.pdf
 1701m.TXT
-
+decadale.csv
+mensile.csv

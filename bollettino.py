@@ -1,6 +1,4 @@
 # 09.11.17: rev0
-# 10.11.17
-# 12.11.17
 
 import csv
 import datetime
@@ -25,6 +23,7 @@ class Bollettino(object):
         self.__bollettino_decadale()
         self.__analizza_per_bollettino_mensile()
         self.__bollettino_mensile_csv()
+        self.__bollettino_mensile_pdf()
 
     def __leggi_csv(self):
         with open(self.__fin) as f:
@@ -462,3 +461,6 @@ class Bollettino(object):
                 rigo = '%s\n' % ('\t'.join(rigo),)
 
                 fout.write(rigo)
+
+    def __bollettino_mensile_pdf(self):
+        pass
