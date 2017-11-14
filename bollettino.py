@@ -6,6 +6,8 @@ import statistics
 
 from pprint import pprint as pp
 
+import eliofania
+
 # se tra un dato di pioggia rilevato ed un altro non supera questo tempo, allora la pioggia è continua
 DT_PIOGGIA = datetime.timedelta(minutes=30)
 # nome file di output
@@ -142,9 +144,9 @@ class Bollettino(object):
             dt19gp = dt - datetime.timedelta(hours=5)
             dt19 = datetime.datetime(anno, mese, giorno, 19)
 
-            eliofania = sum([self.__dati[dt]['eliof']
-                             for dt in self.__dati
-                             if dt19gp < dt <= dt19 and self.__dati[dt]['eliof']]) / 60
+            eliof = sum([self.__dati[dt]['eliof']
+                         for dt in self.__dati
+                         if dt19gp < dt <= dt19 and self.__dati[dt]['eliof']]) / 60
 
             # todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
             # 1 watt = 14.33075379765 cal/min
@@ -173,7 +175,7 @@ class Bollettino(object):
                 '',
                 '',
                 '',
-                '%.3f' % eliofania,
+                '%.3f' % eliof,
                 '%.3f' % radiazione
             )
 
@@ -356,8 +358,23 @@ class Bollettino(object):
             # vento
             vdir, vvel = self.__calcola_vento_bollettino_mensile(dal, al)
 
-            # todo: fare stato cielo od in altermantiva eliofania relativa
-            eliofania = ''
+            # eliofania & cielo
+            eliof_assoluta = sum([float(self.__dati[dt]['eliof'])
+                                  for dt in self.__dati
+                                  if dal < dt <= al and self.__dati[dt]['eliof']]) / 60
+            eliof_max = eliofania.eliofania_da_sun_ephemeris(anno)['%4i/%02i/%02i' % (anno, mese, giorno)]
+            eliof_relativa = eliof_assoluta / eliof_max * 100
+
+            if eliof_relativa > 80:
+                cielo = 'Sereno'
+            elif eliof_relativa > 60:
+                cielo = 'Poco Nuvoloso'
+            elif eliof_relativa > 40:
+                cielo = 'Nuvoloso'
+            elif eliof_relativa > 20:
+                cielo = 'Molto Nuvoloso'
+            else:
+                cielo = 'Coperto'
 
             # mare
             if vvel <= 5:
@@ -380,9 +397,10 @@ class Bollettino(object):
             tmax = '%.1f' % tmax
             ur = '%.0f' % ur
             vvel = '%.0f' % vvel
+            eliof_relativa = '%.0f' % eliof_relativa
             mm = '%.1f' % mm if mm else ''
 
-            rigo = (giorno, press, t, tmin, tmax, ur, vdir, vvel, eliofania, mare, mm, durata)
+            rigo = (giorno, press, t, tmin, tmax, ur, vdir, vvel, cielo, mare, mm, durata)
             bollettino.append(rigo)
 
         self.__dati_bollettino_mensile = bollettino
@@ -455,9 +473,7 @@ class Bollettino(object):
 
     def __bollettino_mensile_csv(self):
         with open(FOUT_MENSILE_CSV, 'w') as fout:
-
             for rigo in self.__dati_bollettino_mensile:
-
                 rigo = '%s\n' % ('\t'.join(rigo),)
 
                 fout.write(rigo)
