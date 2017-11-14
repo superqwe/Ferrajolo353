@@ -67,6 +67,7 @@ venv.bak/
 .idea/
 .mypy_cache/
 rptlab-reportlab-823a8c33ce43/
+Sun Ephemeris/
 *.bat
 *.ods*
 *.pdf

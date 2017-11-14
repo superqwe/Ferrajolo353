@@ -1,5 +1,6 @@
 # 09.11.17: rev0
 
+import calendar
 import csv
 import datetime
 import statistics
@@ -21,11 +22,15 @@ class Bollettino(object):
         self.anno = 2000 + int(mese[:2])
         self.__fin = '%sm.txt' % mese
         self.__leggi_csv()
+
         self.__analizza_per_bollettino_decadale()
         self.__bollettino_decadale()
+
         self.__analizza_per_bollettino_mensile()
         self.__bollettino_mensile_csv()
         self.__bollettino_mensile_pdf()
+
+        self.__analizza_per_bollettino_pioggia()
 
     def __leggi_csv(self):
         with open(self.__fin) as f:
@@ -480,3 +485,127 @@ class Bollettino(object):
 
     def __bollettino_mensile_pdf(self):
         pass
+
+    def __analizza_per_bollettino_pioggia(self):
+        anno = self.anno
+        mese = self.mese
+        dumb, ngiorni = calendar.monthrange(anno, mese)
+
+        dal = datetime.datetime(anno, mese, 1, 0)
+        al = dal + datetime.timedelta(days=ngiorni)
+
+        durate = [x
+                  for x in self.__dati
+                  if dal <= x < al if float(self.__dati[x]['mm'])]
+        durate.sort()
+
+        dt = datetime.timedelta(minutes=10)
+
+        # orari_piogge = [[dalle_1, alle_1], [dalle_2, alle_2], ...]
+        orari_piogge = [[durate[0] - dt, durate[0]]]
+
+        for rec in durate[1:]:
+
+            if rec - DT_PIOGGIA > orari_piogge[-1][1]:
+                orari_piogge.append([rec - dt, rec])
+            else:
+                orari_piogge[-1][1] = rec
+
+        lpioggia = []
+        for pioggia in orari_piogge:
+            dalle, alle = pioggia
+
+            if dalle.day == alle.day:
+                ppioggia = self.__calcola_pioggia_bollettino_pioggia(pioggia)
+                lpioggia.append(ppioggia)
+            else:
+                dalle2 = alle1 = datetime.datetime(alle.year, alle.month, alle.day, 0)
+                ppioggia1 = self.__calcola_pioggia_bollettino_pioggia((dalle, alle1))
+                ppioggia2 = self.__calcola_pioggia_bollettino_pioggia((dalle2, alle))
+                lpioggia.append(ppioggia1)
+                lpioggia.append(ppioggia2)
+
+        dati = []
+        mm_totali = durata_totale = 0
+        mm_gionalieri = durata_giornaliera = 0
+        mm_gionalieri_p = durata_giornaliera_p = 0
+        for i, p in enumerate(lpioggia):
+            giorno, dalle, alle, mm, durata, carattere = p
+            mm_totali += mm
+            durata_totale += durata
+
+            if lpioggia[i - 1][0] == giorno:
+                giorno_diverso = False
+                giorno = '  '
+                mm_gionalieri += mm
+                # durata_giornaliera += durata
+            else:
+                giorno_diverso = True
+                giorno = '%2i' % giorno
+                mm_gionalieri_p = mm_gionalieri
+                # durata_giornaliera_p = durata_giornaliera_p
+                mm_gionalieri = mm
+                durata_giornaliera = durata
+
+            dalle = dalle.strftime('%H:%M')
+            alle = alle.strftime('%H:%M')
+
+            mm = '%.1f' % mm
+
+            ore = int(durata)
+            minuti = (durata - ore) * 60
+            durata = '%02i:%02.0f' % (ore, minuti)
+
+            rigo = [giorno, dalle, alle, mm, durata, carattere]
+
+            if giorno_diverso and mm_gionalieri_p:
+                mm_gionalieri_p = '%.1f' % mm_gionalieri_p
+                dati[i - 1].append(mm_gionalieri_p)
+                # ore_giornaliere = int(durata_giornaliera_p)
+                # minuti_giornalieri = (durata_giornaliera_p - ore_giornaliere) * 60
+                # durata_giornaliera_p = '%02i:%02.0f' % (ore_giornaliere, minuti_giornalieri)
+
+                # rigo.extend([mm_gionalieri_p, durata_giornaliera_p])
+
+            dati.append(rigo)
+
+        mm_gionalieri = '%.1f' % mm_gionalieri
+        dati[i].extend([mm_gionalieri, durata_giornaliera])
+
+        mm_totali = '%.1f' % mm_totali
+        ore_totali = int(durata_totale)
+        minuti_totali = (durata_totale - ore_totali) * 60
+        durata_totale = '%02i:%02.0f' % (ore_totali, minuti_totali)
+
+        pp(dati)
+        print(mm_totali, durata_totale)
+
+    def __calcola_pioggia_bollettino_pioggia(self, pioggia):
+        dalle, alle = pioggia
+
+        giorno = dalle.day
+
+        mm = sum([self.__dati[x]['mm']
+                  for x in self.__dati
+                  if dalle < x <= alle])
+
+        durata = (alle - dalle).seconds / 60 / 60  # in ore
+
+        # classificazione presa da https://it.wikipedia.org/wiki/Pioggia
+        intensita = mm / durata
+        if intensita <= 1:
+            carattere = 'Pioviggine'
+        elif intensita <= 2:
+            carattere = 'Debole'
+        elif intensita <= 4:
+            carattere = 'Leggera'
+        elif intensita <= 6:
+            carattere = 'Moderata'
+        elif intensita <= 10:
+            carattere = 'Forte'
+        elif intensita <= 30:
+            carattere = 'Rovescio'
+        else:
+            carattere = 'Nubifragio'
+
+        return giorno, dalle, alle, mm, durata, carattere
