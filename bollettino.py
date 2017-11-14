@@ -14,6 +14,7 @@ DT_PIOGGIA = datetime.timedelta(minutes=30)
 # nome file di output
 FOUT_DECADALE = 'decadale.csv'
 FOUT_MENSILE_CSV = 'mensile.csv'
+FOUT_PIOGGIA_CSV = 'pioggia.csv'
 
 
 class Bollettino(object):
@@ -31,6 +32,7 @@ class Bollettino(object):
         self.__bollettino_mensile_pdf()
 
         self.__analizza_per_bollettino_pioggia()
+        self.__bollettino_pioggia()
 
     def __leggi_csv(self):
         with open(self.__fin) as f:
@@ -582,8 +584,9 @@ class Bollettino(object):
         minuti_totali = (durata_totale - ore_totali) * 60
         durata_totale = '%02i:%02.0f' % (ore_totali, minuti_totali)
 
-        pp(dati)
-        print(mm_totali, durata_totale)
+        dati.append(['', '', '', '', 'totale', mm_totali, durata_totale])
+
+        self.__dati_bollettino_pioggia = dati
 
     def __calcola_pioggia_bollettino_pioggia(self, pioggia):
         dalle, alle = pioggia
@@ -614,3 +617,10 @@ class Bollettino(object):
             carattere = 'Nubifragio'
 
         return giorno, dalle, alle, mm, durata, carattere
+
+    def __bollettino_pioggia(self):
+        with open(FOUT_PIOGGIA_CSV, 'w') as fout:
+            for rigo in self.__dati_bollettino_pioggia:
+                rigo = '%s\n' % ('\t'.join(rigo),)
+
+                fout.write(rigo)
