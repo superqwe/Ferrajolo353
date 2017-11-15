@@ -5,6 +5,7 @@ from pprint import pprint as pp
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle as PS
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.platypus.flowables import Spacer
 from reportlab.platypus.tables import Table, TableStyle
@@ -32,7 +33,7 @@ def go(anno=None, mese=None, dati=None):
             12: 'Dicembre',
             None: ''}
 
-    doc = SimpleDocTemplate("phello.pdf")
+    doc = SimpleDocTemplate("phello.pdf", topMargin=2*cm, bottomMargin=1*cm)
     style = styles["Normal"]
     pdfmetrics.registerFont(TTFont('Arial', 'ARIAL.TTF'))
     pdfmetrics.registerFont(TTFont('ArialNarrow', 'ARIALN.TTF'))
@@ -43,6 +44,8 @@ def go(anno=None, mese=None, dati=None):
     h2 = PS(name='Heading2', font='BookmanOldStyleBold', fontSize=18, leading=20, alignment=1, spaceAfter=10)
     h3 = PS(name='Heading3', font='BookmanOldStyle', fontSize=14, leading=20, alignment=1, spaceAfter=15)
     p_data = PS(name='Paragrafo', font='BookmanOldStyle')
+    p_firma = PS(name='Paragrafo', font='BookmanOldStyle', alignment=1, leftIndent=10 * cm)
+    p_pie = PS(name='Paragrafo', font='BookmanOldStyle', fontSize=8)
 
     title1 = Paragraph('Osservatorio Meteorologico e Geofisico di Taranto', h1)
     title2 = Paragraph('<b>"Luigi Ferrajolo"</b>', h2)
@@ -90,13 +93,16 @@ def go(anno=None, mese=None, dati=None):
     tabella = Table(dati_tabella, style=stile_tabella)
 
     data = Paragraph('Taranto, lì %s' % (datetime.date.today().strftime('%d/%m/%Y'),), p_data)
-    firma1 = Paragraph('IL DIRETTORE', style)
-    firma2 = Paragraph('(Dott. Vittorio Semeraro)', style)
-    pie = Paragraph('via Duomo, 181 - 74100 Taranto --- tel/fax: 099/4608278 --- '
-                    'email: vittoriosemeraro@virgilio.it', style)
-    Story = [title1, title2, title3, tabella, data, firma1, firma2, pie]
+    firma1 = Paragraph('IL DIRETTORE', p_firma)
+    firma2 = Paragraph('(Dott. Vittorio Semeraro)', p_firma)
+    pie1 = Paragraph('via Duomo, 181 - 74100 Taranto', p_pie)
+    pie2 = Paragraph('tel/fax: 099/4608278', p_pie)
+    pie3 = Paragraph('email: vittoriosemeraro@virgilio.it', p_pie)
+    Story = [title1, title2, title3, tabella, Spacer(0,1*cm),data,  firma1, firma2, Spacer(0,1.5*cm), pie1,
+             pie2, pie3]
 
     doc.build(Story)
+
 
 if __name__ == '__main__':
     go()

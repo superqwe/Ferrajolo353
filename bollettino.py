@@ -408,6 +408,7 @@ class Bollettino(object):
             eliof_relativa = '%.0f' % eliof_relativa
             mm = '%.1f' % mm if mm else ''
 
+            #todo: aggiungere rigo con le medie/totali
             rigo = (giorno, press, t, tmin, tmax, ur, vdir, vvel, cielo, mare, mm, durata)
             bollettino.append(rigo)
 
