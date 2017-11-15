@@ -8,6 +8,7 @@ import statistics
 from pprint import pprint as pp
 
 import eliofania
+import pdf
 
 # se tra un dato di pioggia rilevato ed un altro non supera questo tempo, allora la pioggia è continua
 DT_PIOGGIA = datetime.timedelta(minutes=30)
@@ -486,7 +487,7 @@ class Bollettino(object):
                 fout.write(rigo)
 
     def __bollettino_mensile_pdf(self):
-        pass
+        pdf.go(anno=self.anno, mese=self.mese, dati=self.__dati_bollettino_mensile)
 
     def __analizza_per_bollettino_pioggia(self):
         anno = self.anno
