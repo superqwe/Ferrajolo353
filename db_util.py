@@ -21,6 +21,10 @@ def prepopola_raw(anno):
         dati.append(record)
         data += dt
 
+    carica_raw(dati)
+
+
+def carica_raw(dati):
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
         cur.executemany('INSERT INTO Raw VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', dati)
