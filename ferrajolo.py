@@ -3,7 +3,6 @@
 import bollettino
 import csv_util
 import db as DB
-from pprint import pprint as pp
 
 import db_util
 
@@ -13,16 +12,18 @@ def carica_eliofania(file_input):
     db_util.inserisci_eliofania(dati)
 
 if __name__ == '__main__':
-    """redige bollettini per il mese indicato """
+    pass
+    # """redige bollettini per il mese indicato """
     # mese = '1710'
     # bollettino.Bollettino(mese)
 
-    """crea/resetta db"""
+    # """crea/resetta db"""
     # db = DB.DB()
     # db.crea_db()
     # db.resetta()
 
-    """legge i dati del file in formato csv dell'eliofania creato con il programma Sun Ephemeris e li salva 
-    nella tabella Eliofania"""
-    fin = 'eliofania.csv'
-    carica_eliofania(fin)
+    # """legge i dati del file in formato csv dell'eliofania creato con il programma Sun Ephemeris e li salva
+    # nella tabella Eliofania"""
+    # fin = 'eliofania.csv'
+    # carica_eliofania(fin)
+
