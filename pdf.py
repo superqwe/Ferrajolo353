@@ -33,7 +33,7 @@ def go(anno=None, mese=None, dati=None):
             12: 'Dicembre',
             None: ''}
 
-    doc = SimpleDocTemplate("phello.pdf", topMargin=2*cm, bottomMargin=1*cm)
+    doc = SimpleDocTemplate("%2i%02i Mensile.pdf" % (anno-2000, mese), topMargin=2*cm, bottomMargin=0.7*cm)
     style = styles["Normal"]
     pdfmetrics.registerFont(TTFont('Arial', 'ARIAL.TTF'))
     pdfmetrics.registerFont(TTFont('ArialNarrow', 'ARIALN.TTF'))
@@ -64,20 +64,22 @@ def go(anno=None, mese=None, dati=None):
     stile_tabella = TableStyle([
         ('FONT', (0, 0), (-1, -1), 'ArialNarrow'),
         ('FONT', (0, 0), (-1, 0), 'ArialNarrowBold'),
+        ('FONT', (0, -1), (0, -1), 'ArialNarrowBold'),
+        ('FONT', (9, -1), (9, -1), 'ArialNarrowBold'),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('BOX', (0, 0), (0, -1), 1, colors.black),
-        ('BOX', (1, 0), (1, -1), 1, colors.black),
-        ('BOX', (2, 0), (4, -1), 1, colors.black),
-        ('BOX', (5, 0), (5, -1), 1, colors.black),
-        ('BOX', (6, 0), (7, -1), 1, colors.black),
-        ('BOX', (8, 0), (8, -1), 1, colors.black),
-        ('BOX', (9, 0), (9, -1), 1, colors.black),
-        ('BOX', (10, 0), (11, -1), 1, colors.black),
+        ('BOX', (0, 0), (0, -2), 1, colors.black),
+        ('BOX', (1, 0), (1, -2), 1, colors.black),
+        ('BOX', (2, 0), (4, -2), 1, colors.black),
+        ('BOX', (5, 0), (5, -2), 1, colors.black),
+        ('BOX', (6, 0), (7, -2), 1, colors.black),
+        ('BOX', (8, 0), (8, -2), 1, colors.black),
+        ('BOX', (9, 0), (9, -2), 1, colors.black),
+        ('BOX', (10, 0), (11, -2), 1, colors.black),
 
-        # ('BOX', (0, 0), (-1, 2), 1, colors.black),
+        # ('BOX', (0, 0), (-1, 1), 1, colors.black),
         ('BOX', (0, 3), (-1, 12), 1, colors.black),
-        ('BOX', (0, 23), (-1, -1), 1, colors.black),
+        ('BOX', (0, 23), (-1, -2), 1, colors.black),
         # ('BOX', (0, 0), (-1, -1), 1, colors.black),
 
         ('LEFTPADDING', (0, 0), (-1, -1), 3),
@@ -98,7 +100,7 @@ def go(anno=None, mese=None, dati=None):
     pie1 = Paragraph('via Duomo, 181 - 74100 Taranto', p_pie)
     pie2 = Paragraph('tel/fax: 099/4608278', p_pie)
     pie3 = Paragraph('email: vittoriosemeraro@virgilio.it', p_pie)
-    Story = [title1, title2, title3, tabella, Spacer(0,1*cm),data,  firma1, firma2, Spacer(0,1.5*cm), pie1,
+    Story = [title1, title2, title3, tabella, Spacer(0,0.9*cm),data,  firma1, firma2, Spacer(0,1.3*cm), pie1,
              pie2, pie3]
 
     doc.build(Story)

@@ -339,6 +339,14 @@ class Bollettino(object):
         ngiorni = 31
 
         bollettino = []
+        lpress = []
+        lt = []
+        ltmin = []
+        ltmax = []
+        lur = []
+        lvel = []
+        lmm = []
+        ldurata = []
         for giorno in range(1, ngiorni + 1):
             dal = datetime.datetime(anno, mese, giorno, 0)
             al = dal + datetime.timedelta(days=1)
@@ -346,6 +354,7 @@ class Bollettino(object):
             press = statistics.mean([float(self.__dati[dt]['pres'])
                                      for dt in self.__dati
                                      if dal < dt <= al and self.__dati[dt]['pres']])
+            lpress.append(press)
 
             # temperatura
             t = statistics.mean([float(self.__dati[dt]['t'])
@@ -357,14 +366,19 @@ class Bollettino(object):
             tmax = max([float(self.__dati[dt]['tmax'])
                         for dt in self.__dati
                         if dal < dt <= al and self.__dati[dt]['tmax']])
+            lt.append(t)
+            ltmin.append(tmin)
+            ltmax.append(tmax)
 
             # umidita
             ur = statistics.mean([float(self.__dati[dt]['ur'])
                                   for dt in self.__dati
                                   if dal < dt <= al and self.__dati[dt]['ur']])
+            lur.append(ur)
 
             # vento
             vdir, vvel = self.__calcola_vento_bollettino_mensile(dal, al)
+            lvel.append(vvel)
 
             # eliofania & cielo
             eliof_assoluta = sum([float(self.__dati[dt]['eliof'])
@@ -395,7 +409,9 @@ class Bollettino(object):
                 mare = 'Molto Mosso'
 
             # pioggia
-            mm, durata = self.__calcola_pioggia_bollettino_mensile(dal, al)
+            mm, durata, durata_secondi = self.__calcola_pioggia_bollettino_mensile(dal, al)
+            lmm.append(mm)
+            ldurata.append(durata_secondi)
 
             # formattazione
             giorno = '%2i' % giorno
@@ -405,13 +421,26 @@ class Bollettino(object):
             tmax = '%.1f' % tmax
             ur = '%.0f' % ur
             vvel = '%.0f' % vvel
-            eliof_relativa = '%.0f' % eliof_relativa
             mm = '%.1f' % mm if mm else ''
 
-            #todo: aggiungere rigo con le medie/totali
             rigo = (giorno, press, t, tmin, tmax, ur, vdir, vvel, cielo, mare, mm, durata)
             bollettino.append(rigo)
 
+        # formattazione
+        press = '%.0f' % statistics.mean(lpress)
+        t = '%.1f' % statistics.mean(lt)
+        tmin = '%.1f' % statistics.mean(ltmin)
+        tmax = '%.1f' % statistics.mean(ltmax)
+        ur = '%.0f' % statistics.mean(lur)
+        vvel = '%.0f' % statistics.mean(lvel)
+        mm = '%.1f' % sum(lmm)
+        durata = sum(ldurata) / 60
+        durata_hh = int(durata / 60)
+        durata_mm = durata - durata_hh * 60
+        durata = '%02i:%02i' % (durata_hh, durata_mm)
+
+        rigo_medie = ('Medie', press, t, tmin, tmax, ur, '', vvel, '', 'Totale', mm, durata)
+        bollettino.append(rigo_medie)
         self.__dati_bollettino_mensile = bollettino
 
     def __calcola_pioggia_bollettino_mensile(self, dal, al):
@@ -437,14 +466,16 @@ class Bollettino(object):
                     orari_piogge[-1][1] = rec
 
             durata_totale = sum([(al - dal).seconds for dal, al in orari_piogge])
+            durata_totale_secondi = durata_totale
             durata_ore = durata_totale // (60 * 60)
             durata_minuti = (durata_totale % (60 * 60)) // 60
             durata_totale = '%s:%s' % (durata_ore, durata_minuti)
 
         else:
             durata_totale = ''
+            durata_totale_secondi = 0
 
-        return mm, durata_totale
+        return mm, durata_totale, durata_totale_secondi
 
     def __calcola_vento_bollettino_mensile(self, dal, al):
         velocita = statistics.mean([float(self.__dati[dt]['vvel'])
