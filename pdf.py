@@ -43,7 +43,7 @@ def bollettino_mensile(anno=None, mese=None, dati=None):
     h1 = PS(name='Heading1', font='BookmanOldStyle', fontSize=16, leading=20, alignment=1)
     h2 = PS(name='Heading2', font='BookmanOldStyleBold', fontSize=18, leading=20, alignment=1, spaceAfter=10)
     h3 = PS(name='Heading3', font='BookmanOldStyle', fontSize=14, leading=20, alignment=1, spaceAfter=15)
-    p_data = PS(name='Paragrafo', font='BookmanOldStyle')
+    p_data = PS(name='Paragrafo', font='BookmanOldStyle', leftIndent=0.8 * cm)
     p_firma = PS(name='Paragrafo', font='BookmanOldStyle', alignment=1, leftIndent=10 * cm)
     p_pie = PS(name='Paragrafo', font='BookmanOldStyle', fontSize=8)
 
@@ -128,6 +128,7 @@ def bollettino_pioggia(anno=0, mese=0, dati=None):
                             bottomMargin=0.7 * cm)
     style = styles["Normal"]
     pdfmetrics.registerFont(TTFont('Arial', 'ARIAL.TTF'))
+    pdfmetrics.registerFont(TTFont('ArialBold', 'ariblk.ttf'))
     pdfmetrics.registerFont(TTFont('ArialNarrow', 'ARIALN.TTF'))
     pdfmetrics.registerFont(TTFont('ArialNarrowBold', 'ARIALNB.TTF'))
     pdfmetrics.registerFont(TTFont('BookmanOldStyle', 'BOOKOS.TTF'))
@@ -135,7 +136,7 @@ def bollettino_pioggia(anno=0, mese=0, dati=None):
     h1 = PS(name='Heading1', font='BookmanOldStyle', fontSize=16, leading=20, alignment=1)
     h2 = PS(name='Heading2', font='BookmanOldStyleBold', fontSize=18, leading=20, alignment=1, spaceAfter=10)
     h3 = PS(name='Heading3', font='BookmanOldStyle', fontSize=14, leading=20, alignment=1, spaceAfter=15)
-    p_data = PS(name='Paragrafo', font='BookmanOldStyle')
+    p_data = PS(name='Paragrafo', font='BookmanOldStyle', leftIndent=0.8 * cm)
     p_firma = PS(name='Paragrafo', font='BookmanOldStyle', alignment=1, leftIndent=10 * cm)
     p_pie = PS(name='Paragrafo', font='BookmanOldStyle', fontSize=8)
 
@@ -148,16 +149,16 @@ def bollettino_pioggia(anno=0, mese=0, dati=None):
         ['Piovosi', '[hh:mm]', '[hh:mm]', '[mm]', '[hh:mm]', '', 'Giornaliera', 'Giornaliera'],
         ['', '', '', '', '', '', '[mm]', '[hh:mm]'],
     ]
-    if dati:
-        dati_tabella.extend(dati)
 
-    stile_tabella = TableStyle([
-        ('FONT', (0, 0), (-1, -1), 'ArialNarrow'),
-        ('FONT', (0, 0), (-1, 0), 'ArialNarrowBold'),
-        ('FONT', (0, -1), (0, -1), 'ArialNarrowBold'),
-        ('FONT', (0, 1), (0, 1), 'ArialNarrowBold'),
-        ('FONT', (6, 1), (7, 1), 'ArialNarrowBold'),
+    style_tabella = [
+        ('FONT', (0, 0), (-1, -1), 'Arial'),
+        ('FONT', (0, 0), (-1, 0), 'ArialBold'),
+        ('FONT', (0, -1), (0, -1), 'ArialBold'),
+        ('FONT', (0, 1), (0, 1), 'ArialBold'),
+        ('FONT', (6, 1), (7, 1), 'ArialBold'),
+        ('FONT', (5, -1), (5, -1), 'ArialBold'),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('LEADING', (0, 0), (-1, -1), 12),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
 
         ('BOX', (0, 0), (-1, -2), 1, colors.black),
@@ -167,8 +168,19 @@ def bollettino_pioggia(anno=0, mese=0, dati=None):
         ('TOPPADDING', (0, 0), (-1, -1), 0),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
 
-    ])
+    ]
 
+    if dati:
+        dati_tabella.extend(dati)
+
+        for i, rigo in enumerate(dati):
+            try:
+                if int(rigo[0]):
+                    style_tabella.append(('LINEABOVE', (0, i + 3), (-1, i + 3), 0.5, colors.black))
+            except:
+                pass
+
+    stile_tabella = TableStyle(style_tabella)
     tabella = Table(dati_tabella, style=stile_tabella)
 
     data = Paragraph('Taranto, lì %s' % (datetime.date.today().strftime('%d/%m/%Y'),), p_data)
@@ -177,7 +189,7 @@ def bollettino_pioggia(anno=0, mese=0, dati=None):
     pie1 = Paragraph('via Duomo, 181 - 74100 Taranto', p_pie)
     pie2 = Paragraph('tel/fax: 099/4608278', p_pie)
     pie3 = Paragraph('email: vittoriosemeraro@virgilio.it', p_pie)
-    Story = [title1, title2, title3, tabella, Spacer(0, 0.9 * cm), data, firma1, firma2, Spacer(0, 1.3 * cm),
+    Story = [title1, title2, title3, tabella, Spacer(0, 0.3 * cm), data, firma1, firma2, Spacer(0, 1.3 * cm),
              pie1,
              pie2, pie3]
 
