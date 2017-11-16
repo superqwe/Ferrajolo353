@@ -34,6 +34,7 @@ class Bollettino(object):
 
         self.__analizza_per_bollettino_pioggia()
         self.__bollettino_pioggia()
+        self.__bollettino_pioggia_pdf()
 
     def __leggi_csv(self):
         with open(self.__fin) as f:
@@ -519,7 +520,7 @@ class Bollettino(object):
                 fout.write(rigo)
 
     def __bollettino_mensile_pdf(self):
-        pdf.go(anno=self.anno, mese=self.mese, dati=self.__dati_bollettino_mensile)
+        pdf.bollettino_mensile(anno=self.anno, mese=self.mese, dati=self.__dati_bollettino_mensile)
 
     def __analizza_per_bollettino_pioggia(self):
         anno = self.anno
@@ -617,7 +618,7 @@ class Bollettino(object):
         minuti_totali = (durata_totale - ore_totali) * 60
         durata_totale = '%02i:%02.0f' % (ore_totali, minuti_totali)
 
-        dati.append(['', '', '', '', 'totale', mm_totali, durata_totale])
+        dati.append(['', '', '', '', '', 'Totale', mm_totali, durata_totale])
 
         self.__dati_bollettino_pioggia = dati
 
@@ -657,3 +658,6 @@ class Bollettino(object):
                 rigo = '%s\n' % ('\t'.join(rigo),)
 
                 fout.write(rigo)
+
+    def __bollettino_pioggia_pdf(self):
+        pdf.bollettino_pioggia(anno=self.anno, mese=self.mese, dati=self.__dati_bollettino_pioggia)
