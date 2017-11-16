@@ -66,11 +66,13 @@ venv.bak/
 # mypy
 .idea/
 .mypy_cache/
+dati/
 rptlab-reportlab-823a8c33ce43/
 Sun Ephemeris/
 *.bat
 *.ods*
 *.pdf
+*.sqlite
 1701m.TXT
 decadale.csv
 mensile.csv

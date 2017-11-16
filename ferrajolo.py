@@ -1,15 +1,23 @@
 # 09.11.17: rev0
 
-import bollettino
+from pprint import pprint as pp
+
 import csv_util
 import db as DB
-
 import db_util
 
 
 def carica_eliofania(file_input):
     dati = csv_util.eliofania_da_sun_ephemeris(file_input, True)
     db_util.inserisci_eliofania(dati)
+    pp(dati)
+    print('Dati inseriti nella tabella Eliofania')
+
+
+def prepopola_raw(anno):
+    db_util.prepopola_raw(anno)
+    print("Tabella Raw prepopolata per l'anno %i" % anno)
+
 
 if __name__ == '__main__':
     pass
@@ -27,3 +35,6 @@ if __name__ == '__main__':
     # fin = 'eliofania.csv'
     # carica_eliofania(fin)
 
+    """Prepopola la tabella Raw"""
+    anno = 2012
+    prepopola_raw(anno)

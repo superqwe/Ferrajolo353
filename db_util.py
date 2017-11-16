@@ -1,17 +1,26 @@
 # 16.11.17
-
+import datetime
 import sqlite3 as lite
-from pprint import pprint as pp
 
 from costanti import NOME_DB
 
 
 def inserisci_eliofania(dati):
-    # pp(dati)
-    # db = lite.connect(NOME_DB)
-
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
         cur.executemany('INSERT INTO Eliofania VALUES (?, ?)', dati)
 
-    print('inseriti dati di eliofania')
+
+def prepopola_raw(anno):
+    data = datetime.datetime(anno, 1, 1, 0)
+    dt = datetime.timedelta(minutes=10)
+
+    dati = []
+    while data.year == anno:
+        record = (data, None, None, None, None, None, None, None, None, None, None)
+        dati.append(record)
+        data += dt
+
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+        cur.executemany('INSERT INTO Raw VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', dati)
