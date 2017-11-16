@@ -92,8 +92,8 @@ class DB(object):
 
         try:
             cmd = """CREATE TABLE Eliofania(data DATE NOT NULL,
-                                             Elio INT
-                                             )"""
+                                            elio INT
+                                            )"""
             self.cur.execute(cmd)
             self.db.commit()
             # print('tabella creata: Eliofania')
