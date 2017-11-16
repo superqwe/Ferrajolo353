@@ -145,7 +145,7 @@ def bollettino_pioggia(anno=0, mese=0, dati=None):
     title3 = Paragraph('PRECIPITAZIONI - %s %s' % (MESE[mese], anno), h3)
 
     dati_tabella = [
-        ['Giorni', 'Dalle', 'Alle', 'Poggia', 'Durata', 'Carattere', 'Pioggia', 'Durata'],
+        ['Giorni', 'Dalle*', 'Alle*', 'Poggia', 'Durata', 'Carattere', 'Pioggia', 'Durata'],
         ['Piovosi', '[hh:mm]', '[hh:mm]', '[mm]', '[hh:mm]', '', 'Giornaliera', 'Giornaliera'],
         ['', '', '', '', '', '', '[mm]', '[hh:mm]'],
     ]
@@ -183,13 +183,15 @@ def bollettino_pioggia(anno=0, mese=0, dati=None):
     stile_tabella = TableStyle(style_tabella)
     tabella = Table(dati_tabella, style=stile_tabella)
 
+    nota = Paragraph("* Gli orari sono riferiti all'ora solare.", p_data)
     data = Paragraph('Taranto, lì %s' % (datetime.date.today().strftime('%d/%m/%Y'),), p_data)
     firma1 = Paragraph('IL DIRETTORE', p_firma)
     firma2 = Paragraph('(Dott. Vittorio Semeraro)', p_firma)
     pie1 = Paragraph('via Duomo, 181 - 74100 Taranto', p_pie)
     pie2 = Paragraph('tel/fax: 099/4608278', p_pie)
     pie3 = Paragraph('email: vittoriosemeraro@virgilio.it', p_pie)
-    Story = [title1, title2, title3, tabella, Spacer(0, 0.3 * cm), data, firma1, firma2, Spacer(0, 1.3 * cm),
+    Story = [title1, title2, title3, tabella, nota, Spacer(0, 0.3 * cm), data, firma1, firma2, Spacer(0,
+                                                                                                      1.3 * cm),
              pie1,
              pie2, pie3]
 
