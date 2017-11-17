@@ -2,6 +2,8 @@
 
 from pprint import pprint as pp
 
+import datetime
+
 import csv_util
 import db as DB
 import db_util
@@ -25,6 +27,11 @@ def prepopola_raw(anno):
     print("Tabella Raw prepopolata per l'anno %i" % anno)
 
 
+def ricerca_record_mancanti(dal=None, al=None):
+    record = db_util.ricerca_record_mancanti(dal, al)
+    print('Elenco dei redord mancanti dal %s -- %s ' % (dal, al))
+    pp(record)
+
 if __name__ == '__main__':
     # """redige bollettini per il mese indicato."""
     # mese = '1710'
@@ -33,22 +40,28 @@ if __name__ == '__main__':
     # """crea/resetta db"""
     db = DB.DB()
     # db.crea_db()
-    db.resetta()
+    # db.resetta()
 
     # """legge i dati del file in formato csv dell'eliofania creato con il programma Sun Ephemeris e li salva
     # nella tabella Eliofania."""
     # fin = 'eliofania.csv'
     # carica_eliofania(fin)
 
-    """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'.
-    popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
-    """
-    fin = '2015a.txt'
-    carica_raw(fin, popola_errori=True)
+    # """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'.
+    # popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
+    # """
+    # fin = '2016a.txt'
+    # carica_raw(fin, popola_errori=True)
 
     # """Prepopola la tabella Raw"""
     # anno = 2018
     # prepopola_raw(anno)
+
+    """Ricerca record mancanti"""
+    dal = datetime.datetime(2012, 1, 1, 1, 10)
+    al = datetime.datetime(2016, 12, 31, 23, 59)
+    ricerca_record_mancanti(dal, al)
+
 
 
     pass

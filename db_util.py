@@ -3,7 +3,7 @@ import datetime
 import sqlite3 as lite
 from pprint import pprint as pp
 
-from costanti import NOME_DB
+from costanti import *
 
 
 def inserisci_eliofania(dati):
@@ -43,13 +43,36 @@ def carica_raw(dati, popola_errori=[]):
             while datetime.datetime.strftime(dal,'%d/%m/%Y') == giorno:
 
                 if not (dal in dati):
-                    record = (dal, None, None, None, None, None, None, None, None, None, None)
-                    cur.execute('INSERT INTO Raw VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', record)
-                    print('%s aggiunto vuoto' % dal)
+                    # record = (dal, None, None, None, None, None, None, None, None, None, None)
+                    # cur.execute('INSERT INTO Raw VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', record)
+                    # print('%s aggiunto vuoto' % dal)
+                    aggiungi_record_vuoto(cur, dal)
 
                 dal+=dt
 
     con.commit()
+
+
+def aggiungi_record_vuoto(cur, data):
+    record = (data, None, None, None, None, None, None, None, None, None, None)
+    cur.execute('INSERT INTO Raw VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', record)
+    print('%s aggiunto vuoto' % data)
+
+
+def ricerca_record_mancanti(dal=None, al=None):
+    dati = interroga('Raw', dal, al, flat=True)
+
+    record_mancanti = []
+    while dal <= al:
+
+        try:
+            dati.remove(datetime.datetime.strftime(dal, '%Y-%m-%d %H:%M:%S'))
+        except ValueError:
+            record_mancanti.append(dal)
+
+        dal += DT
+
+    return record_mancanti
 
 
 def interroga(tabella, dal, al, flat=False):
@@ -78,3 +101,4 @@ def interroga(tabella, dal, al, flat=False):
         dati = [x[0] for x in dati]
 
     return dati
+
