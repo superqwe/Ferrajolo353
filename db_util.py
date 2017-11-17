@@ -59,18 +59,25 @@ def aggiungi_record_vuoto(cur, data):
     print('%s aggiunto vuoto' % data)
 
 
-def ricerca_record_mancanti(dal=None, al=None):
+def ricerca_record_mancanti(dal=None, al=None, aggiungi=False):
     dati = interroga('Raw', dal, al, flat=True)
 
-    record_mancanti = []
-    while dal <= al:
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+        record_mancanti = []
+        while dal <= al:
 
-        try:
-            dati.remove(datetime.datetime.strftime(dal, '%Y-%m-%d %H:%M:%S'))
-        except ValueError:
-            record_mancanti.append(dal)
+            try:
+                dati.remove(datetime.datetime.strftime(dal, '%Y-%m-%d %H:%M:%S'))
+            except ValueError:
+                record_mancanti.append(dal)
 
-        dal += DT
+                if aggiungi:
+                    aggiungi_record_vuoto(cur, dal)
+
+            dal += DT
+
+        con.commit()
 
     return record_mancanti
 

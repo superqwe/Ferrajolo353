@@ -27,8 +27,8 @@ def prepopola_raw(anno):
     print("Tabella Raw prepopolata per l'anno %i" % anno)
 
 
-def ricerca_record_mancanti(dal=None, al=None):
-    record = db_util.ricerca_record_mancanti(dal, al)
+def ricerca_record_mancanti(dal=None, al=None, aggiungi=True):
+    record = db_util.ricerca_record_mancanti(dal, al, aggiungi=aggiungi)
     print('Elenco dei redord mancanti dal %s -- %s ' % (dal, al))
     pp(record)
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     """Ricerca record mancanti"""
     dal = datetime.datetime(2012, 1, 1, 1, 10)
     al = datetime.datetime(2016, 12, 31, 23, 59)
-    ricerca_record_mancanti(dal, al)
+    ricerca_record_mancanti(dal, al, aggiungi=True)
 
 
 
