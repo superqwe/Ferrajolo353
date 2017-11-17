@@ -1,1 +1,1 @@
-NOME_DB = 'test.sqlite'
+NOME_DB = 'db.sqlite'

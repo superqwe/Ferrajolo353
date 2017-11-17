@@ -70,7 +70,9 @@ def leggi_csv(file_in):
 
             except ValueError:
                 print('dato mancante', row['GIORNO'], row['ORA'])
-                errori.append(giorno)
+
+                if not giorno in errori:
+                    errori.append(giorno)
 
     return dati, errori
 

@@ -43,7 +43,7 @@ if __name__ == '__main__':
     """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'.
     popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
     """
-    fin = '2012a.txt'
+    fin = '2015a.txt'
     carica_raw(fin, popola_errori=True)
 
     # """Prepopola la tabella Raw"""
