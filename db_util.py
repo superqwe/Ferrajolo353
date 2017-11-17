@@ -118,6 +118,12 @@ def interroga(tabella, dal, al, campi='data', orari=False, flat=False):
 def calcola_tabella_Orario(dal=None, al=None):
     risultato = interroga('Raw', dal, al, campi='*', orari=True)
 
+    # todo: calcolare somma mm
+    # todo: aggiungere colonna durata
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
         cur.executemany('INSERT INTO Orario VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', risultato)
+
+
+def calcola_tabella_Giornaliero(dal=None, al=None):
+    pass
