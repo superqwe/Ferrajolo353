@@ -147,14 +147,9 @@ class DB(object):
     def resetta(self):
         self.db.close()
         os.remove(NOME_DB)
+        print('DB resettato')
         self.__init__()
         self.crea_db()
-
-        # for anno in range(ANNI_DAL, ANNI_AL + 1):
-        #     print(anno)
-            # db.inserisci_raw('%sa.TXT' % anno)
-            # db.elabora_orario2(anno)
-            # db.elabora_giornaliero(anno)
 
 
 if __name__ == '__main__':

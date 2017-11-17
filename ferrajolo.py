@@ -14,9 +14,9 @@ def carica_eliofania(file_input):
     print('Dati inseriti nella tabella Eliofania')
 
 
-def carica_raw(file_input):
-    dati = csv_util.leggi_csv(file_input)
-    db_util.carica_raw(dati)
+def carica_raw(file_input, popola_errori=False):
+    dati, errori = csv_util.leggi_csv(file_input)
+    db_util.carica_raw(dati, popola_errori=errori)
     print('Dati del file %s inseriti nella tabella Raw' % file_input)
 
 
@@ -26,25 +26,29 @@ def prepopola_raw(anno):
 
 
 if __name__ == '__main__':
-    pass
     # """redige bollettini per il mese indicato."""
     # mese = '1710'
     # bollettino.Bollettino(mese)
 
     # """crea/resetta db"""
-    # db = DB.DB()
+    db = DB.DB()
     # db.crea_db()
-    # db.resetta()
+    db.resetta()
 
     # """legge i dati del file in formato csv dell'eliofania creato con il programma Sun Ephemeris e li salva
     # nella tabella Eliofania."""
     # fin = 'eliofania.csv'
     # carica_eliofania(fin)
 
-    """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'."""
+    """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'.
+    popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
+    """
     fin = '2012a.txt'
-    carica_raw(fin)
+    carica_raw(fin, popola_errori=True)
 
     # """Prepopola la tabella Raw"""
     # anno = 2018
     # prepopola_raw(anno)
+
+
+    pass

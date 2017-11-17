@@ -65,8 +65,8 @@ class Bollettino(object):
                 tmax = row['TARANTO T Aria 2m (MAX) °C'] if row['TARANTO T Aria 2m (MAX) °C'] else None
                 pres = row['TARANTO PR 2m (MED) hPa'] if row['TARANTO PR 2m (MED) hPa'] else None
                 mm = float(row['TARANTO PLUV (MED) mm']) if row['TARANTO PLUV (MED) mm'] else None
-                vvel = float(row['TARANTO VEL V 10m (MED) m/s'] if row['TARANTO VEL V 10m (MED) m/s'] else
-                             None)
+                vvel = float(row['TARANTO VEL V 10m (MED) m/s']) if row[
+                    'TARANTO VEL V 10m (MED) m/s'] else None
                 vdir = row['TARANTO DIR V 10m (MED) GN'] if row['TARANTO DIR V 10m (MED) GN'] else None
                 ur = row['TARANTO UM 2m (MED) %'] if row['TARANTO UM 2m (MED) %'] else None
                 eliof = float(row['TARANTO ELIOF (MED) min']) if row['TARANTO ELIOF (MED) min'] else None
