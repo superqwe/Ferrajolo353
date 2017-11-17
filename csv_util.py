@@ -66,7 +66,7 @@ def leggi_csv(file_in):
                 eliof = float(row['TARANTO ELIOF (MED) min']) if row['TARANTO ELIOF (MED) min'] else None
                 pir = float(row['TARANTO PIR (MED) W/m2']) if row['TARANTO PIR (MED) W/m2'] else None
 
-                dati.append([data, t, tmin, tmax, pres, mm, ur, vvel, vdir, eliof, pir])
+                dati.append([data, t, tmin, tmax, pres, mm, ur, eliof, pir, vvel, vdir])
 
             except ValueError:
                 print('dato mancante', row['GIORNO'], row['ORA'])

@@ -14,13 +14,12 @@ def inserisci_eliofania(dati):
 
 def prepopola_raw(anno):
     data = datetime.datetime(anno, 1, 1, 0)
-    dt = datetime.timedelta(minutes=10)
 
     dati = []
     while data.year == anno:
         record = (data, None, None, None, None, None, None, None, None, None, None)
         dati.append(record)
-        data += dt
+        data += DT
 
     carica_raw(dati)
 
@@ -31,7 +30,6 @@ def carica_raw(dati, popola_errori=[]):
         cur.executemany('INSERT INTO Raw VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', dati)
 
     if popola_errori:
-        dt = datetime.timedelta(minutes=10)
 
         for giorno in popola_errori:
             dal = datetime.datetime.strptime(giorno, '%d/%m/%Y')
@@ -43,12 +41,9 @@ def carica_raw(dati, popola_errori=[]):
             while datetime.datetime.strftime(dal,'%d/%m/%Y') == giorno:
 
                 if not (dal in dati):
-                    # record = (dal, None, None, None, None, None, None, None, None, None, None)
-                    # cur.execute('INSERT INTO Raw VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', record)
-                    # print('%s aggiunto vuoto' % dal)
                     aggiungi_record_vuoto(cur, dal)
 
-                dal+=dt
+                dal += DT
 
     con.commit()
 
@@ -82,23 +77,33 @@ def ricerca_record_mancanti(dal=None, al=None, aggiungi=False):
     return record_mancanti
 
 
-def interroga(tabella, dal, al, flat=False):
+def interroga(tabella, dal, al, campi='data', orari=False, flat=False):
     """
 
     :param tabella: nome della tabella
     :param dal:
     :param al:
+    :param campi: elenco campi
+    :param orari: seleziona solo i record registrati all'ora
     :param flat: se True ed è stato selezionato solo un campo, restituisce i risultati come lista
     :return:
     """
+
+    orari = """AND (strftime('%M', data) = '00')""" if orari else ''
+
     cmd = """
-    SELECT data
+    SELECT {campi}
     FROM {tabella}
     WHERE data
     BETWEEN '{dal}' AND '{al}'
-    """.format(tabella=tabella,
+    {orari}
+    """.format(campi=campi,
+               tabella=tabella,
                dal=dal,
-               al=al)
+               al=al,
+               orari=orari)
+
+    # print(cmd)
 
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
@@ -109,3 +114,10 @@ def interroga(tabella, dal, al, flat=False):
 
     return dati
 
+
+def calcola_tabella_Orario(dal=None, al=None):
+    risultato = interroga('Raw', dal, al, campi='*', orari=True)
+
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+        cur.executemany('INSERT INTO Orario VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', risultato)
