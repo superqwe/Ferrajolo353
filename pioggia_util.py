@@ -1,7 +1,7 @@
 # 20.11.17: rev 0
 import datetime
 from pprint import pprint as pp
-
+import sqlite3 as lite
 from costanti import *
 
 
@@ -16,18 +16,54 @@ class Pioggia(object):
                     if mm and str(dal - DT) <= h <= str(al + DT)]
 
         # orari_piogge = [[dalle_1, alle_1, mm1, durata1], [dalle_2, alle_2, mm2, durata2], ...]
-        piogge = [[lpioggia[0][0] - DT, lpioggia[0][0], lpioggia[0][1], DT.seconds/60], ]
+        piogge = [[lpioggia[0][0] - DT, lpioggia[0][0], lpioggia[0][1], DT.seconds / 60], ]
 
         for fine, mm in lpioggia[1:]:
 
             if fine - DT_PIOGGIA > piogge[-1][1]:
-                piogge.append([fine - DT, fine, mm, DT.seconds/60],)
+                piogge.append([fine - DT, fine, mm, DT.seconds / 60], )
             else:
                 piogge[-1][1] = fine
                 piogge[-1][2] += mm
-                piogge[-1][3] = (fine - piogge[-1][0]).seconds/60
+                piogge[-1][3] = (fine - piogge[-1][0]).seconds / 60
 
         return piogge
+
+
+def pioggia_per_tabella_oraria(dal, al):
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+
+        n = int(DT_PIOGGIA.seconds / 60 / 10)
+        print(type(n))
+        while dal <= al:
+            cmd = """
+            SELECT sum(mm)
+            FROM Raw
+            WHERE data
+            BETWEEN datetime('{dal}', '-50 minutes') AND '{dal}'
+            """.format(dal=dal)
+
+            risultati = cur.execute(cmd).fetchall()
+
+            if risultati[0][0]:
+                print(risultati)
+
+                cmd = """
+                SELECT data, mm
+                FROM Raw
+                WHERE data
+                BETWEEN '{da}' AND '{a}'
+                """.format(da=dal - DT_ORA + DT - DT_PIOGGIA,
+                           a=dal + DT_PIOGGIA)
+
+                risultati = cur.execute(cmd).fetchall()
+                pp(risultati)
+
+                for ora, mm in risultati[n:-n]:
+                    if mm:
+                        print(ora, mm)
+            dal += DT_ORA
 
 
 def prova():

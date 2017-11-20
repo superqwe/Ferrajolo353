@@ -125,11 +125,13 @@ def interroga(tabella, dal, al, campi=None, orari=False, flat=False):
 def calcola_tabella_Orario(dal=None, al=None):
     risultato = interroga('Raw', dal, al, campi='*', orari=True)
 
+    piogge = pioggia_util.pioggia_per_tabella_oraria(dal, al)
+
     # todo: calcolare somma mm
     # todo: aggiungere colonna durata
-    with lite.connect(NOME_DB) as con:
-        cur = con.cursor()
-        cur.executemany('INSERT INTO Orario VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', risultato)
+    # with lite.connect(NOME_DB) as con:
+    #     cur = con.cursor()
+    #     cur.executemany('INSERT INTO Orario VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', risultato)
 
 
 def calcola_tabella_Giornaliero(dal=None, al=None):
