@@ -37,9 +37,9 @@ def carica_raw(dati, popola_errori=[]):
             al = dal + datetime.timedelta(days=1)
 
             dati = interroga('Raw', dal, al, flat=True)
-            dati = [datetime.datetime.strptime(x,'%Y-%m-%d %H:%M:%S') for x in dati]
+            dati = [datetime.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in dati]
 
-            while datetime.datetime.strftime(dal,'%d/%m/%Y') == giorno:
+            while datetime.datetime.strftime(dal, '%d/%m/%Y') == giorno:
 
                 if not (dal in dati):
                     aggiungi_record_vuoto(cur, dal)
@@ -133,7 +133,21 @@ def calcola_tabella_Orario(dal=None, al=None):
 
 
 def calcola_tabella_Giornaliero(dal=None, al=None):
-    pass
+    # todo: campi pioggie e vento da calcolare
+    cmd = """
+    SELECT DATE(data), AVG(t), MIN(tmin), MAX(tmax), AVG(pres), SUM(mm), AVG(ur), SUM(eliof), SUM(pir)
+    FROM Orario
+    WHERE data
+    BETWEEN '{dal}' AND '{al}'
+    GROUP BY DATE(data)
+    """.format(dal=dal, al=al)
+
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+        dati = cur.execute(cmd).fetchall()
+
+        cur.executemany('INSERT INTO Giornaliero VALUES (?, ?, ?, ?, ?, ?, null, ?, ?, ?, null, null)', dati)
+
 
 def calcola_tabella_Pioggia(dal=None, al=None):
     dati = interroga('Raw', dal, al, campi=['data', 'mm'])

@@ -10,6 +10,15 @@ import db_util
 import pioggia_util
 
 
+def crea_db():
+    db = DB.DB()
+    db.crea_db()
+
+
+def resetta_db():
+    db = DB.DB()
+    db.resetta()
+
 def carica_eliofania(file_input):
     dati = csv_util.eliofania_da_sun_ephemeris(file_input, True)
     db_util.inserisci_eliofania(dati)
@@ -54,9 +63,8 @@ if __name__ == '__main__':
     # bollettino.Bollettino(mese)
 
     # """crea/resetta db"""
-    db = DB.DB()
-    # db.crea_db()
-    # db.resetta()
+    # crea_db()
+    # resetta_db()
 
     # """legge i dati del file in formato csv dell'eliofania creato con il programma Sun Ephemeris e li salva
     # nella tabella Eliofania."""
@@ -66,7 +74,7 @@ if __name__ == '__main__':
     # """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'.
     # popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
     # """
-    # fin = '2014a.txt'
+    # fin = '2016a.txt'
     # carica_raw(fin, popola_errori=False)
 
     # """Prepopola la tabella Raw"""
@@ -79,19 +87,19 @@ if __name__ == '__main__':
     # ricerca_record_mancanti(dal, al, aggiungi=True)
 
     # """Popola la tabella Orario dai dati della tabella Raw"""
-    # dal = datetime.datetime(2014, 1, 1)
-    # al = datetime.datetime(2015, 1, 1)
+    # dal = datetime.datetime(2016, 1, 1)
+    # al = datetime.datetime(2016, 2, 1)
     # calcola_tabella_Orario(dal, al)
 
-    # """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
-    # dal = datetime.datetime(2014, 1, 1)
-    # al = datetime.datetime(2014, 2, 1)
-    # calcola_tabella_Giornaliero(dal, al)
+    """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
+    dal = datetime.datetime(2016, 1, 1)
+    al = datetime.datetime(2016, 2, 1)
+    calcola_tabella_Giornaliero(dal, al)
 
-    """Popola la tabella Pioggia"""
-    dal = datetime.datetime(2014, 1, 1)
-    al = datetime.datetime(2015, 1, 1)
-    calcola_tabella_Pioggia(dal, al)
+    # """Popola la tabella Pioggia"""
+    # dal = datetime.datetime(2016, 1, 1)
+    # al = datetime.datetime(2015, 1, 1)
+    # calcola_tabella_Pioggia(dal, al)
 
 
     pass
