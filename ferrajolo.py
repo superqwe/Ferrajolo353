@@ -7,6 +7,7 @@ import datetime
 import csv_util
 import db as DB
 import db_util
+import pioggia_util
 
 
 def carica_eliofania(file_input):
@@ -41,6 +42,11 @@ def calcola_tabella_Orario(dal=None, al=None):
 def calcola_tabella_Giornaliero(dal=None, al=None):
     db_util.calcola_tabella_Giornaliero(dal, al)
     print('\nTabella Giornaliero popolata dal %s al %s' % (dal, al))
+
+
+def calcola_tabella_Pioggia(dal, al):
+    db_util.calcola_tabella_Pioggia(dal, al)
+    print('\nTabella Pioggia popolata dal %s al %s' % (dal, al))
 
 if __name__ == '__main__':
     # """redige bollettini per il mese indicato."""
@@ -77,9 +83,15 @@ if __name__ == '__main__':
     al = datetime.datetime(2015, 1, 1)
     calcola_tabella_Orario(dal, al)
 
-    """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
+    # """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
+    # dal = datetime.datetime(2014, 1, 1)
+    # al = datetime.datetime(2014, 2, 1)
+    # calcola_tabella_Giornaliero(dal, al)
+
+    """Popola la tabella Pioggia"""
     dal = datetime.datetime(2014, 1, 1)
-    al = datetime.datetime(2014, 2, 1)
-    calcola_tabella_Giornaliero(dal, al)
+    al = datetime.datetime(2015, 1, 1)
+    calcola_tabella_Pioggia(dal, al)
+
 
     pass

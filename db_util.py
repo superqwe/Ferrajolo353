@@ -3,6 +3,7 @@ import datetime
 import sqlite3 as lite
 from pprint import pprint as pp
 
+import pioggia_util
 from costanti import *
 
 
@@ -89,6 +90,12 @@ def interroga(tabella, dal, al, campi='data', orari=False, flat=False):
     :return:
     """
 
+    if campi:
+        campi = list(campi)
+        campi = ', '.join(campi)
+    else:
+        campi = '*'
+
     orari = """AND (strftime('%M', data) = '00')""" if orari else ''
 
     cmd = """
@@ -127,3 +134,12 @@ def calcola_tabella_Orario(dal=None, al=None):
 
 def calcola_tabella_Giornaliero(dal=None, al=None):
     pass
+
+def calcola_tabella_Pioggia(dal=None, al=None):
+    dati = interroga('Raw', dal, al, ['data', 'mm'])
+    pioggia = pioggia_util.Pioggia(dati)
+    risultato = pioggia.calcola_pioggia(dal, dal + datetime.timedelta(days=1))
+
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+        cur.executemany('INSERT INTO Pioggia VALUES (?, ?, ?, ?)', risultato)
