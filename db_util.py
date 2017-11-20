@@ -78,7 +78,7 @@ def ricerca_record_mancanti(dal=None, al=None, aggiungi=False):
     return record_mancanti
 
 
-def interroga(tabella, dal, al, campi='data', orari=False, flat=False):
+def interroga(tabella, dal, al, campi=None, orari=False, flat=False):
     """
 
     :param tabella: nome della tabella
@@ -136,9 +136,9 @@ def calcola_tabella_Giornaliero(dal=None, al=None):
     pass
 
 def calcola_tabella_Pioggia(dal=None, al=None):
-    dati = interroga('Raw', dal, al, ['data', 'mm'])
+    dati = interroga('Raw', dal, al, campi=['data', 'mm'])
     pioggia = pioggia_util.Pioggia(dati)
-    risultato = pioggia.calcola_pioggia(dal, dal + datetime.timedelta(days=1))
+    risultato = pioggia.calcola_pioggia(dal, al)
 
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()

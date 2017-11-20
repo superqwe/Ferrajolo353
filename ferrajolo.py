@@ -56,7 +56,7 @@ if __name__ == '__main__':
     # """crea/resetta db"""
     db = DB.DB()
     # db.crea_db()
-    db.resetta()
+    # db.resetta()
 
     # """legge i dati del file in formato csv dell'eliofania creato con il programma Sun Ephemeris e li salva
     # nella tabella Eliofania."""
@@ -66,8 +66,8 @@ if __name__ == '__main__':
     # """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'.
     # popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
     # """
-    fin = '2014a.txt'
-    carica_raw(fin, popola_errori=False)
+    # fin = '2014a.txt'
+    # carica_raw(fin, popola_errori=False)
 
     # """Prepopola la tabella Raw"""
     # anno = 2018
@@ -78,10 +78,10 @@ if __name__ == '__main__':
     # al = datetime.datetime(2016, 12, 31, 23, 59)
     # ricerca_record_mancanti(dal, al, aggiungi=True)
 
-    """Popola la tabella Orario dai dati della tabella Raw"""
-    dal = datetime.datetime(2014, 1, 1)
-    al = datetime.datetime(2015, 1, 1)
-    calcola_tabella_Orario(dal, al)
+    # """Popola la tabella Orario dai dati della tabella Raw"""
+    # dal = datetime.datetime(2014, 1, 1)
+    # al = datetime.datetime(2015, 1, 1)
+    # calcola_tabella_Orario(dal, al)
 
     # """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
     # dal = datetime.datetime(2014, 1, 1)

@@ -21,7 +21,7 @@ class Pioggia(object):
         for fine, mm in lpioggia[1:]:
 
             if fine - DT_PIOGGIA > piogge[-1][1]:
-                piogge.append([fine - DT, fine, mm, DT/60],)
+                piogge.append([fine - DT, fine, mm, DT.seconds/60],)
             else:
                 piogge[-1][1] = fine
                 piogge[-1][2] += mm

@@ -106,7 +106,7 @@ class DB(object):
             cmd = """CREATE  TABLE Pioggia(dalle TIMESTAMP NOT NULL,
                                            alle TIMESTAMP,
                                            mm FLOAT,
-                                           durata TIME)"""
+                                           durata INT)"""
             self.cur.execute(cmd)
             self.db.commit()
             # print('tabella creata: Pioggia')
