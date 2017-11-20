@@ -35,7 +35,8 @@ def pioggia_per_tabella_oraria(dal, al):
         cur = con.cursor()
 
         n = int(DT_PIOGGIA.seconds / 60 / 10)
-        print(type(n))
+
+        dati = []
         while dal <= al:
             cmd = """
             SELECT sum(mm)
@@ -44,26 +45,32 @@ def pioggia_per_tabella_oraria(dal, al):
             BETWEEN datetime('{dal}', '-50 minutes') AND '{dal}'
             """.format(dal=dal)
 
-            risultati = cur.execute(cmd).fetchall()
+            mm = cur.execute(cmd).fetchone()[0]
 
-            if risultati[0][0]:
-                print(risultati)
+            if mm:
+                # print('\n', mm)
 
                 cmd = """
                 SELECT data, mm
                 FROM Raw
                 WHERE data
                 BETWEEN '{da}' AND '{a}'
-                """.format(da=dal - DT_ORA + DT - DT_PIOGGIA,
-                           a=dal + DT_PIOGGIA)
+                AND mm > 0.0
+                """.format(da=dal - DT_ORA + DT,
+                           a=dal)
 
                 risultati = cur.execute(cmd).fetchall()
-                pp(risultati)
 
-                for ora, mm in risultati[n:-n]:
-                    if mm:
-                        print(ora, mm)
+                durata = len(risultati) * 10
+            else:
+                durata = 0
+
+            dati.append([mm, durata, dal])
+            # dati.append([mm, durata])
+
             dal += DT_ORA
+
+    return dati
 
 
 def prova():

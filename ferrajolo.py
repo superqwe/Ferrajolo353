@@ -62,7 +62,7 @@ if __name__ == '__main__':
     # mese = '1710'
     # bollettino.Bollettino(mese)
 
-    # """crea/resetta db"""
+    """crea/resetta db"""
     # crea_db()
     # resetta_db()
 
@@ -71,9 +71,9 @@ if __name__ == '__main__':
     # fin = 'eliofania.csv'
     # carica_eliofania(fin)
 
-    # """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'.
-    # popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
-    # """
+    """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'.
+    popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
+    """
     # fin = '2016a.txt'
     # carica_raw(fin, popola_errori=False)
 
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     """Popola la tabella Orario dai dati della tabella Raw"""
     dal = datetime.datetime(2016, 1, 1)
-    al = datetime.datetime(2016, 1, 4)
+    al = datetime.datetime(2016, 2, 1)
     calcola_tabella_Orario(dal, al)
 
     # """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""

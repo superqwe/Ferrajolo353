@@ -127,11 +127,11 @@ def calcola_tabella_Orario(dal=None, al=None):
 
     piogge = pioggia_util.pioggia_per_tabella_oraria(dal, al)
 
-    # todo: calcolare somma mm
-    # todo: aggiungere colonna durata
-    # with lite.connect(NOME_DB) as con:
-    #     cur = con.cursor()
-    #     cur.executemany('INSERT INTO Orario VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', risultato)
+    # todo: calcolare durata con piogge contigue
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+        cur.executemany('INSERT INTO Orario VALUES (?, ?, ?, ?, ?, ?, null, ?, ?, ?, ?, ?)', risultato)
+        cur.executemany('UPDATE Orario SET mm = ?, durata = ? WHERE data = ?', piogge)
 
 
 def calcola_tabella_Giornaliero(dal=None, al=None):

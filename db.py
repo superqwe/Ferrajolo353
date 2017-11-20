@@ -40,6 +40,7 @@ class DB(object):
                                          tmax FLOAT,
                                          pres FLOAT,
                                          mm FLOAT,
+                                         durata INT,
                                          ur FLOAT,
                                          eliof FLOAT,
                                          pir FLOAT,
