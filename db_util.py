@@ -4,6 +4,7 @@ import sqlite3 as lite
 from pprint import pprint as pp
 
 import pioggia_util
+import vento_util
 from costanti import *
 
 
@@ -135,20 +136,33 @@ def calcola_tabella_Orario(dal=None, al=None):
 
 
 def calcola_tabella_Giornaliero(dal=None, al=None):
-    # todo: campi pioggie e vento da calcolare
+    # todo: verificare che la pioggia registrata alle ore 00.00 sia attribuita al giorno giusto
     cmd = """
-    SELECT DATE(data), AVG(t), MIN(tmin), MAX(tmax), AVG(pres), SUM(mm), AVG(ur), SUM(eliof), SUM(pir)
+    SELECT DATE(data), AVG(t), MIN(tmin), MAX(tmax), AVG(pres), SUM(mm), SUM(durata), AVG(ur), SUM(eliof), 
+    SUM(pir), AVG(vvel)
     FROM Orario
     WHERE data
     BETWEEN '{dal}' AND '{al}'
     GROUP BY DATE(data)
     """.format(dal=dal, al=al)
 
+    cmd_vento = """
+    SELECT DATE(data), vvel, vdir
+    FROM Raw
+    WHERE data
+    BETWEEN '{dal}' AND '{al}'
+    """.format(dal=dal, al=al)
+
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
         dati = cur.execute(cmd).fetchall()
 
-        cur.executemany('INSERT INTO Giornaliero VALUES (?, ?, ?, ?, ?, ?, null, ?, ?, ?, null, null)', dati)
+        dati_vento = cur.execute(cmd_vento).fetchall()
+        direzione_dominante = vento_util.direzione_dominante(dati_vento, discretizzazione='giornaliero')
+
+        cur.executemany('INSERT INTO Giornaliero VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null)', dati)
+        cur.executemany('UPDATE Giornaliero SET vdir = ? WHERE data = ?', direzione_dominante)
+        cur.execute('UPDATE Giornaliero SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
 
 
 def calcola_tabella_Pioggia(dal=None, al=None):

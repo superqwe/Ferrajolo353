@@ -86,15 +86,15 @@ if __name__ == '__main__':
     # al = datetime.datetime(2016, 12, 31, 23, 59)
     # ricerca_record_mancanti(dal, al, aggiungi=True)
 
-    """Popola la tabella Orario dai dati della tabella Raw"""
-    dal = datetime.datetime(2016, 1, 1)
-    al = datetime.datetime(2016, 2, 1)
-    calcola_tabella_Orario(dal, al)
+    # """Popola la tabella Orario dai dati della tabella Raw"""
+    # dal = datetime.datetime(2016, 1, 1)
+    # al = datetime.datetime(2016, 1, 3)
+    # calcola_tabella_Orario(dal, al)
 
     # """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
-    # dal = datetime.datetime(2016, 1, 1)
-    # al = datetime.datetime(2017, 1, 1)
-    # calcola_tabella_Giornaliero(dal, al)
+    dal = datetime.datetime(2016, 1, 1)
+    al = datetime.datetime(2017, 1, 1)
+    calcola_tabella_Giornaliero(dal, al)
 
     # """Popola la tabella Pioggia"""
     # dal = datetime.datetime(2016, 1, 1)

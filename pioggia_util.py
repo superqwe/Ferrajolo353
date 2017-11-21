@@ -48,8 +48,6 @@ def pioggia_per_tabella_oraria(dal, al):
             mm = cur.execute(cmd).fetchone()[0]
 
             if mm:
-                # print('\n', mm)
-
                 cmd = """
                 SELECT data, mm
                 FROM Raw
@@ -66,7 +64,6 @@ def pioggia_per_tabella_oraria(dal, al):
                 durata = 0
 
             dati.append([mm, durata, dal])
-            # dati.append([mm, durata])
 
             dal += DT_ORA
 
