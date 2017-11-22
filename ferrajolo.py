@@ -19,6 +19,7 @@ def resetta_db():
     db = DB.DB()
     db.resetta()
 
+
 def carica_eliofania(file_input):
     dati = csv_util.eliofania_da_sun_ephemeris(file_input, True)
     db_util.inserisci_eliofania(dati)
@@ -52,14 +53,21 @@ def calcola_tabella_Giornaliero(dal=None, al=None):
     db_util.calcola_tabella_Giornaliero(dal, al)
     print('\nTabella Giornaliero popolata dal %s al %s' % (dal, al))
 
+
 def calcola_tabella_Mensile(dal, al):
     db_util.calcola_tabella_Mensile(dal, al)
     print('\nTabella Mensile popolata dal %s al %s' % (dal, al))
 
 
+def calcola_tabella_Annuale(dal, al):
+    db_util.calcola_tabella_Annuale(dal, al)
+    print('\nTabella Annuale popolata dal %s al %s' % (dal, al))
+
+
 def calcola_tabella_Pioggia(dal, al):
     db_util.calcola_tabella_Pioggia(dal, al)
     print('\nTabella Pioggia popolata dal %s al %s' % (dal, al))
+
 
 if __name__ == '__main__':
     # """redige bollettini per il mese indicato."""
@@ -105,7 +113,10 @@ if __name__ == '__main__':
     al = datetime.datetime(2017, 1, 1)
     calcola_tabella_Mensile(dal, al)
 
-
+    """Popola la tabella Annuale dai dati della tabella Raw (vvel, vdir) e Mensile"""
+    dal = datetime.datetime(2016, 1, 1)
+    al = datetime.datetime(2017, 1, 1)
+    # calcola_tabella_Annuale(dal, al)
 
     # """Popola la tabella Pioggia"""
     # dal = datetime.datetime(2016, 1, 1)

@@ -6,6 +6,9 @@ CALMA = 5 / 3.6
 
 
 def direzione_dominante(dati_in, discretizzazione=''):
+    def ordina_per_data(x):
+        return x[1]
+
     dati = {}
 
     if discretizzazione == 'giornaliero':
@@ -61,5 +64,5 @@ def direzione_dominante(dati_in, discretizzazione=''):
 
         dir_dominate.append((direzioni[0][1], data))
 
-    dir_dominate.sort()
+    dir_dominate.sort(key=ordina_per_data)
     return dir_dominate
