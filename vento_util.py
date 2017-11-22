@@ -57,6 +57,7 @@ def direzione_dominante(dati_in, discretizzazione=''):
                      (ldirezioni.count('NE'), 'NE')
                      ]
         direzioni.sort(reverse=True)
+        # pp(direzioni)
 
         dir_dominate.append((direzioni[0][1], data))
 

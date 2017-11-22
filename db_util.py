@@ -165,6 +165,38 @@ def calcola_tabella_Giornaliero(dal=None, al=None):
         cur.execute('UPDATE Giornaliero SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
 
 
+def calcola_tabella_Mensile(dal=None, al=None):
+    # todo: verificare che la pioggia registrata alle ore 00.00 del primo giorno del mese sia attribuita al
+    # mese giusto
+    cmd = """
+    SELECT strftime('%Y-%m', data), AVG(t), MIN(tmin), MAX(tmax), AVG(pres), SUM(mm), SUM(durata), AVG(ur),
+           SUM(eliof), SUM(pir), AVG(vvel)
+    FROM Giornaliero
+    WHERE data
+    BETWEEN '{dal}' AND '{al}'
+    GROUP BY strftime('%Y-%m', data)
+    """.format(dal=dal, al=al)
+
+    cmd_vento = """
+    SELECT strftime('%Y-%m', data), vvel, vdir
+    FROM Raw
+    WHERE data
+    BETWEEN '{dal}' AND '{al}'
+    """.format(dal=dal, al=al)
+
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+        dati = cur.execute(cmd).fetchall()
+        # pp(dati)
+
+        dati_vento = cur.execute(cmd_vento).fetchall()
+        direzione_dominante = vento_util.direzione_dominante(dati_vento, discretizzazione='giornaliero')
+        # pp(direzione_dominante)
+
+        cur.executemany('INSERT INTO Mensile VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null)', dati)
+        cur.executemany('UPDATE Mensile SET vdir = ? WHERE data = ?', direzione_dominante)
+        cur.execute('UPDATE Mensile SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
+
 def calcola_tabella_Pioggia(dal=None, al=None):
     dati = interroga('Raw', dal, al, campi=['data', 'mm'])
     pioggia = pioggia_util.Pioggia(dati)
