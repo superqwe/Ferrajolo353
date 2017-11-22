@@ -109,14 +109,14 @@ if __name__ == '__main__':
     # calcola_tabella_Giornaliero(dal, al)
 
     """Popola la tabella Mensile dai dati della tabella Raw (vvel, vdir) e Giornaliero"""
-    dal = datetime.datetime(2016, 1, 1)
-    al = datetime.datetime(2017, 1, 1)
-    calcola_tabella_Mensile(dal, al)
+    # dal = datetime.datetime(2016, 1, 1)
+    # al = datetime.datetime(2017, 1, 1)
+    # calcola_tabella_Mensile(dal, al)
 
     """Popola la tabella Annuale dai dati della tabella Raw (vvel, vdir) e Mensile"""
     dal = datetime.datetime(2016, 1, 1)
     al = datetime.datetime(2017, 1, 1)
-    # calcola_tabella_Annuale(dal, al)
+    calcola_tabella_Annuale(dal, al)
 
     # """Popola la tabella Pioggia"""
     # dal = datetime.datetime(2016, 1, 1)
