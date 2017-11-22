@@ -1,12 +1,12 @@
 # 20.11.17: rev 0
-import datetime
-from pprint import pprint as pp
 import sqlite3 as lite
+from pprint import pprint as pp
+
 from costanti import *
 
 
 class Pioggia(object):
-    def __init__(self, dati=[], *args, **kwargs):
+    def __init__(self, dati=[]):
         self.dati = dati
 
     def calcola_pioggia(self, dal, al):
@@ -34,7 +34,7 @@ def pioggia_per_tabella_oraria(dal, al):
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
 
-        n = int(DT_PIOGGIA.seconds / 60 / 10)
+        # n = int(DT_PIOGGIA.seconds / 60 / 10)
 
         dati = []
         while dal <= al:
@@ -78,6 +78,7 @@ def prova():
     dati = db_util.interroga('Raw', dal, al, ['data', 'mm'])
     pioggia = Pioggia(dati)
     lpioggia = pioggia.calcola_pioggia(dal, dal + datetime.timedelta(days=1))
+    pp(lpioggia)
 
 
 if __name__ == '__main__':

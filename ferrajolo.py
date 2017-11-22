@@ -2,12 +2,9 @@
 
 from pprint import pprint as pp
 
-import datetime
-
 import csv_util
 import db as DB
 import db_util
-import pioggia_util
 
 
 def crea_db():
@@ -27,7 +24,7 @@ def carica_eliofania(file_input):
     print('\nDati inseriti nella tabella Eliofania')
 
 
-def carica_raw(file_input, popola_errori=False):
+def carica_raw(file_input):
     dati, errori = csv_util.leggi_csv(file_input)
     db_util.carica_raw(dati, popola_errori=errori)
     print('\nDati del file %s inseriti nella tabella Raw' % file_input)
@@ -44,28 +41,28 @@ def ricerca_record_mancanti(dal=None, al=None, aggiungi=True):
     pp(record)
 
 
-def calcola_tabella_Orario(dal=None, al=None):
-    db_util.calcola_tabella_Orario(dal, al)
+def calcola_tabella_orario(dal=None, al=None):
+    db_util.calcola_tabella_orario(dal, al)
     print('\nTabella Orario popolata dal %s al %s' % (dal, al))
 
 
-def calcola_tabella_Giornaliero(dal=None, al=None):
-    db_util.calcola_tabella_Giornaliero(dal, al)
+def calcola_tabella_giornaliero(dal=None, al=None):
+    db_util.calcola_tabella_giornaliero(dal, al)
     print('\nTabella Giornaliero popolata dal %s al %s' % (dal, al))
 
 
-def calcola_tabella_Mensile(dal, al):
-    db_util.calcola_tabella_Mensile(dal, al)
+def calcola_tabella_mensile(dal, al):
+    db_util.calcola_tabella_mensile(dal, al)
     print('\nTabella Mensile popolata dal %s al %s' % (dal, al))
 
 
-def calcola_tabella_Annuale(dal, al):
-    db_util.calcola_tabella_Annuale(dal, al)
+def calcola_tabella_annuale(dal, al):
+    db_util.calcola_tabella_annuale(dal, al)
     print('\nTabella Annuale popolata dal %s al %s' % (dal, al))
 
 
-def calcola_tabella_Pioggia(dal, al):
-    db_util.calcola_tabella_Pioggia(dal, al)
+def calcola_tabella_pioggia(dal, al):
+    db_util.calcola_tabella_pioggia(dal, al)
     print('\nTabella Pioggia popolata dal %s al %s' % (dal, al))
 
 
@@ -87,7 +84,7 @@ if __name__ == '__main__':
     popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
     """
     # fin = '2016a.txt'
-    # carica_raw(fin, popola_errori=False)
+    # carica_raw(fin)
 
     # """Prepopola la tabella Raw"""
     # anno = 2018
@@ -101,27 +98,24 @@ if __name__ == '__main__':
     """Popola la tabella Orario dai dati della tabella Raw"""
     # dal = datetime.datetime(2016, 1, 1)
     # al = datetime.datetime(2017, 1, 1)
-    # calcola_tabella_Orario(dal, al)
+    # calcola_tabella_orario(dal, al)
 
     """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
     # dal = datetime.datetime(2016, 1, 1)
     # al = datetime.datetime(2017, 1, 1)
-    # calcola_tabella_Giornaliero(dal, al)
+    # calcola_tabella_giornaliero(dal, al)
 
     """Popola la tabella Mensile dai dati della tabella Raw (vvel, vdir) e Giornaliero"""
     # dal = datetime.datetime(2016, 1, 1)
     # al = datetime.datetime(2017, 1, 1)
-    # calcola_tabella_Mensile(dal, al)
+    # calcola_tabella_mensile(dal, al)
 
     """Popola la tabella Annuale dai dati della tabella Raw (vvel, vdir) e Mensile"""
-    dal = datetime.datetime(2016, 1, 1)
-    al = datetime.datetime(2017, 1, 1)
-    calcola_tabella_Annuale(dal, al)
+    # dal = datetime.datetime(2016, 1, 1)
+    # al = datetime.datetime(2017, 1, 1)
+    # calcola_tabella_annuale(dal, al)
 
     # """Popola la tabella Pioggia"""
     # dal = datetime.datetime(2016, 1, 1)
     # al = datetime.datetime(2017, 1, 1)
-    # calcola_tabella_Pioggia(dal, al)
-
-
-    pass
+    # calcola_tabella_pioggia(dal, al)

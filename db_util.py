@@ -123,7 +123,7 @@ def interroga(tabella, dal, al, campi=None, orari=False, flat=False):
     return dati
 
 
-def calcola_tabella_Orario(dal=None, al=None):
+def calcola_tabella_orario(dal=None, al=None):
     risultato = interroga('Raw', dal, al, campi='*', orari=True)
 
     piogge = pioggia_util.pioggia_per_tabella_oraria(dal, al)
@@ -135,7 +135,7 @@ def calcola_tabella_Orario(dal=None, al=None):
         cur.executemany('UPDATE Orario SET mm = ?, durata = ? WHERE data = ?', piogge)
 
 
-def calcola_tabella_Giornaliero(dal=None, al=None):
+def calcola_tabella_giornaliero(dal=None, al=None):
     # todo: verificare che la pioggia registrata alle ore 00.00 sia attribuita al giorno giusto
     cmd = """
     SELECT DATE(data), AVG(t), MIN(tmin), MAX(tmax), AVG(pres), SUM(mm), SUM(durata), AVG(ur), SUM(eliof), 
@@ -165,7 +165,7 @@ def calcola_tabella_Giornaliero(dal=None, al=None):
         cur.execute('UPDATE Giornaliero SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
 
 
-def calcola_tabella_Mensile(dal=None, al=None):
+def calcola_tabella_mensile(dal=None, al=None):
     # todo: verificare che la pioggia registrata alle ore 00.00 del primo giorno del mese sia attribuita al
     # mese giusto
     cmd = """
@@ -198,7 +198,7 @@ def calcola_tabella_Mensile(dal=None, al=None):
         cur.execute('UPDATE Mensile SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
 
 
-def calcola_tabella_Annuale(dal=None, al=None):
+def calcola_tabella_annuale(dal=None, al=None):
     # todo: verificare che la pioggia registrata alle ore 00.00 del primo giorno del mese sia attribuita al
     # mese giusto
     cmd = """
@@ -229,7 +229,7 @@ def calcola_tabella_Annuale(dal=None, al=None):
         cur.execute('UPDATE Annuale SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
 
 
-def calcola_tabella_Pioggia(dal=None, al=None):
+def calcola_tabella_pioggia(dal=None, al=None):
     dati = interroga('Raw', dal, al, campi=['data', 'mm'])
     pioggia = pioggia_util.Pioggia(dati)
     risultato = pioggia.calcola_pioggia(dal, al)

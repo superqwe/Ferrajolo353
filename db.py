@@ -1,10 +1,7 @@
 # 16.11.17: rev 0
 
-import datetime
 import os
 import sqlite3 as lite
-
-from pprint import pprint as pp
 
 from costanti import NOME_DB
 
