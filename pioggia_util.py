@@ -6,6 +6,7 @@ from costanti import *
 
 
 class Pioggia(object):
+    # todo: trasformare la classe in funzione
     def __init__(self, dati=[]):
         self.dati = dati
 

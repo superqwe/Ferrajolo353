@@ -136,13 +136,12 @@ def calcola_tabella_orario(dal=None, al=None):
 
 
 def calcola_tabella_giornaliero(dal=None, al=None):
-    # todo: verificare che la pioggia registrata alle ore 00.00 sia attribuita al giorno giusto
     cmd = """
-    SELECT DATE(data), AVG(t), MIN(tmin), MAX(tmax), AVG(pres), SUM(mm), SUM(durata), AVG(ur), SUM(eliof), 
-    SUM(pir), AVG(vvel)
+    SELECT DATE(data,'-10 minutes'), AVG(t), MIN(tmin), MAX(tmax), AVG(pres), SUM(mm), SUM(durata), AVG(ur), 
+           SUM(eliof), SUM(pir), AVG(vvel)
     FROM Orario
     WHERE data
-    BETWEEN '{dal}' AND '{al}'
+    BETWEEN datetime('{dal}','+10 minutes') AND '{al}'
     GROUP BY DATE(data)
     """.format(dal=dal, al=al)
 

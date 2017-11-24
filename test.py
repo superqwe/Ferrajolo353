@@ -4,6 +4,11 @@ import unittest
 from vento_util import direzione_dominante
 
 
+# class test_pioggia_util(unittest.TestCase):
+#     def test_calcola_tabella_giornaliero(self):
+#         pass
+
+
 class test_vento_util(unittest.TestCase):
     def test_direzione_dominante(self):
         dati_vento = [
@@ -70,10 +75,11 @@ class test_vento_util(unittest.TestCase):
         ]
 
         discretizzazione = 'giornaliero'
-        risultato = [('N', '2016-01-01'), ('N', '2016-01-02'),('O', '2016-01-03')]
+        risultato = [('N', '2016-01-01'), ('N', '2016-01-02'), ('O', '2016-01-03')]
 
         result = direzione_dominante(dati_vento, discretizzazione)
         self.assertEqual(risultato, result)
+
 
 if __name__ == '__main__':
     unittest.main()
