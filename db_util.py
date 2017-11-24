@@ -157,7 +157,7 @@ def calcola_tabella_giornaliero(dal=None, al=None):
         dati = cur.execute(cmd).fetchall()
 
         dati_vento = cur.execute(cmd_vento).fetchall()
-        direzione_dominante = vento_util.direzione_dominante(dati_vento, discretizzazione='giornaliero')
+        direzione_dominante = vento_util.direzione_dominante(dati_vento)
 
         cur.executemany('INSERT INTO Giornaliero VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null)', dati)
         cur.executemany('UPDATE Giornaliero SET vdir = ? WHERE data = ?', direzione_dominante)
@@ -190,7 +190,7 @@ def calcola_tabella_mensile(dal=None, al=None):
         dati = cur.execute(cmd).fetchall()
 
         dati_vento = cur.execute(cmd_vento).fetchall()
-        direzione_dominante = vento_util.direzione_dominante(dati_vento, discretizzazione='giornaliero')
+        direzione_dominante = vento_util.direzione_dominante(dati_vento)
 
         cur.executemany('INSERT INTO Mensile VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null)', dati)
         cur.executemany('UPDATE Mensile SET vdir = ? WHERE data = ?', direzione_dominante)
@@ -221,7 +221,7 @@ def calcola_tabella_annuale(dal=None, al=None):
         dati = cur.execute(cmd).fetchall()
 
         dati_vento = cur.execute(cmd_vento).fetchall()
-        direzione_dominante = vento_util.direzione_dominante(dati_vento, discretizzazione='giornaliero')
+        direzione_dominante = vento_util.direzione_dominante(dati_vento)
 
         cur.executemany('INSERT INTO Annuale VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null)', dati)
         cur.executemany('UPDATE Annuale SET vdir = ? WHERE data = ?', direzione_dominante)

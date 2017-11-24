@@ -5,21 +5,21 @@ from pprint import pprint as pp
 CALMA = 5 / 3.6
 
 
-def direzione_dominante(dati_in, discretizzazione=''):
+def direzione_dominante(dati_in, discretizzazione=True):
     """
     Calcola la direzione dominante per i giorni dati escludendo i record con velocità <= CALMA o None
+    
     :param dati_in: [(data1, vel11, dir11), (data1, vel12, dir12), ..., (data2, vel21, dir22),...]
-    :param discretizzazione: 'giornaliero' 
+    :param discretizzazione: se True calcola la direzione dominate per data 
     :return: [(direzione_dominate1, data1), (direzione_dominate2, data2), ...]
     """
 
-    # todo: eliminare parameteo discretizzazione
     def ordina_per_data(x):
         return x[1]
 
     dati = {}
 
-    if discretizzazione == 'giornaliero':
+    if discretizzazione:
 
         for data, vel, direzione in dati_in:
 
