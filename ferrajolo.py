@@ -2,6 +2,8 @@
 
 from pprint import pprint as pp
 
+import datetime
+
 import csv_util
 import db as DB
 import db_util
@@ -85,6 +87,10 @@ if __name__ == '__main__':
     """
     # fin = '2016a.txt'
     # carica_raw(fin)
+
+    # for x in range(2, 7):
+    #     fin = '201%ia.txt' % x
+    #     carica_raw(fin)
 
     # """Prepopola la tabella Raw"""
     # anno = 2018

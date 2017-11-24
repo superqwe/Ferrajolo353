@@ -12,6 +12,7 @@ class DB(object):
         self.cur = self.db.cursor()
 
     def crea_db(self):
+        #todo: aggiungere vento filato ed eliofania relativa nelle tabelle da orario in su
         try:
             cmd = """CREATE TABLE Raw(data TIMESTAMP NOT NULL,
                                       t FLOAT,

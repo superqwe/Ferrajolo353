@@ -1,12 +1,19 @@
 # 23.11.17: rev0
+import datetime
 import unittest
+from pprint import pprint as pp
 
-from vento_util import direzione_dominante
+import pioggia_util
+import vento_util
 
 
-# class test_pioggia_util(unittest.TestCase):
-#     def test_calcola_tabella_giornaliero(self):
-#         pass
+class test_pioggia_util(unittest.TestCase):
+    def test_pioggia_per_tabella_oraria(self):
+        dal = datetime.datetime(2012, 1, 6,10)
+        al = datetime.datetime(2012, 1, 6,13)
+
+        risultato = pioggia_util.pioggia_per_tabella_oraria(dal, al)
+        pp(risultato)
 
 
 class test_vento_util(unittest.TestCase):
@@ -75,10 +82,10 @@ class test_vento_util(unittest.TestCase):
         ]
 
         discretizzazione = 'giornaliero'
-        risultato = [('N', '2016-01-01'), ('N', '2016-01-02'), ('O', '2016-01-03')]
+        risultato_atteso = [('N', '2016-01-01'), ('N', '2016-01-02'), ('O', '2016-01-03')]
 
-        result = direzione_dominante(dati_vento, discretizzazione)
-        self.assertEqual(risultato, result)
+        result = vento_util.direzione_dominante(dati_vento, discretizzazione)
+        self.assertEqual(risultato_atteso, result, 'test direzione dominante ok')
 
 
 if __name__ == '__main__':

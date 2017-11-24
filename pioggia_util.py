@@ -32,6 +32,16 @@ class Pioggia(object):
 
 
 def pioggia_per_tabella_oraria(dal, al):
+    """
+    Calcola la pioggia caduta nell'ora
+    :param dal:
+    :param al:
+    :return: [[mm1, durata1, pioggia_nell_ora1], ...]
+    daurata è in minuti
+    pioggia_nell_ora è datetime.datetime
+    """
+
+    # todo: calcolare durata con piogge contigue
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
 

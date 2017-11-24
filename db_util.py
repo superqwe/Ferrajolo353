@@ -126,9 +126,9 @@ def interroga(tabella, dal, al, campi=None, orari=False, flat=False):
 def calcola_tabella_orario(dal=None, al=None):
     risultato = interroga('Raw', dal, al, campi='*', orari=True)
 
+
     piogge = pioggia_util.pioggia_per_tabella_oraria(dal, al)
 
-    # todo: calcolare durata con piogge contigue
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
         cur.executemany('INSERT INTO Orario VALUES (?, ?, ?, ?, ?, ?, null, ?, ?, ?, ?, ?)', risultato)
