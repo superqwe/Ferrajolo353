@@ -6,6 +6,14 @@ CALMA = 5 / 3.6
 
 
 def direzione_dominante(dati_in, discretizzazione=''):
+    """
+    Calcola la direzione dominante per i giorni dati escludendo i record con velocità <= CALMA o None
+    :param dati_in: [(data1, vel11, dir11), (data1, vel12, dir12), ..., (data2, vel21, dir22),...]
+    :param discretizzazione: 'giornaliero' 
+    :return: [(direzione_dominate1, data1), (direzione_dominate2, data2), ...]
+    """
+
+    # todo: eliminare parameteo discretizzazione
     def ordina_per_data(x):
         return x[1]
 
