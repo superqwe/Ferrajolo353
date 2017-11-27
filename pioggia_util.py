@@ -45,6 +45,52 @@ def pioggia_per_tabella_oraria(dal, al):
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
 
+        cmd = """
+        SELECT dalle, alle
+        FROM Pioggia
+        WHERE dalle >= '{dal}' AND
+              alle <= '{al}'
+        """.format(dal=dal,
+                   al=al)
+
+        lista_piogge = cur.execute(cmd).fetchall()
+        pp(lista_piogge)
+        print()
+
+        dati = []
+        for inizio, fine in lista_piogge:
+            inizio = datetime.datetime.strptime(inizio, DATETIME_PF) + DT
+            fine = datetime.datetime.strptime(fine, DATETIME_PF)
+
+            da = inizio
+            a = datetime.datetime(inizio.year, inizio.month, inizio.day, inizio.hour, minute=50) + DT
+
+            if a > fine:
+                a = fine
+
+            mm = 0
+            durata = (a - da + DT).seconds / 60
+            ora = datetime.datetime(a.year, a.month, a.day, a.hour) + DT_ORA
+            dati.append((mm, durata, ora))
+
+            da += datetime.timedelta(hours=1)
+            da = datetime.datetime(da.year, da.month, da.day, da.hour, minute=10)
+            a = da + datetime.timedelta(minutes=50)
+
+            while da <= fine:
+                if a > fine:
+                    a = fine
+
+                mm = 0
+                durata = (a - da + DT).seconds / 60
+                ora = datetime.datetime(a.year, a.month, a.day, a.hour) + DT_ORA
+                dati.append((mm, durata, ora))
+
+                da += datetime.timedelta(hours=1)
+                a = da + datetime.timedelta(minutes=50)
+
+        return dati
+
         # n = int(DT_PIOGGIA.seconds / 60 / 10)
 
         dati = []

@@ -9,11 +9,12 @@ import vento_util
 
 class test_pioggia_util(unittest.TestCase):
     def test_pioggia_per_tabella_oraria(self):
-        dal = datetime.datetime(2012, 1, 6,10)
-        al = datetime.datetime(2012, 1, 6,13)
+        dal = datetime.datetime(2012, 1, 6)
+        al = datetime.datetime(2012, 1, 7)
 
         risultato = pioggia_util.pioggia_per_tabella_oraria(dal, al)
         pp(risultato)
+        self.assertEqual(True, True)
 
 
 class test_vento_util(unittest.TestCase):

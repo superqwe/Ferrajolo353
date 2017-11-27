@@ -122,6 +122,6 @@ if __name__ == '__main__':
     # calcola_tabella_annuale(dal, al)
 
     # """Popola la tabella Pioggia"""
-    # dal = datetime.datetime(2016, 1, 1)
+    # dal = datetime.datetime(2012, 1, 1)
     # al = datetime.datetime(2017, 1, 1)
     # calcola_tabella_pioggia(dal, al)

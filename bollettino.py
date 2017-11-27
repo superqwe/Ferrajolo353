@@ -157,7 +157,7 @@ class Bollettino(object):
                          for dt in self.__dati
                          if dt19gp < dt <= dt19 and self.__dati[dt]['eliof']]) / 60
 
-            # todo: da chiarire se l'eliofania è dalle 19-19 o dalle 0-24 --- ora è 19-19
+            # todo: da chiarire se la radiazione globale è dalle 19-19 o dalle 0-24 --- ora è 19-19
             # 1 watt = 14.33075379765 cal/min
             # 1 m2 = 10000 cm2
             # 1 W/m2 = 00014.33075379765/10000 Cal/cm2/min = 0.001433075379765 Cal/cm2/min
