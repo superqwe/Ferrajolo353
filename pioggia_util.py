@@ -2,6 +2,7 @@
 import sqlite3 as lite
 from pprint import pprint as pp
 
+import util
 from costanti import *
 
 
@@ -41,57 +42,8 @@ def pioggia_per_tabella_oraria(dal, al):
     pioggia_nell_ora è datetime.datetime
     """
 
-    # todo: calcolare durata con piogge contigue
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
-
-        cmd = """
-        SELECT dalle, alle
-        FROM Pioggia
-        WHERE dalle >= '{dal}' AND
-              alle <= '{al}'
-        """.format(dal=dal,
-                   al=al)
-
-        lista_piogge = cur.execute(cmd).fetchall()
-        pp(lista_piogge)
-        print()
-
-        dati = []
-        for inizio, fine in lista_piogge:
-            inizio = datetime.datetime.strptime(inizio, DATETIME_PF) + DT
-            fine = datetime.datetime.strptime(fine, DATETIME_PF)
-
-            da = inizio
-            a = datetime.datetime(inizio.year, inizio.month, inizio.day, inizio.hour, minute=50) + DT
-
-            if a > fine:
-                a = fine
-
-            mm = 0
-            durata = (a - da + DT).seconds / 60
-            ora = datetime.datetime(a.year, a.month, a.day, a.hour) + DT_ORA
-            dati.append((mm, durata, ora))
-
-            da += datetime.timedelta(hours=1)
-            da = datetime.datetime(da.year, da.month, da.day, da.hour, minute=10)
-            a = da + datetime.timedelta(minutes=50)
-
-            while da <= fine:
-                if a > fine:
-                    a = fine
-
-                mm = 0
-                durata = (a - da + DT).seconds / 60
-                ora = datetime.datetime(a.year, a.month, a.day, a.hour) + DT_ORA
-                dati.append((mm, durata, ora))
-
-                da += datetime.timedelta(hours=1)
-                a = da + datetime.timedelta(minutes=50)
-
-        return dati
-
-        # n = int(DT_PIOGGIA.seconds / 60 / 10)
 
         dati = []
         while dal <= al:
@@ -105,18 +57,9 @@ def pioggia_per_tabella_oraria(dal, al):
             mm = cur.execute(cmd).fetchone()[0]
 
             if mm:
-                cmd = """
-                SELECT data, mm
-                FROM Raw
-                WHERE data
-                BETWEEN '{da}' AND '{a}'
-                AND mm > 0.0
-                """.format(da=dal - DT_ORA + DT,
-                           a=dal)
+                # print('mm', mm)
 
-                risultati = cur.execute(cmd).fetchall()
-
-                durata = len(risultati) * 10
+                durata = durata_pioggia(cur, dal - DT_50MIN, dal)
             else:
                 durata = 0
 
@@ -125,6 +68,31 @@ def pioggia_per_tabella_oraria(dal, al):
             dal += DT_ORA
 
     return dati
+
+
+def durata_pioggia(cur, dal, al):
+    cmd = """
+    SELECT dalle, alle
+    FROM Pioggia
+    WHERE (dalle >= '{dal}' AND alle <= '{al}') OR 
+          (dalle <= '{dal}' AND alle >= '{dal}')
+          
+    
+    """.format(dal=dal,
+               al=al)
+
+    lista_piogge = cur.execute(cmd).fetchall()
+
+    durata = 0
+    for da, a in lista_piogge:
+        da = util.timestamp2datetime(da)
+        da = da if da >= dal - DT else dal - DT
+
+        a = util.timestamp2datetime(a)
+        a = a if a <= al else al
+        durata += (a - da).seconds / 60
+
+    return durata
 
 
 def prova():

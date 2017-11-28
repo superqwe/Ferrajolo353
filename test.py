@@ -4,17 +4,25 @@ import unittest
 from pprint import pprint as pp
 
 import pioggia_util
+import util
 import vento_util
 
 
 class test_pioggia_util(unittest.TestCase):
     def test_pioggia_per_tabella_oraria(self):
-        dal = datetime.datetime(2012, 1, 6)
-        al = datetime.datetime(2012, 1, 7)
+        # todo: da completare
+        dal = datetime.datetime(2012, 4, 16)
+        al = datetime.datetime(2012, 4, 17)
 
         risultato = pioggia_util.pioggia_per_tabella_oraria(dal, al)
-        pp(risultato)
-        self.assertEqual(True, True)
+        # self.assertEqual(True, True)
+
+
+class test_util(unittest.TestCase):
+    def test_timestamp2datetime(self):
+        atteso = datetime.datetime(2012, 4, 16, 8, 10)
+        risultato = util.timestamp2datetime('2012-04-16 08:10:00')
+        self.assertEqual(risultato, atteso)
 
 
 class test_vento_util(unittest.TestCase):
