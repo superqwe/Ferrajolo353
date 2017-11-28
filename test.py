@@ -3,9 +3,15 @@ import datetime
 import unittest
 from pprint import pprint as pp
 
+import bollettino
 import pioggia_util
 import util
 import vento_util
+
+
+class test_bollettino(unittest.TestCase):
+    def test_bollettino2(self):
+        bollettino.Bollettino2(2016, 1)
 
 
 class test_pioggia_util(unittest.TestCase):

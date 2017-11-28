@@ -2,15 +2,14 @@
 
 import calendar
 import csv
-import datetime
+import sqlite3 as lite
 import statistics
-
 from pprint import pprint as pp
 
 import eliofania
 import pdf
+from costanti import *
 
-# se tra un dato di pioggia rilevato ed un altro non supera questo tempo, allora la pioggia è continua
 DT_PIOGGIA = datetime.timedelta(minutes=30)
 # nome file di output
 FOUT_DECADALE = 'decadale.csv'
@@ -661,3 +660,47 @@ class Bollettino(object):
 
     def __bollettino_pioggia_pdf(self):
         pdf.bollettino_pioggia(anno=self.anno, mese=self.mese, dati=self.__dati_bollettino_pioggia)
+
+
+class Bollettino2(object):
+    def __init__(self, anno, mese):
+        self.anno = anno
+        self.mese = mese
+        self.dal = datetime.datetime(anno, mese, 1)
+
+        self.analizza_per_tabella_creaa()
+
+    def analizza_per_tabella_creaa(self):
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+
+            cmd_pres_t_ur = """
+            SELECT data, pres, t, ur
+            FROM Raw
+            WHERE data
+            BETWEEN '{dal}' AND datetime('{dal}', '+1 months')
+            AND (strftime('%H:%M', data) = '08:00' OR
+                 strftime('%H:%M', data) = '14:00' OR
+                 strftime('%H:%M', data) = '19:00')
+            """.format(dal=self.dal)
+            dati_pres_t_ur = cur.execute(cmd_pres_t_ur).fetchall()
+
+            ore8 = [x for x in dati_pres_t_ur[slice(0, len(dati_pres_t_ur), 3)]]
+            ore14 = [x for x in dati_pres_t_ur[slice(1, len(dati_pres_t_ur), 3)]]
+            ore19 = [x for x in dati_pres_t_ur[slice(2, len(dati_pres_t_ur), 3)]]
+
+            cmd_tmin_tmax = """
+            SELECT data, tmin, tmax
+            FROM Giornaliero
+            WHERE data
+            BETWEEN date('{dal}') AND date('{dal}', '+1 months', '-1 days')
+            """.format(dal=self.dal)
+            dati_tmin_tmax = cur.execute(cmd_tmin_tmax).fetchall()
+
+            for h8, h14, h19, tmmm in zip(ore8, ore14, ore19, dati_tmin_tmax):
+                pres = [h8[1], h14[1], h19[1]]
+                t = [h8[2], None, None, h14[2], None, None, h19[2], None, None]
+                ur = [h8[3], h14[3], h19[3], statistics.mean((h8[3], h14[3], h19[3]))]
+                t_min_tmax_tmedia = [tmmm[1], tmmm[2], (tmmm[1] + tmmm[2] + h8[2] + h19[2]) / 4.0]
+
+

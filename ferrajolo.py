@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
     """Popola la tabella Orario dai dati della tabella Raw"""
     # dal = datetime.datetime(2016, 1, 1)
-    # al = datetime.datetime(2017, 1, 1)
+    # al = datetime.datetime(2016, 2, 1)
     # calcola_tabella_orario(dal, al)
 
     """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
