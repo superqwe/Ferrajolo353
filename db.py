@@ -122,10 +122,10 @@ class DB(object):
                                                p19 FLOAT,
                                                ta8 FLOAT,
                                                tb8 FLOAT,
-                                               tv8 FLOAT
+                                               tv8 FLOAT,
                                                ta14 FLOAT,
                                                tb14 FLOAT,
-                                               tv14 FLOAT
+                                               tv14 FLOAT,
                                                ta19 FLOAT,
                                                tb19 FLOAT,
                                                tv19 FLOAT,
@@ -135,7 +135,7 @@ class DB(object):
                                                u_med FLOAT,
                                                tv_med FLOAT,
                                                t_min FLOAT,
-                                               tmax FLOAT,
+                                               t_max FLOAT,
                                                t_med FLOAT,
                                                mm8 FLOAT,
                                                mm14 FLOAT,

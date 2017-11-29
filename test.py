@@ -9,11 +9,6 @@ import util
 import vento_util
 
 
-# class test_bollettino(unittest.TestCase):
-#     def test_bollettino2(self):
-#         bollettino.Bollettino2(2016, 1)
-
-
 class test_pioggia_util(unittest.TestCase):
     def test_pioggia_per_tabella_oraria(self):
         # todo: da completare
@@ -25,6 +20,11 @@ class test_pioggia_util(unittest.TestCase):
 
 
 class test_util(unittest.TestCase):
+    def test_timestamp2date(self):
+        atteso = datetime.date(2012, 4, 16)
+        risultato = util.timestamp2date('2012-04-16 08:10:00')
+        self.assertEqual(risultato, atteso)
+
     def test_timestamp2datetime(self):
         atteso = datetime.datetime(2012, 4, 16, 8, 10)
         risultato = util.timestamp2datetime('2012-04-16 08:10:00')

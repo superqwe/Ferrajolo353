@@ -2,6 +2,7 @@ import datetime
 
 # parse/format datetime.datetime
 DATETIME_PF = '%Y-%m-%d %H:%M:%S'
+DATE_PF = '%Y-%m-%d'
 
 # intervalli di tempo
 DT = datetime.timedelta(minutes=10)
