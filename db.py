@@ -12,7 +12,7 @@ class DB(object):
         self.cur = self.db.cursor()
 
     def crea_db(self):
-        #todo: aggiungere vento filato ed eliofania relativa nelle tabelle da orario in su
+        # todo: aggiungere vento filato ed eliofania teorica e relativa nelle tabelle da orario in su
         try:
             cmd = """CREATE TABLE Raw(data TIMESTAMP NOT NULL,
                                       t FLOAT,
@@ -97,7 +97,6 @@ class DB(object):
                                             )"""
             self.cur.execute(cmd)
             self.db.commit()
-            # print('tabella creata: Eliofania')
         except lite.OperationalError:
             print('tabella esistente: Eliofania')
 
@@ -108,42 +107,80 @@ class DB(object):
                                            durata INT)"""
             self.cur.execute(cmd)
             self.db.commit()
-            # print('tabella creata: Pioggia')
         except lite.OperationalError:
             print('tabella esistente: Pioggia')
 
-    # def interroga(self, tabella, dal, al=None, campi=[], solo_orari=True):
-    #     if campi:
-    #         campi = list(campi)
-    #         campi.insert(0, 'data')
-    #         campi = ', '.join(campi)
-    #     else:
-    #         campi = '*'
-    #
-    #     if al:
-    #         al = datetime.datetime(al.year, al.month, al.day, 23, 59, 59)
-    #     else:
-    #         al = datetime.datetime(dal.year, dal.month, dal.day, 23, 59, 59)
-    #
-    #     if solo_orari:
-    #         solo_orari = """AND ( strftime('%M', data) = '00' OR
-    #                               strftime('%M', data) = '59')"""
-    #     else:
-    #         solo_orari = ''
-    #
-    #     cmd = """
-    #              SELECT {campi}
-    #              FROM {tabella}
-    #              WHERE data
-    #              BETWEEN '{dal}' AND '{al}'
-    #              {solo_orari}
-    #           """.format(campi=campi,
-    #                      tabella=tabella,
-    #                      dal=dal,
-    #                      al=al,
-    #                      solo_orari=solo_orari)
-    #
-    #     return self.cur.execute(cmd)
+    def crea_tabelle_bollettino_crea(self):
+        self.cur.execute('DROP TABLE IF EXISTS Bollettino1')
+        self.cur.execute('DROP TABLE IF EXISTS Bollettino2')
+
+        try:
+            cmd = """CREATE  TABLE Bollettino1(data DATE NOT NULL,
+                                               p8 FLOAT,
+                                               p14 FLOAT,
+                                               p19 FLOAT,
+                                               ta8 FLOAT,
+                                               tb8 FLOAT,
+                                               tv8 FLOAT
+                                               ta14 FLOAT,
+                                               tb14 FLOAT,
+                                               tv14 FLOAT
+                                               ta19 FLOAT,
+                                               tb19 FLOAT,
+                                               tv19 FLOAT,
+                                               u8 FLOAT,
+                                               u14 FLOAT,
+                                               u19 FLOAT,
+                                               u_med FLOAT,
+                                               tv_med FLOAT,
+                                               t_min FLOAT,
+                                               tmax FLOAT,
+                                               t_med FLOAT,
+                                               mm8 FLOAT,
+                                               mm14 FLOAT,
+                                               mm19 FLOAT,
+                                               mm_tot FLOAT,
+                                               h_h INT,
+                                               h_m INT,
+                                               mm_max FLOAT,
+                                               h_max INT,
+                                               n1  FLOAT,
+                                               n2 FLOAT
+                                               )"""
+            self.cur.execute(cmd)
+            self.db.commit()
+        except lite.OperationalError:
+            print('tabella esistente: Bollettino1')
+
+        try:
+            cmd = """CREATE  TABLE Bollettino2(data DATE NOT NULL,
+                                               vd8 TEXT,
+                                               vv8 FLOAT,
+                                               vd14 TEXT,
+                                               vv14 FLOAT,
+                                               vd19 TEXT,
+                                               vv19 FLOAT,
+                                               km_tot FLOAT,
+                                               km_med FLOAT,
+                                               v_max FLOAT,
+                                               h_v_max INT,
+                                               n8 INT,
+                                               n_tipo8 TEXT,
+                                               n14 INT,
+                                               n_tipo14 TEXT,
+                                               n19 INT,
+                                               n_tipo19 TEXT,
+                                               n_tot FLOAT,
+                                               smc FLOAT,
+                                               e FLOAT,
+                                               r  FLOAT,
+                                               s TEXT,
+                                               s_t  FLOAT
+                                               )"""
+            self.cur.execute(cmd)
+            self.db.commit()
+        except lite.OperationalError:
+            print('tabella esistente: Bollettino2')
 
     def resetta(self):
         self.db.close()
@@ -152,8 +189,35 @@ class DB(object):
         self.__init__()
         self.crea_db()
 
-
-if __name__ == '__main__':
-    db = DB()
-    db.crea_db()
-    # db.ricrea_db()
+        # def interroga(self, tabella, dal, al=None, campi=[], solo_orari=True):
+        #     if campi:
+        #         campi = list(campi)
+        #         campi.insert(0, 'data')
+        #         campi = ', '.join(campi)
+        #     else:
+        #         campi = '*'
+        #
+        #     if al:
+        #         al = datetime.datetime(al.year, al.month, al.day, 23, 59, 59)
+        #     else:
+        #         al = datetime.datetime(dal.year, dal.month, dal.day, 23, 59, 59)
+        #
+        #     if solo_orari:
+        #         solo_orari = """AND ( strftime('%M', data) = '00' OR
+        #                               strftime('%M', data) = '59')"""
+        #     else:
+        #         solo_orari = ''
+        #
+        #     cmd = """
+        #              SELECT {campi}
+        #              FROM {tabella}
+        #              WHERE data
+        #              BETWEEN '{dal}' AND '{al}'
+        #              {solo_orari}
+        #           """.format(campi=campi,
+        #                      tabella=tabella,
+        #                      dal=dal,
+        #                      al=al,
+        #                      solo_orari=solo_orari)
+        #
+        #     return self.cur.execute(cmd)
