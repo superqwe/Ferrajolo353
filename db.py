@@ -13,6 +13,7 @@ class DB(object):
 
     def crea_db(self):
         # todo: aggiungere vento filato ed eliofania teorica e relativa nelle tabelle da orario in su
+        # todo: sostituire TIMESTAMP con DATETIME
         try:
             cmd = """CREATE TABLE Raw(data TIMESTAMP NOT NULL,
                                       t FLOAT,

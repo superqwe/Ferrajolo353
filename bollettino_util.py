@@ -1,7 +1,9 @@
 # 29.11.17 rev0
 import calendar
 import sqlite3 as lite
+import statistics
 
+import util
 from costanti import *
 
 
