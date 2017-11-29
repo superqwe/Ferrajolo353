@@ -30,6 +30,11 @@ class test_util(unittest.TestCase):
         risultato = util.timestamp2datetime('2012-04-16 08:10:00')
         self.assertEqual(risultato, atteso)
 
+    def test_minuti2ore_minuti(self):
+        atteso = (5, 10)
+        risultato = util.minuti2ore_minuti(60 * 5 + 10)
+        self.assertEqual(risultato, atteso)
+
 
 class test_vento_util(unittest.TestCase):
     def test_direzione_dominante(self):

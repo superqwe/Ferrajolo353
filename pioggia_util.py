@@ -76,8 +76,6 @@ def durata_pioggia(cur, dal, al):
     FROM Pioggia
     WHERE (dalle >= '{dal}' AND alle <= '{al}') OR 
           (dalle <= '{dal}' AND alle >= '{dal}')
-          
-    
     """.format(dal=dal,
                al=al)
 
