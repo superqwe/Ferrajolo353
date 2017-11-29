@@ -4,6 +4,7 @@ from pprint import pprint as pp
 
 import datetime
 
+import bollettino
 import csv_util
 import db as DB
 import db_util
@@ -67,6 +68,9 @@ def calcola_tabella_pioggia(dal, al):
     db_util.calcola_tabella_pioggia(dal, al)
     print('\nTabella Pioggia popolata dal %s al %s' % (dal, al))
 
+def bollettino_crea(anno, mese):
+    bollettini = bollettino.Bollettino2
+
 
 if __name__ == '__main__':
     # """redige bollettini per il mese indicato."""
@@ -125,3 +129,7 @@ if __name__ == '__main__':
     # dal = datetime.datetime(2012, 1, 1)
     # al = datetime.datetime(2017, 1, 1)
     # calcola_tabella_pioggia(dal, al)
+
+    """Bollettino CREA"""
+    anno =2016
+    mese=1
