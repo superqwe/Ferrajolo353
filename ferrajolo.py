@@ -69,6 +69,9 @@ def calcola_tabella_pioggia(dal, al):
 
 def bollettino_crea(anno, mese):
     bollettino = bollettino_util.Bollettino(anno, mese)
+    bollettino.crea_tabella_crea()
+    # bollettino.xls_crea()
+    print('%i-%02i.csv scritto' % (anno, mese))
 
 
 if __name__ == '__main__':
@@ -132,4 +135,4 @@ if __name__ == '__main__':
     """Bollettino CREA"""
     anno = 2016
     mese = 1
-    bollettino_crea(anno, mese)
+    bollettino = bollettino_crea(anno, mese)

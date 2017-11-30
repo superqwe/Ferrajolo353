@@ -19,9 +19,9 @@ class Bollettino(object):
         self.ngiorni = calendar.monthrange(anno, mese)[1]
         self.dal = datetime.datetime(anno, mese, 1)
 
-        self.analizza_per_tabella_creaa()
+        # self.crea_tabella_crea()
 
-    def analizza_per_tabella_creaa(self):
+    def crea_tabella_crea(self):
         cur = self.db.cur
         db = self.db.db
 
@@ -168,7 +168,7 @@ class Bollettino(object):
                             datetime('{giorno}', 'start of day', '+19 hours') 
                     """.format(giorno=day)
             dati = cur.execute(cmd).fetchall()[0]
-            ora_max, mm_max = dati if dati[1] else ('', None)
+            ora_max, mm_max = (util.timestamp2time(dati[0]).hour, dati[1]) if dati[1] else (None, None)
 
             rec = [dati_mm8[0],
                    dati_mm8[1],
@@ -177,8 +177,8 @@ class Bollettino(object):
                    totale,
                    ore,
                    minuti,
-                   ora_max,
                    mm_max,
+                   ora_max,
                    ]
 
             mm.append(rec)
@@ -213,7 +213,7 @@ class Bollettino(object):
             vmax, ora = max(dati)
 
             ora = util.timestamp2time(ora)
-            ora = ora.hour +1 if ora.minute else ora.hour
+            ora = ora.hour + 1 if ora.minute else ora.hour
 
             rec = (day, km_tot, km_media, vmax, ora)
             vento.append(rec)
@@ -242,3 +242,30 @@ class Bollettino(object):
             e_r.append(dati)
 
         return e_r
+
+    def xls_crea(self):
+        cur = self.db.cur
+
+        cmd = """
+        SELECT *
+        FROM Bollettino1
+        WHERE strftime('%d', data) BETWEEN '01' AND '10'
+        """
+
+        res = self.db.cur.execute(cmd).fetchall()
+
+        for rec in res:
+            print(rec)
+            rec = [x if x != None else '' for x in rec]
+            print(len(rec))
+            formati = ('%s',
+                       '%.0f', '%.0f', '%.0f',
+                       '%.1f', '%.1f', '%.1f', '%.1f', '%.1f', '%.1f', '%.1f', '%.1f', '%.1f',
+                       '%.0f', '%.0f', '%.0f',
+                       '%.1f', '%.1f', '%.1f', '%.1f', '%.1f',
+                       '%.1f', '%.1f', '%.1f', '%.1f', '%s:%s', '%.1f', '%i',
+                       '%.1f', '%.1f'
+                       )
+            print(len(formati))
+            rigo = '\t'.join(formati) % rec
+            print(rigo)
