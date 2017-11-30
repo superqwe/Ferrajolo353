@@ -247,15 +247,21 @@ class Bollettino(object):
         cur = self.db.cur
 
         xls = []
-        cmd = """
+        cmd1 = """
         SELECT *
         FROM Bollettino1
         WHERE strftime('%d', data) BETWEEN '01' AND '10'
         """
+        cmd2 = """
+        SELECT *
+        FROM Bollettino2
+        WHERE strftime('%d', data) BETWEEN '01' AND '10'
+        """
 
-        res = self.db.cur.execute(cmd).fetchall()
+        res1 = self.db.cur.execute(cmd1).fetchall()
+        res2 = self.db.cur.execute(cmd2).fetchall()
 
-        for rec in res:
+        for rec in res1:
             rec = [x if x != None else '' for x in rec]
             formati = ('%s',  # data
                        '%.1f', '%.1f', '%.1f',  # pressione
@@ -267,6 +273,21 @@ class Bollettino(object):
                        )
             rigo = ';'.join(formati) % tuple(rec)
             xls.append(rigo)
+
+        xls.extend([''] * 3)
+
+        for rec in res2:
+            rec = [x if x != None else '' for x in rec]
+            formati = ('%s',  # data
+                       '%s', '%.1f', '%s', '%.1f', '%s', '%.1f', '%.1f', '%.1f', '%.1f', '%i',  # vento
+                       '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s',  # cielo
+                       '%.1f', '%.1f',  # eliofania, radiazione
+                       '%s', '%s'  # suolo
+                       )
+            rigo = ';'.join(formati) % tuple(rec)
+            xls.append(rigo)
+
+        xls.extend([''] * 3)
 
         with open(FOUT_CREA % (self.anno, self.mese), 'w') as fout:
             xls = '\n'.join(xls).replace('.', ',')
