@@ -82,9 +82,9 @@ class Bollettino(object):
                 """.format(dal=self.dal)
         dati_vd_vv = cur.execute(cmd_vd_vv).fetchall()
 
-        ore8 = [x for x in dati_pres_t_ur[slice(0, len(dati_vd_vv), 3)]]
-        ore14 = [x for x in dati_pres_t_ur[slice(1, len(dati_vd_vv), 3)]]
-        ore19 = [x for x in dati_pres_t_ur[slice(2, len(dati_vd_vv), 3)]]
+        ore8 = [x for x in dati_vd_vv[slice(0, len(dati_vd_vv), 3)]]
+        ore14 = [x for x in dati_vd_vv[slice(1, len(dati_vd_vv), 3)]]
+        ore19 = [x for x in dati_vd_vv[slice(2, len(dati_vd_vv), 3)]]
 
         vento = self.calcola_vento_per_crea()
 
