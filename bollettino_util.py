@@ -158,6 +158,7 @@ class Bollettino(object):
 
             durata = sum((dati_mm8[2], dati_mm14[1], dati_mm19[1]))
             ore, minuti = util.minuti2ore_minuti(durata)
+            durata = datetime.time(ore, minuti).strftime(TIME_SHORT_PF)
 
             # todo: max pioggia in un'ora calcolata prendendo dalla tabella oraria il max
             cmd = """
@@ -175,8 +176,7 @@ class Bollettino(object):
                    dati_mm14[0],
                    dati_mm19[0],
                    totale,
-                   ore,
-                   minuti,
+                   durata,
                    mm_max,
                    ora_max,
                    ]
