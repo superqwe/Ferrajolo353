@@ -56,7 +56,7 @@ class Bollettino(object):
 
         ##################
         for h8, h14, h19, tmmm, pioggia in zip(ore8, ore14, ore19, dati_tmin_tmax, mm):
-            data = [util.timestamp2date(h8[0]),]
+            data = [util.timestamp2date(h8[0]), ]
             pres = [h8[1], h14[1], h19[1]]
             t = [h8[2], None, None, h14[2], None, None, h19[2], None, None]
             ur = [h8[3], h14[3], h19[3], statistics.mean((h8[3], h14[3], h19[3])), None]
@@ -70,6 +70,40 @@ class Bollettino(object):
             tabella1.append(rec)
 
         # tabella 2
+        tabella2 = []
+        cmd_vd_vv = """
+                SELECT data, vdir, vvel
+                FROM Raw
+                WHERE data
+                BETWEEN '{dal}' AND datetime('{dal}', '+1 months')
+                AND (strftime('%H:%M', data) = '08:00' OR
+                     strftime('%H:%M', data) = '14:00' OR
+                     strftime('%H:%M', data) = '19:00')
+                """.format(dal=self.dal)
+        dati_vd_vv = cur.execute(cmd_vd_vv).fetchall()
+
+        ore8 = [x for x in dati_pres_t_ur[slice(0, len(dati_vd_vv), 3)]]
+        ore14 = [x for x in dati_pres_t_ur[slice(1, len(dati_vd_vv), 3)]]
+        ore19 = [x for x in dati_pres_t_ur[slice(2, len(dati_vd_vv), 3)]]
+
+        vento = self.calcola_vento_per_crea()
+
+        eliof_rad = self.calcola_eliofania_radiazione_per_crea()
+
+        ###############
+        for h8, h14, h19, v, e_r in zip(ore8, ore14, ore19, vento, eliof_rad):
+            data = [util.timestamp2date(h8[0]), ]
+            v_d_v = [h8[1], h8[2], h14[1], h14[2], h19[1], h19[2]]
+            v_km_max = v[1:]
+            cielo = [None] * 8
+            e_r = e_r[1:]
+            suolo = [None] * 2
+
+            rec = []
+            for campo in (data, v_d_v, v_km_max, cielo, e_r, suolo):
+                rec.extend(campo)
+
+            tabella2.append(rec)
 
         # inserimento dati
         self.db.crea_tabelle_bollettino_crea()
@@ -78,6 +112,11 @@ class Bollettino(object):
         campi = ', '.join(['?'] * ncampi)
         cur.executemany('INSERT INTO Bollettino1 VALUES ({campi})'.format(campi=campi),
                         tabella1)
+
+        ncampi = len(tabella2[0])
+        campi = ', '.join(['?'] * ncampi)
+        cur.executemany('INSERT INTO Bollettino2 VALUES ({campi})'.format(campi=campi),
+                        tabella2)
         db.commit()
 
     def calcola_pioggia_per_crea(self, cur):
@@ -145,3 +184,61 @@ class Bollettino(object):
             mm.append(rec)
 
         return mm
+
+    def calcola_vento_per_crea(self):
+        cur = self.db.cur
+        anno = self.anno
+        mese = self.mese
+
+        ngiorni = self.ngiorni
+
+        vento = []
+        for giorno in range(1, ngiorni + 1):
+            day = datetime.datetime(anno, mese, giorno)
+            cmd = """
+            SELECT vvel, data
+            FROM Raw
+            WHERE data BETWEEN datetime('{giorno}', 'start of day', '-1 days','+19 hours', '+10 minutes') AND 
+                               datetime('{giorno}', 'start of day', '+19 hours')
+            AND vvel IS NOT NULL 
+            """.format(giorno=day)
+
+            dati = cur.execute(cmd).fetchall()
+
+            v = ([x[0] for x in dati])
+            km_tot = sum(v) * 0.6  # 1[m/s] * 10 [minuti] = 0.6 [km]
+
+            # todo: km_media da capire cosa si intende
+            km_media = statistics.mean(v) * 0.6  # media km all'ora
+            vmax, ora = max(dati)
+
+            ora = util.timestamp2time(ora)
+            ora = ora.hour +1 if ora.minute else ora.hour
+
+            rec = (day, km_tot, km_media, vmax, ora)
+            vento.append(rec)
+
+        return vento
+
+    def calcola_eliofania_radiazione_per_crea(self):
+        cur = self.db.cur
+        anno = self.anno
+        mese = self.mese
+
+        ngiorni = self.ngiorni
+
+        e_r = []
+        for giorno in range(1, ngiorni + 1):
+            day = datetime.datetime(anno, mese, giorno)
+            cmd = """
+            SELECT DATE(data), sum(eliof), sum(pir)
+            FROM Raw
+            WHERE data BETWEEN datetime('{giorno}', 'start of day', '-1 days','+20 hours') AND 
+                               datetime('{giorno}', 'start of day', '+19 hours')
+            """.format(giorno=day)
+
+            dati = cur.execute(cmd).fetchone()
+
+            e_r.append(dati)
+
+        return e_r

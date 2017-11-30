@@ -24,6 +24,16 @@ def timestamp2date(timestamp):
     return datetime.datetime.strptime(timestamp, DATETIME_PF).date()
 
 
+def timestamp2time(timestamp):
+    """
+    timestamp2datetime('2012-01-02 03:40:00') --> datetime.time(3,4,0)
+    :param timestamp:
+    :return:
+    """
+
+    return datetime.datetime.strptime(timestamp, DATETIME_PF).time()
+
+
 def minuti2ore_minuti(minuti):
     ore = minuti // 60
     minuti = minuti % 60
