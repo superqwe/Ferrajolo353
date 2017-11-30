@@ -107,6 +107,27 @@ class test_vento_util(unittest.TestCase):
         result = vento_util.direzione_dominante(dati_vento, discretizzazione)
         self.assertEqual(risultato_atteso, result, 'test direzione dominante ok')
 
+    def test_direzione_vento(self):
+        # tipico
+        atteso = 'NE', 5.0
+        risultato = vento_util.direzione_vento(50, 5.0)
+        self.assertEqual(risultato, atteso)
+
+        # tipico senza correzione velocita per CALMA
+        atteso = 'NE', 5.0
+        risultato = vento_util.direzione_vento(50, 5.0, False)
+        self.assertEqual(risultato, atteso)
+
+        # caso vento CALMO con correzione velocita per CALMA
+        atteso = '-', 0.0
+        risultato = vento_util.direzione_vento(50, 1.0)
+        self.assertEqual(risultato, atteso)
+
+        # caso vento CALMO senza  correzione velocita per CALMA
+        atteso = '-', 1.0
+        risultato = vento_util.direzione_vento(50, 1.0, False)
+        self.assertEqual(risultato, atteso)
+
 
 if __name__ == '__main__':
     unittest.main()

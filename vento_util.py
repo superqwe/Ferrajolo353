@@ -74,3 +74,38 @@ def direzione_dominante(dati_in, discretizzazione=True):
 
     dir_dominate.sort(key=ordina_per_data)
     return dir_dominate
+
+
+def direzione_vento(direzione, velocita, velocita_0_calma=True):
+    """
+
+    :param direzione:
+    :param velocita:
+    :param velocita_0_calma: True --> velocita = 0 se velocita < CALMA
+    :return:
+    """
+    if velocita > CALMA:
+        dg = 45 / 2
+        if 45 - dg <= direzione < 45 + dg:
+            direzione = 'NE'
+        elif 90 - dg <= direzione < 90 + dg:
+            direzione = 'E'
+        elif 135 - dg <= direzione < 135 + dg:
+            direzione = 'SE'
+        elif 180 - dg <= direzione < 180 + dg:
+            direzione = 'S'
+        elif 225 - dg <= direzione < 225 + dg:
+            direzione = 'SO'
+        elif 270 - dg <= direzione < 270 + dg:
+            direzione = 'O'
+        elif 315 - dg <= direzione < 315 + dg:
+            direzione = 'NO'
+        else:
+            direzione = 'N'
+
+        return direzione, velocita
+
+    else:
+        if velocita_0_calma:
+            velocita = 0.0
+        return '-', velocita

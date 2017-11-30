@@ -1,13 +1,12 @@
 # 29.11.17 rev0
 import calendar
-import sqlite3 as lite
 import statistics
 from pprint import pprint as pp
 
 import db
 import util
+import vento_util
 from costanti import *
-from db import DB
 
 
 class Bollettino(object):
@@ -82,9 +81,12 @@ class Bollettino(object):
                 """.format(dal=self.dal)
         dati_vd_vv = cur.execute(cmd_vd_vv).fetchall()
 
-        ore8 = [x for x in dati_vd_vv[slice(0, len(dati_vd_vv), 3)]]
-        ore14 = [x for x in dati_vd_vv[slice(1, len(dati_vd_vv), 3)]]
-        ore19 = [x for x in dati_vd_vv[slice(2, len(dati_vd_vv), 3)]]
+        ore8 = [(x[0], vento_util.direzione_vento(x[1], x[2]))
+                for x in dati_vd_vv[slice(0, len(dati_vd_vv), 3)]]
+        ore14 = [(x[0], vento_util.direzione_vento(x[1], x[2]))
+                 for x in dati_vd_vv[slice(1, len(dati_vd_vv), 3)]]
+        ore19 = [(x[0], vento_util.direzione_vento(x[1], x[2]))
+                 for x in dati_vd_vv[slice(2, len(dati_vd_vv), 3)]]
 
         vento = self.calcola_vento_per_crea()
 
@@ -93,7 +95,7 @@ class Bollettino(object):
         ###############
         for h8, h14, h19, v, e_r in zip(ore8, ore14, ore19, vento, eliof_rad):
             data = [util.timestamp2date(h8[0]), ]
-            v_d_v = [h8[1], h8[2], h14[1], h14[2], h19[1], h19[2]]
+            v_d_v = [h8[1][0], h8[1][1], h14[1][0], h14[1][1], h19[1][0], h19[1][1]]
             v_km_max = v[1:]
             cielo = [None] * 8
             e_r = e_r[1:]
