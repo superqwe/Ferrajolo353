@@ -14,5 +14,6 @@ DT_ORA = datetime.timedelta(hours=1)
 # se tra un dato di pioggia rilevato ed un altro non supera questo tempo, allora la pioggia è continua
 DT_PIOGGIA = datetime.timedelta(minutes=30)
 
-# database
+# file I/O
 NOME_DB = 'test.sqlite'
+FOUT_CREA = '%i-%02i.csv'

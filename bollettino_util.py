@@ -246,6 +246,7 @@ class Bollettino(object):
     def xls_crea(self):
         cur = self.db.cur
 
+        xls = []
         cmd = """
         SELECT *
         FROM Bollettino1
@@ -255,17 +256,19 @@ class Bollettino(object):
         res = self.db.cur.execute(cmd).fetchall()
 
         for rec in res:
-            print(rec)
             rec = [x if x != None else '' for x in rec]
-            print(len(rec))
-            formati = ('%s',
-                       '%.0f', '%.0f', '%.0f',
-                       '%.1f', '%.1f', '%.1f', '%.1f', '%.1f', '%.1f', '%.1f', '%.1f', '%.1f',
-                       '%.0f', '%.0f', '%.0f',
-                       '%.1f', '%.1f', '%.1f', '%.1f', '%.1f',
-                       '%.1f', '%.1f', '%.1f', '%.1f', '%s:%s', '%.1f', '%i',
-                       '%.1f', '%.1f'
+            formati = ('%s',  # data
+                       '%.1f', '%.1f', '%.1f',  # pressione
+                       '%.1f', '%s', '%s', '%.1f', '%s', '%s', '%.1f', '%s', '%s',  # temperatura
+                       '%.0f', '%.0f', '%.0f',  # umidità
+                       '%.1f', '%s', '%.1f', '%.1f', '%.1f',  # umidità media... temperatura media
+                       '%.1f', '%.1f', '%.1f', '%.1f', '%s;', '%s', '%s',  # pioggia
+                       '%s', '%s'  # neve
                        )
-            print(len(formati))
-            rigo = '\t'.join(formati) % rec
-            print(rigo)
+            rigo = ';'.join(formati) % tuple(rec)
+            xls.append(rigo)
+
+        with open(FOUT_CREA % (self.anno, self.mese), 'w') as fout:
+            xls = '\n'.join(xls).replace('.', ',')
+
+            fout.write(xls)
