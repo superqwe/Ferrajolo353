@@ -1,4 +1,5 @@
 # 16.11.17: rev 0
+# 01.12.17: rev1
 
 import os
 import sqlite3 as lite
@@ -45,7 +46,9 @@ class DB(object):
                                          eliof FLOAT,
                                          pir FLOAT,
                                          vvel FLOAT,
-                                         vdir TEXT
+                                         vdir TEXT,
+                                         vkm FLOAT,
+                                         vdkm TEXT                                         
                                          )"""
             self.cur.execute(cmd)
             self.db.commit()
@@ -65,9 +68,12 @@ class DB(object):
                                          durata INT,
                                          ur FLOAT,
                                          eliof FLOAT,
+                                         eliof_rel FLOAT,
                                          pir FLOAT,
                                          vvel FLOAT,
-                                         vdir TEXT
+                                         vdir TEXT,
+                                         vkm FLOAT,
+                                         vdkm TEXT
                                          )""" % tabella
                 self.cur.execute(cmd)
                 self.db.commit()
@@ -84,9 +90,12 @@ class DB(object):
                                           durata INT,
                                           ur FLOAT,
                                           eliof FLOAT,
+                                          eliof_rel FLOAT,
                                           pir FLOAT,
                                           vvel FLOAT,
-                                          vdir TEXT
+                                          vdir TEXT,
+                                          vkm FLOAT,
+                                          vdkm TEXT
                                           )"""
             self.cur.execute(cmd)
             self.db.commit()

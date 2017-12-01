@@ -1,5 +1,7 @@
 # 09.11.17: rev0
+# 01.12.17: rev1
 
+import datetime
 from pprint import pprint as pp
 
 import bollettino_util
@@ -21,7 +23,6 @@ def resetta_db():
 def carica_eliofania(file_input):
     dati = csv_util.eliofania_da_sun_ephemeris(file_input, True)
     db_util.inserisci_eliofania(dati)
-    pp(dati)
     print('\nDati inseriti nella tabella Eliofania')
 
 
@@ -73,6 +74,7 @@ def bollettino_crea(anno, mese):
     bollettino.crea_xls()
     print('%i-%02i.csv scritto' % (anno, mese))
 
+
 def bollettino_mensile(anno, mese):
     bollettino = bollettino_util.Bollettino(anno, mese)
     bollettino.mensile_tabella()
@@ -81,7 +83,9 @@ def bollettino_mensile(anno, mese):
 
 
 if __name__ == '__main__':
-    # """redige bollettini per il mese indicato."""
+    # todo: vkm vdkm in orario giornaliero mensile annuale
+    # todo: eliof_rel in giornaliero mensile annuale
+    """redige bollettini per il mese indicato."""
     # mese = '1710'
     # bollettino.Bollettino(mese)
 
@@ -89,7 +93,7 @@ if __name__ == '__main__':
     # crea_db()
     # resetta_db()
 
-    # """legge i dati del file in formato csv dell'eliofania creato con il programma Sun Ephemeris e li salva
+    """legge i dati del file in formato csv dell'eliofania creato con il programma Sun Ephemeris e li salva
     # nella tabella Eliofania."""
     # fin = 'eliofania.csv'
     # carica_eliofania(fin)
@@ -97,25 +101,28 @@ if __name__ == '__main__':
     """carica i dati dal file nella tabella Raw. Il file deve essere salvato nella cartella 'dati'.
     popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
     """
+    # carica singolo anno
     # fin = '2016a.txt'
     # carica_raw(fin)
 
+    # carica tutti gli anni nel range
     # for x in range(2, 7):
     #     fin = '201%ia.txt' % x
     #     carica_raw(fin)
 
-    # """Prepopola la tabella Raw"""
+    """Prepopola la tabella Raw"""
+    # todo: obsoleto?
     # anno = 2018
     # prepopola_raw(anno)
 
-    # """Ricerca record mancanti"""
-    # dal = datetime.datetime(2012, 1, 1, 1, 10)
-    # al = datetime.datetime(2016, 12, 31, 23, 59)
+    """Ricerca record mancanti"""
+    # dal = datetime.datetime(2016, 1, 1)
+    # al = datetime.datetime(2017, 1, 1)
     # ricerca_record_mancanti(dal, al, aggiungi=True)
 
     """Popola la tabella Orario dai dati della tabella Raw"""
     # dal = datetime.datetime(2016, 1, 1)
-    # al = datetime.datetime(2016, 2, 1)
+    # al = datetime.datetime(2017, 1, 1)
     # calcola_tabella_orario(dal, al)
 
     """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
@@ -144,6 +151,6 @@ if __name__ == '__main__':
     # bollettino = bollettino_crea(anno, mese)
 
     """Bollettino Mensile"""
-    anno = 2016
-    mese = 1
-    bollettino = bollettino_mensile(anno, mese)
+    # anno = 2016
+    # mese = 1
+    # bollettino = bollettino_mensile(anno, mese)

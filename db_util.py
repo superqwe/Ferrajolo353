@@ -1,4 +1,6 @@
-# 16.11.17
+# 16.11.17: rev0
+# 01.12.17: rev1
+
 import datetime
 import sqlite3 as lite
 from pprint import pprint as pp
@@ -126,12 +128,12 @@ def interroga(tabella, dal, al, campi=None, orari=False, flat=False):
 def calcola_tabella_orario(dal=None, al=None):
     risultato = interroga('Raw', dal, al, campi='*', orari=True)
 
-
     piogge = pioggia_util.pioggia_per_tabella_oraria(dal, al)
 
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
-        cur.executemany('INSERT INTO Orario VALUES (?, ?, ?, ?, ?, ?, null, ?, ?, ?, ?, ?)', risultato)
+        cur.executemany('INSERT INTO Orario VALUES (?, ?, ?, ?, ?, ?, null, ?, ?, ?, ?, ?, null, null)',
+                        risultato)
         cur.executemany('UPDATE Orario SET mm = ?, durata = ? WHERE data = ?', piogge)
 
 
@@ -159,7 +161,8 @@ def calcola_tabella_giornaliero(dal=None, al=None):
         dati_vento = cur.execute(cmd_vento).fetchall()
         direzione_dominante = vento_util.direzione_dominante(dati_vento)
 
-        cur.executemany('INSERT INTO Giornaliero VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null)', dati)
+        cur.executemany('INSERT INTO Giornaliero '
+                        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, null, ?, ?, null, null, null)', dati)
         cur.executemany('UPDATE Giornaliero SET vdir = ? WHERE data = ?', direzione_dominante)
         cur.execute('UPDATE Giornaliero SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
 
@@ -192,7 +195,8 @@ def calcola_tabella_mensile(dal=None, al=None):
         dati_vento = cur.execute(cmd_vento).fetchall()
         direzione_dominante = vento_util.direzione_dominante(dati_vento)
 
-        cur.executemany('INSERT INTO Mensile VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null)', dati)
+        cur.executemany('INSERT INTO Mensile '
+                        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, null, ?, ?, null, null, null)', dati)
         cur.executemany('UPDATE Mensile SET vdir = ? WHERE data = ?', direzione_dominante)
         cur.execute('UPDATE Mensile SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
 
@@ -223,7 +227,8 @@ def calcola_tabella_annuale(dal=None, al=None):
         dati_vento = cur.execute(cmd_vento).fetchall()
         direzione_dominante = vento_util.direzione_dominante(dati_vento)
 
-        cur.executemany('INSERT INTO Annuale VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, null)', dati)
+        cur.executemany('INSERT INTO Annuale '
+                        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, null, ?, ?, null, null, null)', dati)
         cur.executemany('UPDATE Annuale SET vdir = ? WHERE data = ?', direzione_dominante)
         cur.execute('UPDATE Annuale SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
 
