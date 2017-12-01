@@ -18,9 +18,9 @@ class Bollettino(object):
         self.ngiorni = calendar.monthrange(anno, mese)[1]
         self.dal = datetime.datetime(anno, mese, 1)
 
-        # self.crea_tabella_crea()
+        # self.crea_tabella()
 
-    def crea_tabella_crea(self):
+    def crea_tabella(self):
         cur = self.db.cur
         db = self.db.db
 
@@ -49,7 +49,7 @@ class Bollettino(object):
         """.format(dal=self.dal)
         dati_tmin_tmax = cur.execute(cmd_tmin_tmax).fetchall()
 
-        mm = self.calcola_pioggia_per_crea(cur)
+        mm = self.crea_pioggia(cur)
 
         neve = [None, None]
 
@@ -88,9 +88,9 @@ class Bollettino(object):
         ore19 = [(x[0], vento_util.direzione_vento(x[1], x[2]))
                  for x in dati_vd_vv[slice(2, len(dati_vd_vv), 3)]]
 
-        vento = self.calcola_vento_per_crea()
+        vento = self.crea_vento()
 
-        eliof_rad = self.calcola_eliofania_radiazione_per_crea()
+        eliof_rad = self.crea_eliofania_radiazione()
 
         ###############
         for h8, h14, h19, v, e_r in zip(ore8, ore14, ore19, vento, eliof_rad):
@@ -121,7 +121,7 @@ class Bollettino(object):
                         tabella2)
         db.commit()
 
-    def calcola_pioggia_per_crea(self, cur):
+    def crea_pioggia(self, cur):
         anno = self.anno
         mese = self.mese
         ngiorni = calendar.monthrange(anno, mese)[1]
@@ -187,7 +187,7 @@ class Bollettino(object):
 
         return mm
 
-    def calcola_vento_per_crea(self):
+    def crea_vento(self):
         cur = self.db.cur
         anno = self.anno
         mese = self.mese
@@ -222,7 +222,7 @@ class Bollettino(object):
 
         return vento
 
-    def calcola_eliofania_radiazione_per_crea(self):
+    def crea_eliofania_radiazione(self):
         cur = self.db.cur
         anno = self.anno
         mese = self.mese
@@ -245,23 +245,23 @@ class Bollettino(object):
 
         return e_r
 
-    def xls_crea(self):
+    def crea_xls(self):
         cur = self.db.cur
 
         xls = []
-        for da, a in (('01', '10'), ('11','20'), ('21', '31')):
+        for da, a in (('01', '10'), ('11', '20'), ('21', '31')):
 
             cmd1 = """
             SELECT *
             FROM Bollettino1
             WHERE strftime('%d', data) BETWEEN '{da}' AND '{a}'
-            """.format(da=da,a=a)
+            """.format(da=da, a=a)
 
             cmd2 = """
             SELECT *
             FROM Bollettino2
             WHERE strftime('%d', data) BETWEEN '{da}' AND '{a}'
-            """.format(da=da,a=a)
+            """.format(da=da, a=a)
 
             res1 = self.db.cur.execute(cmd1).fetchall()
             res2 = self.db.cur.execute(cmd2).fetchall()
@@ -298,3 +298,16 @@ class Bollettino(object):
             xls = '\n'.join(xls).replace('.', ',')
 
             fout.write(xls)
+
+    def mensile_tabella(self):
+        da = datetime.date(self.anno, self.mese, 1)
+        cmd = """
+        SELECT strftime('%d', data), pres, t, tmin, tmax, ur, vdir, vvel, eliof, mm, durata
+        FROM Giornaliero
+        WHERE data BETWEEN DATE('{da}', 'start of month') AND 
+                           DATE('{da}', 'start of month', '+1 months', '-1 days') 
+        """.format(da=da)
+
+        res = self.db.cur.execute(cmd).fetchall()
+
+        pp(res)

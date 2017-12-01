@@ -182,6 +182,28 @@ class DB(object):
         except lite.OperationalError:
             print('tabella esistente: Bollettino2')
 
+    def crea_tabella_bollettino_mensile(self):
+        self.cur.execute('DROP TABLE IF EXISTS Bollettino_Mensile')
+
+        cmd = """
+        CREATE TABLE Bollettino_Mensile(
+        data INT,
+        pres INT,
+        t FLOAT,
+        tmin FLOAT,
+        tmax FLOAT,
+        ur INT,
+        vd TEXT,
+        vv INT,
+        cielo TEXT,
+        mare TEXT,
+        mm FLOAT,
+        h TIME,        
+        )
+        """
+        self.cur.execute(cmd)
+        self.db.commit()
+
     def resetta(self):
         self.db.close()
         os.remove(NOME_DB)

@@ -662,4 +662,5 @@ class Bollettino(object):
     def __bollettino_pioggia_pdf(self):
         pdf.bollettino_pioggia(anno=self.anno, mese=self.mese, dati=self.__dati_bollettino_pioggia)
 
-
+if __name__ == '__main__':
+    bollettino = Bollettino('1701')
