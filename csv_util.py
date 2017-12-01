@@ -16,9 +16,9 @@ def eliofania_da_sun_ephemeris(file_input, as_list=False):
 
         for row in reader:
             data = time.strptime(row['data'], '%d/%m/%Y')
-            data = time.strftime('%Y/%m/%d', data)
+            data = time.strftime('%Y-%m-%d', data)
             ore_di_luce = float(row['ore_di_luce'].replace(',', '.'))
-            eliofania[data] = ore_di_luce
+            eliofania[data] = ore_di_luce * 60.0 # trasfrormato in minuti
 
     if as_list:
         leliofania = []

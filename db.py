@@ -13,8 +13,6 @@ class DB(object):
         self.cur = self.db.cursor()
 
     def crea_db(self):
-        # todo: aggiungere vento filato nelle tabelle da orario in su
-        # todo: aggiungere eliofania teorica e relativa nelle tabelle da giornaliero in su
         # todo: sostituire TIMESTAMP con DATETIME o TIME
         try:
             cmd = """CREATE TABLE Raw(data TIMESTAMP NOT NULL,

@@ -84,7 +84,7 @@ def bollettino_mensile(anno, mese):
 
 if __name__ == '__main__':
     # todo: vkm vdkm in orario giornaliero mensile annuale
-    # todo: eliof_rel in giornaliero mensile annuale
+    # todo: eliof_rel in mensile annuale
     """redige bollettini per il mese indicato."""
     # mese = '1710'
     # bollettino.Bollettino(mese)
@@ -120,6 +120,11 @@ if __name__ == '__main__':
     # al = datetime.datetime(2017, 1, 1)
     # ricerca_record_mancanti(dal, al, aggiungi=True)
 
+    """Popola la tabella Pioggia"""
+    dal = datetime.datetime(2016, 1, 1)
+    al = datetime.datetime(2017, 1, 1)
+    # calcola_tabella_pioggia(dal, al)
+
     """Popola la tabella Orario dai dati della tabella Raw"""
     # dal = datetime.datetime(2016, 1, 1)
     # al = datetime.datetime(2017, 1, 1)
@@ -128,7 +133,7 @@ if __name__ == '__main__':
     """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
     # dal = datetime.datetime(2016, 1, 1)
     # al = datetime.datetime(2017, 1, 1)
-    # calcola_tabella_giornaliero(dal, al)
+    calcola_tabella_giornaliero(dal, al)
 
     """Popola la tabella Mensile dai dati della tabella Raw (vvel, vdir) e Giornaliero"""
     # dal = datetime.datetime(2016, 1, 1)
@@ -139,11 +144,6 @@ if __name__ == '__main__':
     # dal = datetime.datetime(2016, 1, 1)
     # al = datetime.datetime(2017, 1, 1)
     # calcola_tabella_annuale(dal, al)
-
-    # """Popola la tabella Pioggia"""
-    # dal = datetime.datetime(2012, 1, 1)
-    # al = datetime.datetime(2017, 1, 1)
-    # calcola_tabella_pioggia(dal, al)
 
     """Bollettino CREA"""
     # anno = 2016

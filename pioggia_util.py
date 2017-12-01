@@ -57,9 +57,8 @@ def pioggia_per_tabella_oraria(dal, al):
             mm = cur.execute(cmd).fetchone()[0]
 
             if mm:
-                # print('mm', mm)
-
                 durata = durata_pioggia(cur, dal - DT_50MIN, dal)
+                # print('mm', '%5.1f' % mm, dal, durata)
             else:
                 durata = 0
 

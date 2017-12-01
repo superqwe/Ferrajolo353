@@ -4,9 +4,30 @@ import unittest
 from pprint import pprint as pp
 
 import bollettino
+import eliofania
+import eliofania_util
 import pioggia_util
 import util
 import vento_util
+
+
+class test_eliofania_util(unittest.TestCase):
+    def test_eliofania_assoluta_orario(self):
+        atteso = [('2016-01-01', 56.24574452950144),
+                  ('2016-01-02', 55.77262459544423),
+                  ('2016-01-03', 28.100388365496492),
+                  ('2016-01-04', 2.298878538263693),
+                  ('2016-01-05', 0.0),
+                  ('2016-01-06', 0.18039825729510708),
+                  ('2016-01-07', 89.99509510526077),
+                  ('2016-01-08', 77.86752040953895),
+                  ('2016-01-09', 57.80014892819013),
+                  ('2016-01-10', 71.04233783333754)]
+
+        dal = datetime.date(2016, 1, 1)
+        al = datetime.date(2016, 1, 10)
+        risultato = eliofania_util.eliofania_assoluta_orario(dal, al)
+        self.assertEqual(risultato, atteso)
 
 
 class test_pioggia_util(unittest.TestCase):

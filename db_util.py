@@ -5,6 +5,7 @@ import datetime
 import sqlite3 as lite
 from pprint import pprint as pp
 
+import eliofania_util
 import pioggia_util
 import vento_util
 from costanti import *
@@ -138,6 +139,7 @@ def calcola_tabella_orario(dal=None, al=None):
 
 
 def calcola_tabella_giornaliero(dal=None, al=None):
+    # todo: verificare doppio 2016-10-27 ed assenza 2016-10-28
     cmd = """
     SELECT DATE(data,'-10 minutes'), AVG(t), MIN(tmin), MAX(tmax), AVG(pres), SUM(mm), SUM(durata), AVG(ur), 
            SUM(eliof), SUM(pir), AVG(vvel)
@@ -165,6 +167,10 @@ def calcola_tabella_giornaliero(dal=None, al=None):
                         'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, null, ?, ?, null, null, null)', dati)
         cur.executemany('UPDATE Giornaliero SET vdir = ? WHERE data = ?', direzione_dominante)
         cur.execute('UPDATE Giornaliero SET vdir = "-" WHERE vvel < %f' % vento_util.CALMA)
+        con.commit()
+
+        eliofania_relativa = eliofania_util.eliofania_assoluta_orario(dal, al)
+        cur.executemany('UPDATE Giornaliero SET eliof_rel = ? WHERE data = ?', eliofania_relativa)
 
 
 def calcola_tabella_mensile(dal=None, al=None):
