@@ -249,47 +249,50 @@ class Bollettino(object):
         cur = self.db.cur
 
         xls = []
-        cmd1 = """
-        SELECT *
-        FROM Bollettino1
-        WHERE strftime('%d', data) BETWEEN '01' AND '10'
-        """
-        cmd2 = """
-        SELECT *
-        FROM Bollettino2
-        WHERE strftime('%d', data) BETWEEN '01' AND '10'
-        """
+        for da, a in (('01', '10'), ('11','20'), ('21', '31')):
 
-        res1 = self.db.cur.execute(cmd1).fetchall()
-        res2 = self.db.cur.execute(cmd2).fetchall()
+            cmd1 = """
+            SELECT *
+            FROM Bollettino1
+            WHERE strftime('%d', data) BETWEEN '{da}' AND '{a}'
+            """.format(da=da,a=a)
 
-        for rec in res1:
-            rec = [x if x != None else '' for x in rec]
-            formati = ('%s',  # data
-                       '%.1f', '%.1f', '%.1f',  # pressione
-                       '%.1f', '%s', '%s', '%.1f', '%s', '%s', '%.1f', '%s', '%s',  # temperatura
-                       '%.0f', '%.0f', '%.0f',  # umidità
-                       '%.1f', '%s', '%.1f', '%.1f', '%.1f',  # umidità media... temperatura media
-                       '%.1f', '%.1f', '%.1f', '%.1f', '%s;', '%s', '%s',  # pioggia
-                       '%s', '%s'  # neve
-                       )
-            rigo = ';'.join(formati) % tuple(rec)
-            xls.append(rigo)
+            cmd2 = """
+            SELECT *
+            FROM Bollettino2
+            WHERE strftime('%d', data) BETWEEN '{da}' AND '{a}'
+            """.format(da=da,a=a)
 
-        xls.extend([''] * 3)
+            res1 = self.db.cur.execute(cmd1).fetchall()
+            res2 = self.db.cur.execute(cmd2).fetchall()
 
-        for rec in res2:
-            rec = [x if x != None else '' for x in rec]
-            formati = ('%s',  # data
-                       '%s', '%.1f', '%s', '%.1f', '%s', '%.1f', '%.1f', '%.1f', '%.1f', '%i',  # vento
-                       '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s',  # cielo
-                       '%.1f', '%.1f',  # eliofania, radiazione
-                       '%s', '%s'  # suolo
-                       )
-            rigo = ';'.join(formati) % tuple(rec)
-            xls.append(rigo)
+            for rec in res1:
+                rec = [x if x != None else '' for x in rec]
+                formati = ('%s',  # data
+                           '%.1f', '%.1f', '%.1f',  # pressione
+                           '%.1f', '%s', '%s', '%.1f', '%s', '%s', '%.1f', '%s', '%s',  # temperatura
+                           '%.0f', '%.0f', '%.0f',  # umidità
+                           '%.1f', '%s', '%.1f', '%.1f', '%.1f',  # umidità media... temperatura media
+                           '%.1f', '%.1f', '%.1f', '%.1f', '%s;', '%s', '%s',  # pioggia
+                           '%s', '%s'  # neve
+                           )
+                rigo = ';'.join(formati) % tuple(rec)
+                xls.append(rigo)
 
-        xls.extend([''] * 3)
+            xls.extend([''] * 3)
+
+            for rec in res2:
+                rec = [x if x != None else '' for x in rec]
+                formati = ('%s',  # data
+                           '%s', '%.1f', '%s', '%.1f', '%s', '%.1f', '%.1f', '%.1f', '%.1f', '%i',  # vento
+                           '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s',  # cielo
+                           '%.1f', '%.1f',  # eliofania, radiazione
+                           '%s', '%s'  # suolo
+                           )
+                rigo = ';'.join(formati) % tuple(rec)
+                xls.append(rigo)
+
+            xls.extend([''] * 5)
 
         with open(FOUT_CREA % (self.anno, self.mese), 'w') as fout:
             xls = '\n'.join(xls).replace('.', ',')
