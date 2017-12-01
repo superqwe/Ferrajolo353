@@ -23,7 +23,7 @@ def eliofania_da_sun_ephemeris(anno):
 
 
 def __test():
-    anno = 2017
+    anno = 2016
 
     eliofania = eliofania_da_sun_ephemeris(anno)
 
