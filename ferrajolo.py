@@ -102,7 +102,7 @@ if __name__ == '__main__':
     popola_errori == True --> popola con record vuoti i giorni che hanno avuto problemi durante il caricamento
     """
     # carica singolo anno
-    fin = '2016a.txt'
+    # fin = '201801-03.TXT'
     # carica_raw(fin)
 
     # carica tutti gli anni nel range
@@ -126,14 +126,14 @@ if __name__ == '__main__':
     # calcola_tabella_pioggia(dal, al)
 
     """Popola la tabella Orario dai dati della tabella Raw"""
-    # dal = datetime.datetime(2016, 1, 1)
-    # al = datetime.datetime(2017, 1, 1)
+    # dal = datetime.datetime(2018, 1, 1)
+    # al = datetime.datetime(2018, 4, 1)
     # calcola_tabella_orario(dal, al)
 
     """Popola la tabella Giornaliero dai dati della tabella Raw (vvel, vdir, mm) ed Orario"""
-    dal = datetime.datetime(2016, 1, 1)
-    al = datetime.datetime(2017, 1, 1)
-    calcola_tabella_giornaliero(dal, al)
+    # dal = datetime.datetime(2018, 1, 1)
+    # al = datetime.datetime(2018, 4, 1)
+    # calcola_tabella_giornaliero(dal, al)
 
     """Popola la tabella Mensile dai dati della tabella Raw (vvel, vdir) e Giornaliero"""
     # dal = datetime.datetime(2016, 1, 1)
@@ -146,9 +146,9 @@ if __name__ == '__main__':
     # calcola_tabella_annuale(dal, al)
 
     """Bollettino CREA"""
-    # anno = 2016
-    # mese = 1
-    # bollettino = bollettino_crea(anno, mese)
+    anno = 2018
+    mese = 2
+    bollettino = bollettino_crea(anno, mese)
 
     """Bollettino Mensile"""
     # anno = 2016

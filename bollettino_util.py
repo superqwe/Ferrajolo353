@@ -156,6 +156,8 @@ class Bollettino(object):
                         """.format(giorno=day)
             dati_mm19 = cur.execute(cmd_mm19).fetchall()[0]
 
+            # todo: calcolare totale e durata dalle 0 alle 24
+            # totale e durata dalle 19 alle 19
             totale = sum((dati_mm8[1], dati_mm14[0], dati_mm19[0]))
 
             durata = sum((dati_mm8[2], dati_mm14[1], dati_mm19[1]))
