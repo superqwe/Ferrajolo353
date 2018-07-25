@@ -2,6 +2,7 @@
 
 from pprint import pprint as pp
 
+import annuario
 import bollettino_util
 import csv_util
 import db as DB
@@ -155,7 +156,9 @@ if __name__ == '__main__':
     # mese = 1
     # bollettino = bollettino_mensile(anno, mese)
 
-    """Importa dati dal vecchio db"""
-    resetta_db()
-    importa_vecchi_dati()
+    """Annuaario Talsano"""
+    # resetta_db()
+    # importa_vecchi_dati()
+    annuario_talsano = annuario.annuario_talsano()
+    dati = annuario_talsano.latex_mese(1, 1975)
 
