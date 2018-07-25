@@ -6,6 +6,7 @@ import bollettino_util
 import csv_util
 import db as DB
 import db_util
+import importa_vecchio_db
 
 
 def crea_db():
@@ -73,11 +74,17 @@ def bollettino_crea(anno, mese):
     bollettino.crea_xls()
     print('%i-%02i.csv scritto' % (anno, mese))
 
+
 def bollettino_mensile(anno, mese):
     bollettino = bollettino_util.Bollettino(anno, mese)
     bollettino.mensile_tabella()
     # bollettino.mensile_pdf()
     print('%i-%02i Mensile.pdf scritto' % (anno, mese))
+
+
+def importa_vecchi_dati():
+    dati = importa_vecchio_db.leggi_csv()
+    importa_vecchio_db.scrivi(dati)
 
 
 if __name__ == '__main__':
@@ -144,6 +151,11 @@ if __name__ == '__main__':
     # bollettino = bollettino_crea(anno, mese)
 
     """Bollettino Mensile"""
-    anno = 2016
-    mese = 1
-    bollettino = bollettino_mensile(anno, mese)
+    # anno = 2016
+    # mese = 1
+    # bollettino = bollettino_mensile(anno, mese)
+
+    """Importa dati dal vecchio db"""
+    resetta_db()
+    importa_vecchi_dati()
+
