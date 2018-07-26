@@ -5,60 +5,6 @@ from pprint import pprint as pp
 
 from costanti import *
 
-TABELLA_MESE = r"""
-\subsection{%(mese)s %(anno)i}
-
-\begin{tabular}{c....ab}
-\toprule
-\multirow{2}{*}{\parbox{20mm}{\centering Giorno\\ del mese}}  &
-\multicolumn{4}{c}{Temperatura}   &
-\multicolumn{1}{c}{\multirow{3}{*}{\parbox{21mm}{\centering Pressione\\ Barometrica\\ ~[hPa]~}}}  &
-\multicolumn{1}{c}{\multirow{3}{*}{\parbox{20mm}{\centering Tensione\\ di vapore\\ ~[mm]~}}}  \\
-
-&
-\multicolumn{4}{c}{[°C]}&
-
-\\
-
-\cmidrule{2-5}
-& 
-\multicolumn{1}{c}{minima} &
-\multicolumn{1}{c}{massima} &
-\multicolumn{1}{c}{media} & 
-\multicolumn{1}{c}{escursione} & 
-\\
-
-\midrule
-
-%(decade1)s
-
-\midrule
-\rowcolor{gray!15}
-1\textsuperscript{a} decade & %(med_decade1)s\\
-\midrule
-
-%(decade2)s
-
-\midrule
-\rowcolor{gray!15}
-2\textsuperscript{a} decade & %(med_decade2)s\\
-\midrule
-
-%(decade3)s
-
-\midrule
-\rowcolor{gray!15}
-3\textsuperscript{a} decade & %(med_decade3)s\\
-\midrule
-\toprule \rowcolor{gray!30}
-        
-Mese & %(mensile)s\\
-        
-\bottomrule
-\end{tabular}
-\vfill
-"""
-
 
 class annuario_talsano(object):
     """
@@ -88,11 +34,13 @@ class annuario_talsano(object):
     def latex_mese(self, mese, anno):
         dati = self.mese(mese, anno)
 
-        d1 = self._decade(dati, 1)
-        d2 = self._decade(dati, 2)
-        d3 = self._decade(dati, 3)
-
         data = datetime.date(anno, mese, 1)
+
+        # tabella 1
+        d1 = self._decade(dati, 1, 1)
+        d2 = self._decade(dati, 2, 1)
+        d3 = self._decade(dati, 3, 1)
+
         cmd = '''SELECT t, tmin, tmax, pres, mm, durata
                  FROM Mensile
                  WHERE data = '{data}'
@@ -108,21 +56,48 @@ class annuario_talsano(object):
         mensile = ' & '.join(('%.1f' % tmin, '%.1f' % tmax, '%.1f' % tmed, '%.1f' % (tmax - tmin),
                               '%.1f' % press))
 
-        # ltx = TABELLA_MESE % (MESE[mese], anno, d1)
-        ltx = TABELLA_MESE % ({'mese': MESE[mese],
-                               'anno': anno,
-                               'decade1': d1[0],
-                               'decade2': d2[0],
-                               'decade3': d3[0],
-                               'med_decade1': d1[1],
-                               'med_decade2': d2[1],
-                               'med_decade3': d3[1],
-                               'mensile': mensile
-                               })
+        ltx1 = TABELLA_MESE_1 % ({'mese': MESE[mese],
+                                  'anno': anno,
+                                  'decade1': d1[0],
+                                  'decade2': d2[0],
+                                  'decade3': d3[0],
+                                  'med_decade1': d1[1],
+                                  'med_decade2': d2[1],
+                                  'med_decade3': d3[1],
+                                  'mensile': mensile
+                                  })
 
-        return ltx
+        # tabella 2
+        d1 = self._decade(dati, 1, 2)
+        d2 = self._decade(dati, 2, 2)
+        d3 = self._decade(dati, 3, 2)
 
-    def _decade(self, dati, decade):
+        cmd = '''SELECT mm, durata, ur
+                 FROM Mensile
+                 WHERE data = '{data}'
+              '''.format(data=data)
+
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+            mm, durata, ur = cur.execute(cmd).fetchall()[0]
+
+        mensile = ' & '.join(('%.1f' % mm, '%i' % durata, '%.1f' % ur,))
+
+        ltx2 = TABELLA_MESE_2 % ({'mese': MESE[mese],
+                                  'anno': anno,
+                                  'decade1': d1[0],
+                                  'decade2': d2[0],
+                                  'decade3': d3[0],
+                                  'med_decade1': d1[1],
+                                  'med_decade2': d2[1],
+                                  'med_decade3': d3[1],
+                                  'mensile': mensile
+                                  })
+
+        print(ltx2)
+        return ltx1 + ltx2
+
+    def _decade(self, dati, decade, tabella):
         da = 10 * (decade - 1)
         a = da + 10
 
@@ -147,7 +122,7 @@ class annuario_talsano(object):
             dtmed += tmed
             dtmin = tmin if tmin < dtmin else dtmin
             dtmax = tmax if tmax > dtmax else dtmax
-            dtesc += tmax-tmin
+            dtesc += tmax - tmin
             dpress += 0  # todo correggere assenza valori
             dmm += mm
             ddurata += durata
@@ -158,7 +133,11 @@ class annuario_talsano(object):
             else:
                 press = ''
 
-            rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % tesc, press, '\\\\\n'))
+            if tabella == 1:
+                rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % tesc, press, '\\\\\n'))
+            else:
+                rec = ' & '.join((data, str(mm), str(durata), str(ur), '\\\\\n'))
+
             righe.append(rec)
 
         righe = ''.join(righe)
@@ -169,7 +148,11 @@ class annuario_talsano(object):
         dpress /= n
         dur /= n
 
-        decadale = ' & '.join(
-            ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, '%.1f' % dpress))
+        if tabella == 1:
+            decadale = ' & '.join(
+                ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, '%.1f' % dpress))
+        else:
+            decadale = ' & '.join(
+                ('%.1f' % dmm, '%i' % ddurata, '%.1f' % dur))
 
         return righe, decadale
