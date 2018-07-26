@@ -85,8 +85,23 @@ class annuario_talsano(object):
     def latex_mese(self, mese, anno):
         dati = self.mese(mese, anno)
 
-        d1 = []
-        for d in dati[:10]:
+        d1 =self._decade(dati, 1)
+        d2 =self._decade(dati, 2)
+        d3 =self._decade(dati, 3)
+
+        ltx = TABELLA_MESE % (MESE[mese], anno, d1)
+        print(ltx)
+
+    def _decade(self, dati, decade):
+        da = 10 * (decade-1)
+        a = da+10
+
+        if decade==3:
+            a=None
+
+
+        righe = []
+        for d in dati[da:a]:
             data, tmed, tmin, tmax, press, mm, durata, ur = d
 
             data = str(int(data[-2:]))
@@ -97,9 +112,8 @@ class annuario_talsano(object):
                 press = ''
 
             rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % (tmax - tmin), press, '\\\\\n'))
-            d1.append(rec)
+            righe.append(rec)
 
-        d1 = ''.join(d1)
+        righe = ''.join(righe)
 
-        ltx = TABELLA_MESE % (MESE[mese], anno, d1)
-        print(ltx)
+        return righe
