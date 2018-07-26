@@ -1,5 +1,5 @@
 # 09.11.17: rev0
-
+import datetime
 from pprint import pprint as pp
 
 import annuario
@@ -8,6 +8,7 @@ import csv_util
 import db as DB
 import db_util
 import importa_vecchio_db
+from costanti import FANNUARIO
 
 
 def crea_db():
@@ -132,8 +133,8 @@ if __name__ == '__main__':
     # calcola_tabella_giornaliero(dal, al)
 
     """Popola la tabella Mensile dai dati della tabella Raw (vvel, vdir) e Giornaliero"""
-    # dal = datetime.datetime(2016, 1, 1)
-    # al = datetime.datetime(2017, 1, 1)
+    # dal = datetime.datetime(1976, 1, 1)
+    # al = datetime.datetime(1976, 12, 1)
     # calcola_tabella_mensile(dal, al)
 
     """Popola la tabella Annuale dai dati della tabella Raw (vvel, vdir) e Mensile"""
@@ -160,5 +161,7 @@ if __name__ == '__main__':
     # resetta_db()
     # importa_vecchi_dati()
     annuario_talsano = annuario.annuario_talsano()
-    dati = annuario_talsano.latex_mese(1, 1975)
+    tex = annuario_talsano.latex_mese(7, 1976)
 
+    with open(FANNUARIO, 'w') as fout:
+        fout.write(tex)

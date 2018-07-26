@@ -6,7 +6,7 @@ from pprint import pprint as pp
 from costanti import *
 
 TABELLA_MESE = r"""
-\subsection{%s %i}
+\subsection{%(mese)s %(anno)i}
 
 \begin{tabular}{c....ab}
 \toprule
@@ -30,26 +30,29 @@ TABELLA_MESE = r"""
 
 \midrule
 
-%s
+%(decade1)s
 
 \midrule
-                \rowcolor{gray!15}
-                1\textsuperscript{a} decade & 8.2 & 15.3 & 11.5 & 7.1 & 1011.9 & 8.7\\
-                \midrule
-
-11 & 4.7 & 15.2 & 9.5 & 10.5 & 1018.4 &8.6 \\
+\rowcolor{gray!15}
+1\textsuperscript{a} decade & %(med_decade1)s\\
 \midrule
-                \rowcolor{gray!15}
-                2\textsuperscript{a} decade & 6.6 & 12.6 & 9.5 & 6.0 & 1014.4 & 8.0\\
-                \midrule
 
-21 & 10.0 & 14.0 & 11.4 & 4.0 & 1013.9 &8.7 \\
+%(decade2)s
+
 \midrule
-        \rowcolor{gray!15}
-        3\textsuperscript{a} decade & 9.2 & 15.1 & 12.1 & 5.9 & 1008.1 & 9.7\\
-        \midrule
+\rowcolor{gray!15}
+2\textsuperscript{a} decade & %(med_decade2)s\\
+\midrule
+
+%(decade3)s
+
+\midrule
+\rowcolor{gray!15}
+3\textsuperscript{a} decade & %(med_decade3)s\\
+\midrule
 \toprule \rowcolor{gray!30}
-        Mese & 8.0 & 14.4 & 11.1 & 6.4 & 1011.3 & 8.8\\
+        
+Mese & %(mensile)s\\
         
 \bottomrule
 \end{tabular}
@@ -85,35 +88,88 @@ class annuario_talsano(object):
     def latex_mese(self, mese, anno):
         dati = self.mese(mese, anno)
 
-        d1 =self._decade(dati, 1)
-        d2 =self._decade(dati, 2)
-        d3 =self._decade(dati, 3)
+        d1 = self._decade(dati, 1)
+        d2 = self._decade(dati, 2)
+        d3 = self._decade(dati, 3)
 
-        ltx = TABELLA_MESE % (MESE[mese], anno, d1)
-        print(ltx)
+        data = datetime.date(anno, mese, 1)
+        cmd = '''SELECT t, tmin, tmax, pres, mm, durata
+                 FROM Mensile
+                 WHERE data = '{data}'
+              '''.format(data=data)
+
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+            tmed, tmin, tmax, press, mm, durata = cur.execute(cmd).fetchall()[0]
+
+            # todo correggere assenzza valori
+            press = 0
+
+        mensile = ' & '.join(('%.1f' % tmin, '%.1f' % tmax, '%.1f' % tmed, '%.1f' % (tmax - tmin),
+                              '%.1f' % press))
+
+        # ltx = TABELLA_MESE % (MESE[mese], anno, d1)
+        ltx = TABELLA_MESE % ({'mese': MESE[mese],
+                               'anno': anno,
+                               'decade1': d1[0],
+                               'decade2': d2[0],
+                               'decade3': d3[0],
+                               'med_decade1': d1[1],
+                               'med_decade2': d2[1],
+                               'med_decade3': d3[1],
+                               'mensile': mensile
+                               })
+
+        return ltx
 
     def _decade(self, dati, decade):
-        da = 10 * (decade-1)
-        a = da+10
+        da = 10 * (decade - 1)
+        a = da + 10
 
-        if decade==3:
-            a=None
-
+        if decade == 3:
+            a = None
 
         righe = []
+        dtmed = 0
+        dtmin = 100
+        dtmax = -100
+        dtesc = 0
+        dpress = 0
+        dmm = 0
+        ddurata = 0
+        dur = 0
         for d in dati[da:a]:
             data, tmed, tmin, tmax, press, mm, durata, ur = d
 
             data = str(int(data[-2:]))
+            tesc = tmax - tmin
+
+            dtmed += tmed
+            dtmin = tmin if tmin < dtmin else dtmin
+            dtmax = tmax if tmax > dtmax else dtmax
+            dtesc += tmax-tmin
+            dpress += 0  # todo correggere assenza valori
+            dmm += mm
+            ddurata += durata
+            dur += ur
 
             if press:
                 press = str(press)
             else:
                 press = ''
 
-            rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % (tmax - tmin), press, '\\\\\n'))
+            rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % tesc, press, '\\\\\n'))
             righe.append(rec)
 
         righe = ''.join(righe)
 
-        return righe
+        n = len(dati[da:a])
+        dtmed /= n
+        dtesc /= n
+        dpress /= n
+        dur /= n
+
+        decadale = ' & '.join(
+            ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, '%.1f' % dpress))
+
+        return righe, decadale

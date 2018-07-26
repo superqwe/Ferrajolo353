@@ -17,6 +17,7 @@ DT_PIOGGIA = datetime.timedelta(minutes=30)
 # file I/O
 NOME_DB = 'test.sqlite'
 FOUT_CREA = '%i-%02i.csv'
+FANNUARIO = 'annuario/anni.tex'
 
 # mesi
 MESE = {1: 'Gennaio',
