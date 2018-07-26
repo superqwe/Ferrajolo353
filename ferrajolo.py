@@ -1,5 +1,6 @@
 # 09.11.17: rev0
 import datetime
+import itertools
 from pprint import pprint as pp
 
 import annuario
@@ -133,8 +134,8 @@ if __name__ == '__main__':
     # calcola_tabella_giornaliero(dal, al)
 
     """Popola la tabella Mensile dai dati della tabella Raw (vvel, vdir) e Giornaliero"""
-    # dal = datetime.datetime(1976, 1, 1)
-    # al = datetime.datetime(1976, 12, 1)
+    # dal = datetime.datetime(1975, 1, 1)
+    # al = datetime.datetime(2007, 1, 1)
     # calcola_tabella_mensile(dal, al)
 
     """Popola la tabella Annuale dai dati della tabella Raw (vvel, vdir) e Mensile"""
@@ -161,7 +162,16 @@ if __name__ == '__main__':
     # resetta_db()
     # importa_vecchi_dati()
     annuario_talsano = annuario.annuario_talsano()
-    tex = annuario_talsano.latex_mese(7, 1976)
+
+    mesi = itertools.cycle(range(1, 12 + 1))
 
     with open(FANNUARIO, 'w') as fout:
-        fout.write(tex)
+        for anno in range(1975, 2006+1):
+            for mese in mesi:
+                print(anno, mese)
+                tex = annuario_talsano.latex_mese(mese, anno)
+                fout.write(tex)
+
+                if mese ==12:
+                    break
+

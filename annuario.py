@@ -48,13 +48,19 @@ class annuario_talsano(object):
 
         with lite.connect(NOME_DB) as con:
             cur = con.cursor()
-            tmed, tmin, tmax, press, mm, durata = cur.execute(cmd).fetchall()[0]
+            a = cur.execute(cmd).fetchall()[0]
+            tmed, tmin, tmax, press, mm, durata = a
+
+            # print(a)
 
             # todo correggere assenzza valori
             press = 0
 
-        mensile = ' & '.join(('%.1f' % tmin, '%.1f' % tmax, '%.1f' % tmed, '%.1f' % (tmax - tmin),
-                              '%.1f' % press))
+        try:
+            mensile = ' & '.join(('%.1f' % tmin, '%.1f' % tmax, '%.1f' % tmed, '%.1f' % (tmax - tmin),
+                                  '%.1f' % press))
+        except TypeError:
+            mensile = ' & '.join(('-', '-', '-', '-', '-'))
 
         ltx1 = TABELLA_MESE_1 % ({'mese': MESE[mese],
                                   'anno': anno,
@@ -81,7 +87,13 @@ class annuario_talsano(object):
             cur = con.cursor()
             mm, durata, ur = cur.execute(cmd).fetchall()[0]
 
-        mensile = ' & '.join(('%.1f' % mm, '%i' % durata, '%.1f' % ur,))
+        # print(mm, durata, ur)
+        ur = '%.1f' % ur if ur else '-'
+
+        try:
+            mensile = ' & '.join(('%.1f' % mm, '%i' % durata, ur,))
+        except TypeError:
+            mensile = ' & '.join(('-', '-', '-'))
 
         ltx2 = TABELLA_MESE_2 % ({'mese': MESE[mese],
                                   'anno': anno,
@@ -94,7 +106,6 @@ class annuario_talsano(object):
                                   'mensile': mensile
                                   })
 
-        print(ltx2)
         return ltx1 + ltx2
 
     def _decade(self, dati, decade, tabella):
@@ -116,17 +127,32 @@ class annuario_talsano(object):
         for d in dati[da:a]:
             data, tmed, tmin, tmax, press, mm, durata, ur = d
 
-            data = str(int(data[-2:]))
-            tesc = tmax - tmin
+            # print(d)
 
-            dtmed += tmed
-            dtmin = tmin if tmin < dtmin else dtmin
-            dtmax = tmax if tmax > dtmax else dtmax
-            dtesc += tmax - tmin
+            data = str(int(data[-2:]))
+
+            try:
+                tesc = tmax - tmin
+            except TypeError:
+                tesc = 0
+
+            dtmed += tmed if tmed else 0
+
+            if tmin:
+                dtmin = tmin if tmin < dtmin else dtmin
+
+            if tmax:
+                dtmax = tmax if tmax > dtmax else dtmax
+
+            try:
+                dtesc += tmax - tmin
+            except TypeError:
+                pass
+
             dpress += 0  # todo correggere assenza valori
-            dmm += mm
-            ddurata += durata
-            dur += ur
+            dmm += mm if mm else 0  # todo corregere assenza valori
+            ddurata += durata if durata else 0  # todo corregere assenza valori
+            dur += ur if ur else 0  # todo corregere assenza valori
 
             if press:
                 press = str(press)
