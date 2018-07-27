@@ -62,7 +62,7 @@ class annuario_talsano(object):
         except TypeError:
             mensile = ' & '.join(('-', '-', '-', '-', '-'))
 
-        ltx1 = TABELLA_MESE_1 % ({'mese': MESE[mese],
+        ltx1 = TABELLA_MESE % ({'mese': MESE[mese],
                                   'anno': anno,
                                   'decade1': d1[0],
                                   'decade2': d2[0],
@@ -106,7 +106,7 @@ class annuario_talsano(object):
                                   'mensile': mensile
                                   })
 
-        return ltx1 + ltx2
+        return ltx1
 
     def _decade(self, dati, decade, tabella):
         da = 10 * (decade - 1)
