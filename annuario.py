@@ -36,12 +36,11 @@ class annuario_talsano(object):
 
         data = datetime.date(anno, mese, 1)
 
-        # tabella 1
-        d1 = self._decade(dati, 1, 1)
-        d2 = self._decade(dati, 2, 1)
-        d3 = self._decade(dati, 3, 1)
+        d1 = self._decade(dati, 1)
+        d2 = self._decade(dati, 2)
+        d3 = self._decade(dati, 3)
 
-        cmd = '''SELECT t, tmin, tmax, pres, mm, durata
+        cmd = '''SELECT t, tmin, tmax, pres, ur, mm, durata
                  FROM Mensile
                  WHERE data = '{data}'
               '''.format(data=data)
@@ -49,66 +48,34 @@ class annuario_talsano(object):
         with lite.connect(NOME_DB) as con:
             cur = con.cursor()
             a = cur.execute(cmd).fetchall()[0]
-            tmed, tmin, tmax, press, mm, durata = a
+            tmed, tmin, tmax, press, ur, mm, durata = a
 
             # print(a)
 
             # todo correggere assenzza valori
             press = 0
+            ur = '%.1f' % ur if ur else '-'
 
         try:
             mensile = ' & '.join(('%.1f' % tmin, '%.1f' % tmax, '%.1f' % tmed, '%.1f' % (tmax - tmin),
-                                  '%.1f' % press))
+                                  '%.1f' % press, '%.1f' % ur, '%.1f' % mm, '%i' % durata))
         except TypeError:
-            mensile = ' & '.join(('-', '-', '-', '-', '-'))
+            mensile = ' & '.join(('-', '-', '-', '-', '-', '-', '-', '-'))
 
-        ltx1 = TABELLA_MESE % ({'mese': MESE[mese],
-                                  'anno': anno,
-                                  'decade1': d1[0],
-                                  'decade2': d2[0],
-                                  'decade3': d3[0],
-                                  'med_decade1': d1[1],
-                                  'med_decade2': d2[1],
-                                  'med_decade3': d3[1],
-                                  'mensile': mensile
-                                  })
+        ltx = TABELLA_MESE % ({'mese': MESE[mese],
+                               'anno': anno,
+                               'decade1': d1[0],
+                               'decade2': d2[0],
+                               'decade3': d3[0],
+                               'med_decade1': d1[1],
+                               'med_decade2': d2[1],
+                               'med_decade3': d3[1],
+                               'mensile': mensile
+                               })
 
-        # tabella 2
-        d1 = self._decade(dati, 1, 2)
-        d2 = self._decade(dati, 2, 2)
-        d3 = self._decade(dati, 3, 2)
+        return ltx
 
-        cmd = '''SELECT mm, durata, ur
-                 FROM Mensile
-                 WHERE data = '{data}'
-              '''.format(data=data)
-
-        with lite.connect(NOME_DB) as con:
-            cur = con.cursor()
-            mm, durata, ur = cur.execute(cmd).fetchall()[0]
-
-        # print(mm, durata, ur)
-        ur = '%.1f' % ur if ur else '-'
-
-        try:
-            mensile = ' & '.join(('%.1f' % mm, '%i' % durata, ur,))
-        except TypeError:
-            mensile = ' & '.join(('-', '-', '-'))
-
-        ltx2 = TABELLA_MESE_2 % ({'mese': MESE[mese],
-                                  'anno': anno,
-                                  'decade1': d1[0],
-                                  'decade2': d2[0],
-                                  'decade3': d3[0],
-                                  'med_decade1': d1[1],
-                                  'med_decade2': d2[1],
-                                  'med_decade3': d3[1],
-                                  'mensile': mensile
-                                  })
-
-        return ltx1
-
-    def _decade(self, dati, decade, tabella):
+    def _decade(self, dati, decade):
         da = 10 * (decade - 1)
         a = da + 10
 
@@ -159,10 +126,9 @@ class annuario_talsano(object):
             else:
                 press = ''
 
-            if tabella == 1:
-                rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % tesc, press, '\\\\\n'))
-            else:
-                rec = ' & '.join((data, str(mm), str(durata), str(ur), '\\\\\n'))
+            rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % tesc, press, str(mm),
+                              str(durata), str(ur)))
+            rec += '\\\\\n'
 
             righe.append(rec)
 
@@ -174,11 +140,8 @@ class annuario_talsano(object):
         dpress /= n
         dur /= n
 
-        if tabella == 1:
-            decadale = ' & '.join(
-                ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, '%.1f' % dpress))
-        else:
-            decadale = ' & '.join(
-                ('%.1f' % dmm, '%i' % ddurata, '%.1f' % dur))
+        decadale = ' & '.join(
+            ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, '%.1f' % dpress,
+             '%.1f' % dmm, '%i' % ddurata, '%.1f' % dur))
 
         return righe, decadale

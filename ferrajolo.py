@@ -171,8 +171,8 @@ if __name__ == '__main__':
                 print(anno, mese)
                 tex = annuario_talsano.latex_mese(mese, anno)
                 fout.write(tex)
-                break
+                # break
 
                 if mese ==12:
                     break
-            break
+            # break
