@@ -126,8 +126,8 @@ class annuario_talsano(object):
             else:
                 press = ''
 
-            rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % tesc, press, str(mm),
-                              str(durata), str(ur)))
+            rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % tesc, press, str(ur), str(mm),
+                              str(durata)))
             rec += '\\\\\n'
 
             righe.append(rec)
@@ -142,6 +142,6 @@ class annuario_talsano(object):
 
         decadale = ' & '.join(
             ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, '%.1f' % dpress,
-             '%.1f' % dmm, '%i' % ddurata, '%.1f' % dur))
+             '%.1f' % dur, '%.1f' % dmm, '%i' % ddurata))
 
         return righe, decadale
