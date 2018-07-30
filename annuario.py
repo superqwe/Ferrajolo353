@@ -116,18 +116,22 @@ class annuario_talsano(object):
             except TypeError:
                 pass
 
-            dpress += 0  # todo correggere assenza valori
+            dpress += press if press else 0  # todo correggere assenza valori
             dmm += mm if mm else 0  # todo corregere assenza valori
             ddurata += durata if durata else 0  # todo corregere assenza valori
             dur += ur if ur else 0  # todo corregere assenza valori
 
-            if press:
-                press = str(press)
-            else:
-                press = ''
+            # formattazione righe
+            tmin = '%.1f' % tmin if tmin else '-'
+            tmax = '%.1f' % tmax if tmax else '-'
+            tmed = '%.1f' % tmed if tmed else '-'
+            tesc = '%.1f' % tesc if tesc else '-'
+            press = '%.1f' % press if press else '-'
+            ur = '%.1f' % ur if ur else '-'
+            mm = '%.1f' % mm if mm else ''
+            durata = '%i' % durata if durata else ''
 
-            rec = ' & '.join((data, str(tmin), str(tmax), str(tmed), '%.1f' % tesc, press, str(ur), str(mm),
-                              str(durata)))
+            rec = ' & '.join((data, tmin, tmax, tmed, tesc, press, ur, mm, durata))
             rec += '\\\\\n'
 
             righe.append(rec)
@@ -140,8 +144,12 @@ class annuario_talsano(object):
         dpress /= n
         dur /= n
 
+        # formattazione rigo decadale
+        dpress = '%.1f' % dpress if dpress else '-'
+        dur = '%.1f' % dur if dur else '-'
+
         decadale = ' & '.join(
-            ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, '%.1f' % dpress,
-             '%.1f' % dur, '%.1f' % dmm, '%i' % ddurata))
+            ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, dpress, dur, '%.1f' % dmm,
+             '%i' % ddurata))
 
         return righe, decadale
