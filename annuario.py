@@ -13,7 +13,7 @@ class annuario_talsano(object):
     """
 
     def __init__(self):
-        pass
+        self._dati_grafici()
 
     def mese(self, mese, anno):
         dal = datetime.date(anno, mese, 1)
@@ -153,3 +153,81 @@ class annuario_talsano(object):
              '%i' % ddurata))
 
         return righe, decadale
+
+    def _dati_grafici(self):
+        # temperatura
+        self.tmin = self._t_min()
+        self.tmax = self._t_max()
+        self.tmed = self._t_med()
+
+        # pioggia
+        # self._media_mensile()
+        # self._cumulata_mese()
+        # self._n_giorni_piovosi()
+        # self._frequenza_giorni_piovosi()
+
+    def _t_min(self):
+        dal = datetime.date(1975, 1, 1)
+        al = datetime.date(2006, 12, 31)
+
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+            tmin = []
+
+            for mese in range(1, 12 + 1):
+                mese = '%02i' % mese
+                cmd = '''SELECT tmin
+                         FROM Giornaliero
+                         WHERE tmin IS NOT NULL 
+                         AND strftime('%m', data)=='{mese}'
+                         AND data BETWEEN '{dal}' AND '{al}'
+                      '''.format(dal=dal, al=al, mese=mese)
+
+                dati = cur.execute(cmd).fetchall()
+                tmin.append([x[0] for x in dati])
+
+        return tmin
+
+    def _t_max(self):
+        dal = datetime.date(1975, 1, 1)
+        al = datetime.date(2006, 12, 31)
+
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+            tmax = []
+
+            for mese in range(1, 12 + 1):
+                mese = '%02i' % mese
+                cmd = '''SELECT tmax
+                         FROM Giornaliero
+                         WHERE tmin IS NOT NULL 
+                         AND strftime('%m', data)=='{mese}'
+                         AND data BETWEEN '{dal}' AND '{al}'
+                      '''.format(dal=dal, al=al, mese=mese)
+
+                dati = cur.execute(cmd).fetchall()
+                tmax.append([x[0] for x in dati])
+
+        return tmax
+
+    def _t_med(self):
+        dal = datetime.date(1975, 1, 1)
+        al = datetime.date(2006, 12, 31)
+
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+            tmed = []
+
+            for mese in range(1, 12 + 1):
+                mese = '%02i' % mese
+                cmd = '''SELECT t
+                         FROM Giornaliero
+                         WHERE tmin IS NOT NULL 
+                         AND strftime('%m', data)=='{mese}'
+                         AND data BETWEEN '{dal}' AND '{al}'
+                      '''.format(dal=dal, al=al, mese=mese)
+
+                dati = cur.execute(cmd).fetchall()
+                tmed.append([x[0] for x in dati])
+
+        return tmed

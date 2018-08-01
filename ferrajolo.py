@@ -8,6 +8,7 @@ import bollettino_util
 import csv_util
 import db as DB
 import db_util
+import grafici
 import importa_vecchio_db
 from costanti import FANNUARIO
 
@@ -163,16 +164,20 @@ if __name__ == '__main__':
     # importa_vecchi_dati()
     annuario_talsano = annuario.annuario_talsano()
 
-    mesi = itertools.cycle(range(1, 12 + 1))
+    # mesi = itertools.cycle(range(1, 12 + 1))
+    #
+    # with open(FANNUARIO, 'w') as fout:
+    #     for anno in range(1975, 2006 + 1):
+    #         for mese in mesi:
+    #             print(anno, mese)
+    #             tex = annuario_talsano.latex_mese(mese, anno)
+    #             fout.write(tex)
+    #             # break
+    #
+    #             if mese == 12:
+    #                 break
+    #         # break
 
-    with open(FANNUARIO, 'w') as fout:
-        for anno in range(1975, 2006 + 1):
-            for mese in mesi:
-                print(anno, mese)
-                tex = annuario_talsano.latex_mese(mese, anno)
-                fout.write(tex)
-                # break
-
-                if mese == 12:
-                    break
-            # break
+    grafici.annuario_mese_tmin(annuario_talsano.tmin)
+    # grafici.annuario_mese_tmin(annuario_talsano.tmax)
+    # grafici.annuario_mese_tmin(annuario_talsano.tmed)
