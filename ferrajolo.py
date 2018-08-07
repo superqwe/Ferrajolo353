@@ -178,6 +178,7 @@ if __name__ == '__main__':
     #                 break
     #         # break
 
-    grafici.annuario_mese_tmin(annuario_talsano.tmin_mese)
-    grafici.annuario_mese_tmin(annuario_talsano.tmax_mese)
-    grafici.annuario_mese_tmin(annuario_talsano.tmed_mese)
+    # grafici.annuario_mese_tmin(annuario_talsano.tmin_mese)
+    # grafici.annuario_mese_tmin(annuario_talsano.tmax_mese)
+    # grafici.annuario_mese_tmin(annuario_talsano.tmed_mese)
+    grafici.annuario_anno_t(annuario_talsano.t_anno)

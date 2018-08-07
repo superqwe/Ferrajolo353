@@ -43,5 +43,18 @@ def annuario_mese_med(dati):
 
     plt.show()
 
-def annuario_anno_tmin(dati):
-    pass
+
+def annuario_anno_t(dati):
+    x = range(1975, 2006 + 1)
+
+    fig, ax = plt.subplots()
+    ax.plot(x, dati['tmax'], label='Massimo Assoluto', color=(1, 0, 0))
+    ax.plot(x, dati['tq3'], label='3° Quartile', color=(1, .65, 0))
+    ax.plot(x, dati['tmean'], label='Media', color=(1, 0, 1))
+    ax.plot(x, dati['tmed'], label='Mediana', color=(0, .5, 0))
+    ax.plot(x, dati['tq1'], label='1° Quartile', color=(0, 1, 1))
+    ax.plot(x, dati['tmin'], label='Minimo Assoluto', color=(0, 0, 1))
+
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3, )
+    ax.grid(True)
+    plt.show()
