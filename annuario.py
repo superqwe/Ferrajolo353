@@ -156,9 +156,13 @@ class annuario_talsano(object):
 
     def _dati_grafici(self):
         # temperatura
-        self.tmin = self._t_min()
-        self.tmax = self._t_max()
-        self.tmed = self._t_med()
+        self.tmin_mese = self._t_min_mese()
+        self.tmax_mese = self._t_max_mese()
+        self.tmed_mese = self._t_med_mese()
+
+        # self.tmin_anno = self._t_min_anno()
+        # self.tmax_anno = self._t_max_anno()
+        # self.tmed_anno = self._t_med_anno()
 
         # pioggia
         # self._media_mensile()
@@ -166,7 +170,7 @@ class annuario_talsano(object):
         # self._n_giorni_piovosi()
         # self._frequenza_giorni_piovosi()
 
-    def _t_min(self):
+    def _t_min_mese(self):
         dal = datetime.date(1975, 1, 1)
         al = datetime.date(2006, 12, 31)
 
@@ -188,7 +192,7 @@ class annuario_talsano(object):
 
         return tmin
 
-    def _t_max(self):
+    def _t_max_mese(self):
         dal = datetime.date(1975, 1, 1)
         al = datetime.date(2006, 12, 31)
 
@@ -210,7 +214,7 @@ class annuario_talsano(object):
 
         return tmax
 
-    def _t_med(self):
+    def _t_med_mese(self):
         dal = datetime.date(1975, 1, 1)
         al = datetime.date(2006, 12, 31)
 

@@ -164,8 +164,8 @@ if __name__ == '__main__':
     # importa_vecchi_dati()
     annuario_talsano = annuario.annuario_talsano()
 
-    # mesi = itertools.cycle(range(1, 12 + 1))
-    #
+    mesi = itertools.cycle(range(1, 12 + 1))
+
     # with open(FANNUARIO, 'w') as fout:
     #     for anno in range(1975, 2006 + 1):
     #         for mese in mesi:
@@ -178,6 +178,6 @@ if __name__ == '__main__':
     #                 break
     #         # break
 
-    grafici.annuario_mese_tmin(annuario_talsano.tmin)
-    # grafici.annuario_mese_tmin(annuario_talsano.tmax)
-    # grafici.annuario_mese_tmin(annuario_talsano.tmed)
+    grafici.annuario_mese_tmin(annuario_talsano.tmin_mese)
+    grafici.annuario_mese_tmin(annuario_talsano.tmax_mese)
+    grafici.annuario_mese_tmin(annuario_talsano.tmed_mese)
