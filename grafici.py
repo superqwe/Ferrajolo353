@@ -6,51 +6,36 @@ import matplotlib.cbook as cbook
 from pprint import pprint as pp
 
 
-def annuario_mese_tmin(dati):
+def annuario_t_mese(dati, parametro, formato='pdf'):
     labels = ['G', 'F', 'M', 'A', 'M', 'G', 'L', 'A', 'S', 'O', 'N', 'D']
 
-    mysym = dict( markersize=2)
-    # mysym = dict(marker='+', color='red', markersize=5,
-    #              linestyle='-')
-    plt.boxplot(dati,
-                patch_artist=True,  # fill with color
-                labels=labels,
-                notch=False,
-                flierprops=mysym,
-                )
-
-    plt.grid(True)
-    # plt.show()
-    plt.savefig('annuario/tmin_mese.svg', format='svg')
-
-
-def annuario_mese_tmax(dati):
-    labels = ['G', 'F', 'M', 'A', 'M', 'G', 'L', 'A', 'S', 'O', 'N', 'D']
+    mysym = dict(markersize=2)
 
     fig, ax = plt.subplots()
-    ax.boxplot(dati,
-                vert=True,  # vertical box alignment
-                patch_artist=True,  # fill with color
-                labels=labels)  # will be used to label x-ticks
+    bxplt = ax.boxplot(dati,
+                       patch_artist=True,
+                       labels=labels,
+                       notch=False,
+                       flierprops=mysym)
+
+    colori_box = {'tmax': 'red',
+                  'tmed': 'green',
+                  'tmin': 'blue'}
+
+    colori_medians = {'tmax': 'salmon',
+                      'tmed': 'palegreen',
+                      'tmin': 'skyblue'}
+    # pp(bxplt)
+    for box in bxplt['boxes']:
+        box.set_facecolor(colori_box[parametro])
+
+    for medians in bxplt['medians']:
+        medians.set_color(colori_medians[parametro])
 
     ax.grid(True)
+    plt.ylim(-8, 41)
     # plt.show()
-    plt.savefig('annuario/tmax_mese.pdf', format='pdf')
-
-
-def annuario_mese_tmed(dati):
-    labels = ['G', 'F', 'M', 'A', 'M', 'G', 'L', 'A', 'S', 'O', 'N', 'D']
-
-    fig, ax = plt.subplots()
-    ax.boxplot(dati,
-                vert=True,  # vertical box alignment
-                patch_artist=True,  # fill with color
-                labels=labels)  # will be used to label x-ticks
-
-    ax.grid(True)
-
-    # plt.show()
-    plt.savefig('annuario/tmed_mese.pdf', format='pdf')
+    plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
 
 
 def annuario_anno_tmed(dati):
