@@ -162,7 +162,7 @@ class annuario_talsano(object):
         self.tmax_mese = self._t_max_mese()
         self.tmed_mese = self._t_med_mese()
 
-        self.t_anno = self._t_anno()
+        self.t_med_anno = self._t_med_anno()
         # self.tmax_anno = self._t_max_anno()
         # self.tmed_anno = self._t_med_anno()
 
@@ -238,13 +238,14 @@ class annuario_talsano(object):
 
         return tmed
 
-    def _t_anno(self):
+    def _t_med_anno(self):
         dati = {'tmin': [],
                 'tmax': [],
                 'tmean': [],
                 'tmed': [],
                 'tq1': [],
                 'tq3': [],
+                'fliers':[]
                 }
 
         with lite.connect(NOME_DB) as con:
@@ -264,33 +265,41 @@ class annuario_talsano(object):
                 res = ([x[0] for x in res])
 
                 stat = boxplot_stats(res)
-                # pp(stat)
+                # print(anno)
+                # pp(stat[0]['fliers'])
 
                 dati['tmean'].append(stat[0]['mean'])
                 dati['tmed'].append(stat[0]['med'])
                 dati['tq1'].append(stat[0]['q1'])
                 dati['tq3'].append(stat[0]['q3'])
+                dati['tmax'].append(stat[0]['whishi'])
+                dati['tmin'].append(stat[0]['whislo'])
+                dati['fliers'].append(stat[0]['fliers'])
+
+                if stat[0]['fliers']:
+                    pp(stat[0]['fliers'])
+
 
                 # todo prendere i valori dalla tabella annuale
-                cmd = '''SELECT tmin
-                             FROM Giornaliero
-                             WHERE tmin IS NOT NULL 
-                             AND data BETWEEN '{dal}' AND '{al}'
-                          '''.format(dal=dal, al=al)
-
-                res = cur.execute(cmd).fetchall()
-                tmin = min([x[0] for x in res])
-                dati['tmin'].append(tmin)
+                # cmd = '''SELECT tmin
+                #              FROM Giornaliero
+                #              WHERE tmin IS NOT NULL
+                #              AND data BETWEEN '{dal}' AND '{al}'
+                #           '''.format(dal=dal, al=al)
+                #
+                # res = cur.execute(cmd).fetchall()
+                # tmin = min([x[0] for x in res])
+                # dati['tmin'].append(tmin)
 
                 # todo prendere i valori dalla tabella annuale
-                cmd = '''SELECT tmax
-                             FROM Giornaliero
-                             WHERE tmax IS NOT NULL 
-                             AND data BETWEEN '{dal}' AND '{al}'
-                          '''.format(dal=dal, al=al)
-
-                res = cur.execute(cmd).fetchall()
-                tmax = max([x[0] for x in res])
-                dati['tmax'].append(tmax)
+                # cmd = '''SELECT tmax
+                #              FROM Giornaliero
+                #              WHERE tmax IS NOT NULL
+                #              AND data BETWEEN '{dal}' AND '{al}'
+                #           '''.format(dal=dal, al=al)
+                #
+                # res = cur.execute(cmd).fetchall()
+                # tmax = max([x[0] for x in res])
+                # dati['tmax'].append(tmax)
 
         return dati
