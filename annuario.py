@@ -162,9 +162,9 @@ class annuario_talsano(object):
         self.tmax_mese = self._t_mese('tmax')
         self.tmed_mese = self._t_mese('t')
 
-        self.t_med_anno = self._t_anno()
-        # self.tmax_anno = self._t_max_anno()
-        # self.tmed_anno = self._t_anno()
+        self.tmin_anno = self._t_anno('tmin')
+        self.tmax_anno = self._t_anno('tmax')
+        self.tmed_anno = self._t_anno('t')
 
         # pioggia
         # self._media_mensile()
@@ -194,7 +194,7 @@ class annuario_talsano(object):
 
         return tmin
 
-    def _t_anno(self):
+    def _t_anno(self, parametro):
         dati = {'tmin': [],
                 'tmax': [],
                 'tmean': [],
@@ -211,11 +211,11 @@ class annuario_talsano(object):
                 dal = datetime.date(anno, 1, 1)
                 al = datetime.date(anno, 12, 31)
 
-                cmd = '''SELECT t
+                cmd = '''SELECT {parametro}
                              FROM Giornaliero
-                             WHERE t IS NOT NULL 
+                             WHERE {parametro} IS NOT NULL 
                              AND data BETWEEN '{dal}' AND '{al}'
-                          '''.format(dal=dal, al=al)
+                          '''.format(dal=dal, al=al, parametro=parametro)
 
                 res = cur.execute(cmd).fetchall()
                 res = ([x[0] for x in res])
@@ -233,6 +233,8 @@ class annuario_talsano(object):
                 dati['fliers'].append(stat[0]['fliers'])
 
                 if stat[0]['fliers']:
+                    print(anno, parametro)
                     pp(stat[0]['fliers'])
+
 
         return dati

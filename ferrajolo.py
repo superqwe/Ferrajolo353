@@ -181,4 +181,7 @@ if __name__ == '__main__':
     grafici.annuario_t_mese(annuario_talsano.tmin_mese, 'tmin')
     grafici.annuario_t_mese(annuario_talsano.tmax_mese, 'tmax')
     grafici.annuario_t_mese(annuario_talsano.tmed_mese, 'tmed')
-    grafici.annuario_anno_tmed(annuario_talsano.t_med_anno)
+
+    grafici.annuario_t_anno(annuario_talsano.tmin_anno, 'tmin')
+    grafici.annuario_t_anno(annuario_talsano.tmax_anno, 'tmax')
+    grafici.annuario_t_anno(annuario_talsano.tmed_anno, 'tmed')

@@ -38,7 +38,7 @@ def annuario_t_mese(dati, parametro, formato='pdf'):
     plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
 
 
-def annuario_anno_tmed(dati):
+def annuario_t_anno(dati, parametro):
     x = range(1975, 2006 + 1)
 
     fig, ax = plt.subplots()
@@ -51,6 +51,7 @@ def annuario_anno_tmed(dati):
 
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3, )
     ax.grid(True)
+    plt.ylim(-8, 41)
 
     # plt.show()
-    plt.savefig('annuario/tmed_anno.pdf', format='pdf')
+    plt.savefig('annuario/%s_anno.pdf' % parametro, format='pdf')
