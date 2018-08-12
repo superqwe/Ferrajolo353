@@ -232,9 +232,4 @@ class annuario_talsano(object):
                 dati['tmin'].append(stat[0]['whislo'])
                 dati['fliers'].append(stat[0]['fliers'])
 
-                if stat[0]['fliers']:
-                    print(anno, parametro)
-                    pp(stat[0]['fliers'])
-
-
         return dati

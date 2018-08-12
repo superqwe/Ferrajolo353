@@ -40,7 +40,7 @@ def annuario_t_mese(dati, parametro, formato='pdf'):
 
 def annuario_t_anno(dati, parametro):
     x = range(1975, 2006 + 1)
-
+    ncol = 3
     fig, ax = plt.subplots()
     ax.plot(x, dati['tmax'], label='Massimo', color=(1, 0, 0))
     ax.plot(x, dati['tq3'], label='3° Quartile', color=(1, .65, 0))
@@ -49,7 +49,12 @@ def annuario_t_anno(dati, parametro):
     ax.plot(x, dati['tq1'], label='1° Quartile', color=(0, 1, 1))
     ax.plot(x, dati['tmin'], label='Minino', color=(0, 0, 1))
 
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3, )
+    for anno, fliers in enumerate(dati['fliers'], start=1975):
+        if fliers:
+            ax.scatter(anno, fliers, label='Anomalia')
+            ncol += 1
+
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=ncol)
     ax.grid(True)
     plt.ylim(-8, 41)
 
