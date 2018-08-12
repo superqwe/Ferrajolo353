@@ -178,6 +178,7 @@ if __name__ == '__main__':
     #                 break
     #         # break
 
+    # todo aggiungere grafico escursione giornaliera
     grafici.annuario_t_mese(annuario_talsano.tmin_mese, 'tmin')
     grafici.annuario_t_mese(annuario_talsano.tmax_mese, 'tmax')
     grafici.annuario_t_mese(annuario_talsano.tmed_mese, 'tmed')

@@ -221,8 +221,6 @@ class annuario_talsano(object):
                 res = ([x[0] for x in res])
 
                 stat = boxplot_stats(res)
-                # print(anno)
-                # pp(stat[0]['fliers'])
 
                 dati['tmean'].append(stat[0]['mean'])
                 dati['tmed'].append(stat[0]['med'])
