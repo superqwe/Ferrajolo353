@@ -167,6 +167,7 @@ class annuario_talsano(object):
         self.tmed_anno = self._t_anno('t')
 
         # pioggia
+        self.p_anno = self._p_anno()
         # self._media_mensile()
         # self._cumulata_mese()
         # self._n_giorni_piovosi()
@@ -231,3 +232,26 @@ class annuario_talsano(object):
                 dati['fliers'].append(stat[0]['fliers'])
 
         return dati
+
+    def _p_anno(self):
+        mm=[]
+        parametro = 'mm'
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+
+            for anno in range(1975, 2006 + 1):
+                dal = datetime.date(anno, 1, 1)
+                al = datetime.date(anno, 12, 31)
+
+                cmd = '''SELECT {parametro}
+                             FROM Giornaliero
+                             WHERE {parametro} IS NOT NULL 
+                             AND data BETWEEN '{dal}' AND '{al}'
+                          '''.format(dal=dal, al=al, parametro=parametro)
+
+                res = cur.execute(cmd).fetchall()
+                res = sum([x[0] for x in res])
+
+                mm.append(res)
+        stat = boxplot_stats(mm)
+        return mm, stat

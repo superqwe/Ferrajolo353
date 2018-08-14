@@ -178,6 +178,7 @@ if __name__ == '__main__':
     #                 break
     #         # break
 
+    # grafici temperature
     # todo aggiungere grafico escursione giornaliera
     grafici.annuario_t_mese(annuario_talsano.tmin_mese, 'tmin')
     grafici.annuario_t_mese(annuario_talsano.tmax_mese, 'tmax')
@@ -186,3 +187,7 @@ if __name__ == '__main__':
     grafici.annuario_t_anno(annuario_talsano.tmin_anno, 'tmin')
     grafici.annuario_t_anno(annuario_talsano.tmax_anno, 'tmax')
     grafici.annuario_t_anno(annuario_talsano.tmed_anno, 'tmed')
+
+    # grafici pioggia
+    grafici.annuario_p_anno(annuario_talsano.p_anno)
+
