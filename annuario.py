@@ -157,6 +157,7 @@ class annuario_talsano(object):
         return righe, decadale
 
     def _dati_grafici(self):
+        # todo aggiungere scarto
         # temperatura
         self.tmin_mese = self._t_mese('tmin')
         self.tmax_mese = self._t_mese('tmax')
@@ -168,9 +169,11 @@ class annuario_talsano(object):
 
         # pioggia
         self.p_anno = self._p_anno()
-        # self._media_mensile()
-        # self._cumulata_mese()
-        # self._n_giorni_piovosi()
+        self.p_mese = self._p_mese()
+
+        self.pg_anno = self._pg_anno()
+        self.pg_mese = self._pg_mese()
+
         # self._frequenza_giorni_piovosi()
 
     def _t_mese(self, parametro):
@@ -234,7 +237,7 @@ class annuario_talsano(object):
         return dati
 
     def _p_anno(self):
-        mm=[]
+        mm = []
         parametro = 'mm'
         with lite.connect(NOME_DB) as con:
             cur = con.cursor()
@@ -255,3 +258,83 @@ class annuario_talsano(object):
                 mm.append(res)
         stat = boxplot_stats(mm)
         return mm, stat
+
+    def _p_mese(self):
+        parametro = 'mm'
+        dal = datetime.date(1975, 1, 1)
+        al = datetime.date(2006, 12, 31)
+
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+            mm = []
+
+            for mese in range(1, 12 + 1):
+                mese = '%02i' % mese
+                cmd = '''SELECT {parametro}
+                         FROM Mensile
+                         WHERE {parametro} IS NOT NULL 
+                         AND strftime('%m', data)=='{mese}'
+                         AND data BETWEEN '{dal}' AND '{al}'
+                      '''.format(dal=dal, al=al, mese=mese, parametro=parametro)
+
+                dati = cur.execute(cmd).fetchall()
+                mm.append([x[0] for x in dati])
+
+        # stat = boxplot_stats(mm)
+        return mm
+
+    def _pg_anno(self):
+        mm = []
+        parametro = 'mm'
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+
+            for anno in range(1975, 2006 + 1):
+                dal = datetime.date(anno, 1, 1)
+                al = datetime.date(anno, 12, 31)
+
+                cmd = '''SELECT count({parametro})
+                             FROM Giornaliero
+                             WHERE {parametro} > 0 
+                             AND data BETWEEN '{dal}' AND '{al}'
+                          '''.format(dal=dal, al=al, parametro=parametro)
+
+                res = cur.execute(cmd).fetchall()[0][0]
+                mm.append(res)
+
+        stat = boxplot_stats(mm)
+        return mm, stat
+
+    def _pg_mese(self):
+        parametro = 'mm'
+        dal = datetime.date(1975, 1, 1)
+        al = datetime.date(2006, 12, 31)
+
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+            gp = {'%02i' % x: [] for x in range(1, 13)}
+
+            for anno in range(1975, 2006 + 1):
+                for mese in range(1, 12 + 1):
+                    gg = calendar.monthrange(anno, mese)[1]
+                    dal = datetime.date(anno, mese, 1)
+                    al = datetime.date(anno, mese, gg)
+
+                    mese = '%02i' % mese
+
+                    cmd = '''SELECT count({parametro})
+                             FROM Giornaliero
+                             WHERE {parametro} > 0 
+                             AND strftime('%m', data)=='{mese}'
+                             AND data BETWEEN '{dal}' AND '{al}'
+                          '''.format(dal=dal, al=al, mese=mese, parametro=parametro)
+
+                    dati = cur.execute(cmd).fetchall()[0][0]
+                    gp[mese].append(dati)
+
+        # stat = boxplot_stats(mm)
+
+        # trasforma gp da dizionario in lista di liste ordinata per mesi
+        gp_ordinati = [gp[x] for x in sorted(gp.keys())]
+
+        return gp_ordinati

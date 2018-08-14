@@ -190,4 +190,8 @@ if __name__ == '__main__':
 
     # grafici pioggia
     grafici.annuario_p_anno(annuario_talsano.p_anno)
+    grafici.annuario_p_mese(annuario_talsano.p_mese)
+
+    grafici.annuario_pg_anno(annuario_talsano.pg_anno)
+    grafici.annuario_pg_mese(annuario_talsano.pg_mese)
 
