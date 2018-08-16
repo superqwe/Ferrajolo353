@@ -180,18 +180,20 @@ if __name__ == '__main__':
 
     # grafici temperature
     # todo aggiungere grafico escursione giornaliera
-    grafici.annuario_t_mese(annuario_talsano.tmin_mese, 'tmin')
-    grafici.annuario_t_mese(annuario_talsano.tmax_mese, 'tmax')
-    grafici.annuario_t_mese(annuario_talsano.tmed_mese, 'tmed')
+    # grafici.annuario_t_mese(annuario_talsano.tmin_mese, 'tmin')
+    # grafici.annuario_t_mese(annuario_talsano.tmax_mese, 'tmax')
+    # grafici.annuario_t_mese(annuario_talsano.tmed_mese, 'tmed')
+    #
+    # grafici.annuario_t_anno(annuario_talsano.tmin_anno, 'tmin')
+    # grafici.annuario_t_anno(annuario_talsano.tmax_anno, 'tmax')
+    # grafici.annuario_t_anno(annuario_talsano.tmed_anno, 'tmed')
+    #
+    # # grafici pioggia
+    # grafici.annuario_p_anno(annuario_talsano.p_anno)
+    # grafici.annuario_p_mese(annuario_talsano.p_mese)
+    #
+    # grafici.annuario_pg_anno(annuario_talsano.pg_anno)
+    # grafici.annuario_pg_mese(annuario_talsano.pg_mese)
 
-    grafici.annuario_t_anno(annuario_talsano.tmin_anno, 'tmin')
-    grafici.annuario_t_anno(annuario_talsano.tmax_anno, 'tmax')
-    grafici.annuario_t_anno(annuario_talsano.tmed_anno, 'tmed')
-
-    # grafici pioggia
-    grafici.annuario_p_anno(annuario_talsano.p_anno)
-    grafici.annuario_p_mese(annuario_talsano.p_mese)
-
-    grafici.annuario_pg_anno(annuario_talsano.pg_anno)
-    grafici.annuario_pg_mese(annuario_talsano.pg_mese)
+    grafici.annuario_pf_anno(annuario_talsano.pf_anno)
 

@@ -174,6 +174,8 @@ class annuario_talsano(object):
         self.pg_anno = self._pg_anno()
         self.pg_mese = self._pg_mese()
 
+        self.pf_anno = self._pf_anno()
+
         # self._frequenza_giorni_piovosi()
 
     def _t_mese(self, parametro):
@@ -338,3 +340,23 @@ class annuario_talsano(object):
         gp_ordinati = [gp[x] for x in sorted(gp.keys())]
 
         return gp_ordinati
+
+    def _pf_anno(self):
+        mm = []
+        parametro = 'mm'
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+
+            dal = datetime.date(1975, 1, 1)
+            al = datetime.date(2006, 12, 31)
+
+            cmd = '''SELECT {parametro}
+                                FROM Giornaliero
+                                WHERE {parametro} > 0 
+                                AND data BETWEEN '{dal}' AND '{al}'
+                             '''.format(dal=dal, al=al, parametro=parametro)
+
+            res = cur.execute(cmd).fetchall()
+            mm.append([x[0] for x in res])
+
+        return mm

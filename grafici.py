@@ -167,7 +167,7 @@ def annuario_pg_mese(dati, formato='pdf'):
     colori_box = {'gp': (0, .5, 1)}
 
     colori_medians = {'gp': 'skyblue'}
-    # pp(bxplt)
+
     for box in bxplt['boxes']:
         box.set_facecolor(colori_box[parametro])
 
@@ -175,7 +175,24 @@ def annuario_pg_mese(dati, formato='pdf'):
         medians.set_color(colori_medians[parametro])
 
     ax.grid(True)
-    # plt.ylim(-8, 41)
 
     # plt.show()
     plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
+
+
+def annuario_pf_anno(dati, formato='pdf'):
+    parametro = 'gf'
+    fig, ax = plt.subplots()
+
+    # bins = [0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22,
+    #         24, 26, 28, 30, 40, 50]
+    bins = [0.2, 0.4, 0.6, 0.8, 1, 5, 10, 20, 50]
+    ax.hist(dati,
+            bins,
+            density=True,
+            cumulative=True,
+
+            )
+    plt.grid(True)
+    plt.show()
+    # plt.savefig('annuario/%s_anno.%s' % (parametro, formato), format=formato)

@@ -38,6 +38,11 @@ venv.bak/
 # mypy
 .idea/
 .mypy_cache/
+annuario/*.aux
+annuario/*.bak
+annuario/*.log
+annuario/*.gz
+
 dati/*
 rptlab-reportlab-823a8c33ce43/
 Sun Ephemeris/
