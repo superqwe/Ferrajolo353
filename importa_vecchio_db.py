@@ -3,6 +3,7 @@ import csv
 from pprint import pprint as pp
 import sqlite3 as lite
 
+import pandas
 from docutils.utils.punctuation_chars import delimiters
 
 from costanti import *
@@ -35,7 +36,7 @@ def leggi_csv():
 
         for rigo in reader:
             try:
-                data, tmed, tmin, tmax, ur, mm, durata, press, tensvap, nuvol = rigo[1:-3]
+                data, tmed, tmin, tmax, ur, mm, durata, press, tens, nuvol, vvel, vdir, vfil = rigo[1:]
             except ValueError:
                 print(rigo)
                 continue
@@ -43,18 +44,24 @@ def leggi_csv():
             tmed = str2float(tmed)
             tmin = str2float(tmin)
             tmax = str2float(tmax)
+            press = str2float(press)
             ur = str2float(ur)
+            tens = str2float(tens)
             mm = str2float(mm)
             durata = str2int(durata)
-            press = str2float(press)
-            tensvap = str2float(tensvap)
             nuvol = str2float(nuvol)
 
-            rec = (data, tmed, tmin, tmax, press, mm, durata, ur)
+            rec = (data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil)
 
             dati.append(rec)
 
     return dati
+
+
+def leggi_csv2():
+    a =pandas.read_csv(DATI, delimiter='|', header=0, )
+    pp(a)
+
 
 
 def scrivi(dati):

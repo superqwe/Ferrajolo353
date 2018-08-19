@@ -15,7 +15,7 @@ DT_ORA = datetime.timedelta(hours=1)
 DT_PIOGGIA = datetime.timedelta(minutes=30)
 
 # file I/O
-NOME_DB = 'test.sqlite'
+NOME_DB = 'Annuario.sqlite'
 FOUT_CREA = '%i-%02i.csv'
 FANNUARIO = 'annuario/anni.tex'
 

@@ -87,7 +87,8 @@ def bollettino_mensile(anno, mese):
 
 
 def importa_vecchi_dati():
-    dati = importa_vecchio_db.leggi_csv()
+    dati = importa_vecchio_db.leggi_csv2()
+    return
     importa_vecchio_db.scrivi(dati)
 
 
@@ -161,10 +162,10 @@ if __name__ == '__main__':
 
     """Annuaario Talsano"""
     # resetta_db()
-    # importa_vecchi_dati()
-    annuario_talsano = annuario.annuario_talsano()
+    importa_vecchi_dati()
+    # annuario_talsano = annuario.annuario_talsano()
 
-    mesi = itertools.cycle(range(1, 12 + 1))
+    # mesi = itertools.cycle(range(1, 12 + 1))
 
     # with open(FANNUARIO, 'w') as fout:
     #     for anno in range(1975, 2006 + 1):
@@ -195,5 +196,5 @@ if __name__ == '__main__':
     # grafici.annuario_pg_anno(annuario_talsano.pg_anno)
     # grafici.annuario_pg_mese(annuario_talsano.pg_mese)
 
-    grafici.annuario_pf_anno(annuario_talsano.pf_anno)
+    # grafici.annuario_pf_anno(annuario_talsano.pf_anno)
 
