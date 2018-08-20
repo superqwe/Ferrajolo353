@@ -21,7 +21,7 @@ class annuario_talsano(object):
         dal = datetime.date(anno, mese, 1)
         al = datetime.date(anno, mese, calendar.monthrange(anno, mese)[1])
 
-        cmd = '''SELECT data, tmed, tmin, tmax, press, mm, durata, ur
+        cmd = '''SELECT data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil
                  FROM Annuario_Talsano_G
                  WHERE data
                  BETWEEN '{dal}' AND '{al}'
@@ -36,43 +36,15 @@ class annuario_talsano(object):
     def latex_mese(self, mese, anno):
         dati = self.mese(mese, anno)
 
-        data = datetime.date(anno, mese, 1)
-
         d1 = self._decade(dati, 1)
         d2 = self._decade(dati, 2)
         d3 = self._decade(dati, 3)
 
-        # cmd = '''SELECT t, tmin, tmax, pres, ur, mm, durata
-        #          FROM Mensile
-        #          WHERE data = '{data}'
-        #       '''.format(data=data)
-        #
-        # with lite.connect(NOME_DB) as con:
-        #     cur = con.cursor()
-        #     a = cur.execute(cmd).fetchall()[0]
-        #     tmed, tmin, tmax, press, ur, mm, durata = a
-        #
-        #     # print(a)
-        #
-        #     # todo correggere assenzza valori
-        #     press = 0
-        #     ur = '%.1f' % ur if ur else '-'
-        #
-        # try:
-        #     mensile = ' & '.join(('%.1f' % tmin, '%.1f' % tmax, '%.1f' % tmed, '%.1f' % (tmax - tmin),
-        #                           '%.1f' % press, '%.1f' % ur, '%.1f' % mm, '%i' % durata))
-        # except TypeError:
-        #     mensile = ' & '.join(('-', '-', '-', '-', '-', '-', '-', '-'))
-
         ltx = TABELLA_MESE2 % ({'mese': MESE[mese],
                                 'anno': anno,
-                                'decade1': d1[0],
-                                'decade2': d2[0],
-                                'decade3': d3[0],
-                                # 'med_decade1': d1[1],
-                                # 'med_decade2': d2[1],
-                                # 'med_decade3': d3[1],
-                                # 'mensile': mensile
+                                'decade1': d1,
+                                'decade2': d2,
+                                'decade3': d3,
                                 })
 
         return ltx
@@ -94,7 +66,7 @@ class annuario_talsano(object):
         # ddurata = 0
         # dur = 0
         for d in dati[da:a]:
-            data, tmed, tmin, tmax, press, mm, durata, ur = d
+            data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = d
 
             # print(d)
 
@@ -130,10 +102,16 @@ class annuario_talsano(object):
             tesc = '%.1f' % tesc if tesc else '-'
             press = '%.1f' % press if press else '-'
             ur = '%.1f' % ur if ur else '-'
+            tens = '%.1f' % tens if tens else '-'
             mm = '%.1f' % mm if mm else ''
             durata = '%i' % durata if durata else ''
+            nuvol = '%.1f' % nuvol if nuvol else '-'
+            vvel = '%.1f' % vvel if vvel else '-'
+            vdir = '%s' % vdir if vdir else '-'
+            vfil = '%.1f' % vfil if vfil else '-'
 
-            rec = ' & '.join((data, tmin, tmax, tmed, tesc, press, ur, mm, durata))
+            rec = ' & '.join(
+                (data, tmin, tmax, tmed, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil))
             rec += '\\\\\n'
 
             righe.append(rec)
@@ -154,7 +132,7 @@ class annuario_talsano(object):
         #     ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, dpress, dur, '%.1f' % dmm,
         #      '%i' % ddurata))
 
-        return righe, #decadale
+        return righe  # , #decadale
 
     def _dati_grafici(self):
         # todo aggiungere scarto
