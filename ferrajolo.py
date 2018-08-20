@@ -87,9 +87,7 @@ def bollettino_mensile(anno, mese):
 
 
 def importa_vecchi_dati():
-    dati = importa_vecchio_db.leggi_csv2()
-    return
-    importa_vecchio_db.scrivi(dati)
+    importa_vecchio_db.importa_csv()
 
 
 if __name__ == '__main__':
@@ -197,4 +195,3 @@ if __name__ == '__main__':
     # grafici.annuario_pg_mese(annuario_talsano.pg_mese)
 
     # grafici.annuario_pf_anno(annuario_talsano.pf_anno)
-

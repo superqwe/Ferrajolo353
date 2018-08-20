@@ -1,10 +1,9 @@
 # 25.07.18
 import csv
-from pprint import pprint as pp
 import sqlite3 as lite
+from pprint import pprint as pp
 
 import pandas
-from docutils.utils.punctuation_chars import delimiters
 
 from costanti import *
 
@@ -26,6 +25,7 @@ def str2int(valore):
 
 
 def leggi_csv():
+    # todo obsoleto
     """
     :return:
     dati -> {data: [t ,tmin, tmax, mm, durata]}
@@ -58,13 +58,20 @@ def leggi_csv():
     return dati
 
 
-def leggi_csv2():
-    a =pandas.read_csv(DATI, delimiter='|', header=0, )
-    pp(a)
+def importa_csv():
+    tabella = pandas.read_csv(DATI, delimiter='|', header=0, parse_dates=True, na_values=[''],
+                              index_col='recno')
 
+    dati = tabella[
+        ['data', 'tmed', 'tmin', 'tmax', 'press', 'ur', 'tens', 'mm', 'durata', 'nuvol', 'vvel', 'vdir',
+         'vfil']]
+
+    with lite.connect(NOME_DB) as con:
+        dati.to_sql('Annuario_Talsano_G', con, if_exists='replace', index=False)
 
 
 def scrivi(dati):
+    # todo obsoleto
     with lite.connect(NOME_DB) as con:
         cur = con.cursor()
         cur.executemany("""INSERT INTO Giornaliero
