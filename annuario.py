@@ -21,8 +21,8 @@ class annuario_talsano(object):
         dal = datetime.date(anno, mese, 1)
         al = datetime.date(anno, mese, calendar.monthrange(anno, mese)[1])
 
-        cmd = '''SELECT data, t, tmin, tmax, pres, mm, durata, ur
-                 FROM Giornaliero
+        cmd = '''SELECT data, tmed, tmin, tmax, press, mm, durata, ur
+                 FROM Annuario_Talsano_G
                  WHERE data
                  BETWEEN '{dal}' AND '{al}'
                  '''.format(dal=dal,
@@ -42,38 +42,38 @@ class annuario_talsano(object):
         d2 = self._decade(dati, 2)
         d3 = self._decade(dati, 3)
 
-        cmd = '''SELECT t, tmin, tmax, pres, ur, mm, durata
-                 FROM Mensile
-                 WHERE data = '{data}'
-              '''.format(data=data)
+        # cmd = '''SELECT t, tmin, tmax, pres, ur, mm, durata
+        #          FROM Mensile
+        #          WHERE data = '{data}'
+        #       '''.format(data=data)
+        #
+        # with lite.connect(NOME_DB) as con:
+        #     cur = con.cursor()
+        #     a = cur.execute(cmd).fetchall()[0]
+        #     tmed, tmin, tmax, press, ur, mm, durata = a
+        #
+        #     # print(a)
+        #
+        #     # todo correggere assenzza valori
+        #     press = 0
+        #     ur = '%.1f' % ur if ur else '-'
+        #
+        # try:
+        #     mensile = ' & '.join(('%.1f' % tmin, '%.1f' % tmax, '%.1f' % tmed, '%.1f' % (tmax - tmin),
+        #                           '%.1f' % press, '%.1f' % ur, '%.1f' % mm, '%i' % durata))
+        # except TypeError:
+        #     mensile = ' & '.join(('-', '-', '-', '-', '-', '-', '-', '-'))
 
-        with lite.connect(NOME_DB) as con:
-            cur = con.cursor()
-            a = cur.execute(cmd).fetchall()[0]
-            tmed, tmin, tmax, press, ur, mm, durata = a
-
-            # print(a)
-
-            # todo correggere assenzza valori
-            press = 0
-            ur = '%.1f' % ur if ur else '-'
-
-        try:
-            mensile = ' & '.join(('%.1f' % tmin, '%.1f' % tmax, '%.1f' % tmed, '%.1f' % (tmax - tmin),
-                                  '%.1f' % press, '%.1f' % ur, '%.1f' % mm, '%i' % durata))
-        except TypeError:
-            mensile = ' & '.join(('-', '-', '-', '-', '-', '-', '-', '-'))
-
-        ltx = TABELLA_MESE % ({'mese': MESE[mese],
-                               'anno': anno,
-                               'decade1': d1[0],
-                               'decade2': d2[0],
-                               'decade3': d3[0],
-                               'med_decade1': d1[1],
-                               'med_decade2': d2[1],
-                               'med_decade3': d3[1],
-                               'mensile': mensile
-                               })
+        ltx = TABELLA_MESE2 % ({'mese': MESE[mese],
+                                'anno': anno,
+                                'decade1': d1[0],
+                                'decade2': d2[0],
+                                'decade3': d3[0],
+                                # 'med_decade1': d1[1],
+                                # 'med_decade2': d2[1],
+                                # 'med_decade3': d3[1],
+                                # 'mensile': mensile
+                                })
 
         return ltx
 
@@ -85,14 +85,14 @@ class annuario_talsano(object):
             a = None
 
         righe = []
-        dtmed = 0
-        dtmin = 100
-        dtmax = -100
-        dtesc = 0
-        dpress = 0
-        dmm = 0
-        ddurata = 0
-        dur = 0
+        # dtmed = 0
+        # dtmin = 100
+        # dtmax = -100
+        # dtesc = 0
+        # dpress = 0
+        # dmm = 0
+        # ddurata = 0
+        # dur = 0
         for d in dati[da:a]:
             data, tmed, tmin, tmax, press, mm, durata, ur = d
 
@@ -105,23 +105,23 @@ class annuario_talsano(object):
             except TypeError:
                 tesc = 0
 
-            dtmed += tmed if tmed else 0
+            # dtmed += tmed if tmed else 0
+            #
+            # if tmin:
+            #     dtmin = tmin if tmin < dtmin else dtmin
+            #
+            # if tmax:
+            #     dtmax = tmax if tmax > dtmax else dtmax
+            #
+            # try:
+            #     dtesc += tmax - tmin
+            # except TypeError:
+            #     pass
 
-            if tmin:
-                dtmin = tmin if tmin < dtmin else dtmin
-
-            if tmax:
-                dtmax = tmax if tmax > dtmax else dtmax
-
-            try:
-                dtesc += tmax - tmin
-            except TypeError:
-                pass
-
-            dpress += press if press else 0  # todo correggere assenza valori
-            dmm += mm if mm else 0  # todo corregere assenza valori
-            ddurata += durata if durata else 0  # todo corregere assenza valori
-            dur += ur if ur else 0  # todo corregere assenza valori
+            # dpress += press if press else 0  # todo correggere assenza valori
+            # dmm += mm if mm else 0  # todo corregere assenza valori
+            # ddurata += durata if durata else 0  # todo corregere assenza valori
+            # dur += ur if ur else 0  # todo corregere assenza valori
 
             # formattazione righe
             tmin = '%.1f' % tmin if tmin else '-'
@@ -140,21 +140,21 @@ class annuario_talsano(object):
 
         righe = ''.join(righe)
 
-        n = len(dati[da:a])
-        dtmed /= n
-        dtesc /= n
-        dpress /= n
-        dur /= n
+        # n = len(dati[da:a])
+        # dtmed /= n
+        # dtesc /= n
+        # dpress /= n
+        # dur /= n
+        #
+        # # formattazione rigo decadale
+        # dpress = '%.1f' % dpress if dpress else '-'
+        # dur = '%.1f' % dur if dur else '-'
+        #
+        # decadale = ' & '.join(
+        #     ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, dpress, dur, '%.1f' % dmm,
+        #      '%i' % ddurata))
 
-        # formattazione rigo decadale
-        dpress = '%.1f' % dpress if dpress else '-'
-        dur = '%.1f' % dur if dur else '-'
-
-        decadale = ' & '.join(
-            ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, dpress, dur, '%.1f' % dmm,
-             '%i' % ddurata))
-
-        return righe, decadale
+        return righe, #decadale
 
     def _dati_grafici(self):
         # todo aggiungere scarto

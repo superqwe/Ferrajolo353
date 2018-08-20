@@ -94,3 +94,51 @@ Mese & %(mensile)s\\
 \end{tabular}
 \vfill
 """
+
+TABELLA_MESE2 = r"""
+\subsection{%(mese)s %(anno)i}
+
+\begin{sideways}
+\begin{tabular}{c....a..e}
+\toprule
+\multirow{2}{*}{\parbox{20mm}{\centering Giorno\\ del mese}}  &
+\multicolumn{4}{c}{Temperatura}   &
+\multicolumn{1}{c}{\multirow{3}{*}{\parbox{21mm}{\centering Pressione\\ Barometrica\\ ~[hPa]~}}}  &
+\multicolumn{1}{c}{\multirow{3}{*}{\parbox{20mm}{\centering Umidità\\ relativa\\ ~[\%%]~}}} &
+\multicolumn{2}{c}{Precipitazioni}
+\\
+
+\cmidrule{8-9}
+&
+\multicolumn{4}{c}{[°C]}&
+&
+&
+\multicolumn{1}{c}{\multirow{2}{*}{\parbox{20mm}{\centering totale\\ ~[mm]~}}} &
+\multicolumn{1}{c}{\multirow{2}{*}{\parbox{20mm}{\centering durata\\ ~[minuti]~}}}\\
+
+\cmidrule{2-5}
+&
+\multicolumn{1}{c}{minima} &
+\multicolumn{1}{c}{massima} &
+\multicolumn{1}{c}{media} &
+\multicolumn{1}{c}{escursione} &
+\\
+
+\midrule
+
+%(decade1)s
+
+\midrule
+
+%(decade2)s
+
+\midrule
+
+%(decade3)s
+
+
+\bottomrule
+\end{tabular}
+\end{sideways}
+\vfill
+"""

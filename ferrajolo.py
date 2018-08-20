@@ -160,22 +160,22 @@ if __name__ == '__main__':
 
     """Annuaario Talsano"""
     # resetta_db()
-    importa_vecchi_dati()
-    # annuario_talsano = annuario.annuario_talsano()
+    # importa_vecchi_dati()
+    annuario_talsano = annuario.annuario_talsano()
 
-    # mesi = itertools.cycle(range(1, 12 + 1))
+    mesi = itertools.cycle(range(1, 12 + 1))
 
-    # with open(FANNUARIO, 'w') as fout:
-    #     for anno in range(1975, 2006 + 1):
-    #         for mese in mesi:
-    #             print(anno, mese)
-    #             tex = annuario_talsano.latex_mese(mese, anno)
-    #             fout.write(tex)
-    #             # break
-    #
-    #             if mese == 12:
-    #                 break
-    #         # break
+    with open(FANNUARIO, 'w') as fout:
+        for anno in range(1975, 2006 + 1):
+            for mese in mesi:
+                print(anno, mese)
+                tex = annuario_talsano.latex_mese(mese, anno)
+                fout.write(tex)
+                break
+
+                if mese == 12:
+                     break
+            break
 
     # grafici temperature
     # todo aggiungere grafico escursione giornaliera
