@@ -112,6 +112,7 @@ TABELLA_MESE2 = r"""
 \\
 
 \cmidrule{9-10}
+\cmidrule{12-14}
 &
 \multicolumn{4}{c}{[°C]}&
 &

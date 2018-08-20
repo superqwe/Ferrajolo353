@@ -57,14 +57,6 @@ class annuario_talsano(object):
             a = None
 
         righe = []
-        # dtmed = 0
-        # dtmin = 100
-        # dtmax = -100
-        # dtesc = 0
-        # dpress = 0
-        # dmm = 0
-        # ddurata = 0
-        # dur = 0
         for d in dati[da:a]:
             data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = d
 
@@ -77,24 +69,6 @@ class annuario_talsano(object):
             except TypeError:
                 tesc = 0
 
-            # dtmed += tmed if tmed else 0
-            #
-            # if tmin:
-            #     dtmin = tmin if tmin < dtmin else dtmin
-            #
-            # if tmax:
-            #     dtmax = tmax if tmax > dtmax else dtmax
-            #
-            # try:
-            #     dtesc += tmax - tmin
-            # except TypeError:
-            #     pass
-
-            # dpress += press if press else 0  # todo correggere assenza valori
-            # dmm += mm if mm else 0  # todo corregere assenza valori
-            # ddurata += durata if durata else 0  # todo corregere assenza valori
-            # dur += ur if ur else 0  # todo corregere assenza valori
-
             # formattazione righe
             tmin = '%.1f' % tmin if tmin else '-'
             tmax = '%.1f' % tmax if tmax else '-'
@@ -105,10 +79,10 @@ class annuario_talsano(object):
             tens = '%.1f' % tens if tens else '-'
             mm = '%.1f' % mm if mm else ''
             durata = '%i' % durata if durata else ''
-            nuvol = '%.1f' % nuvol if nuvol else '-'
+            nuvol = '%.1f' % nuvol if not nuvol == None else '-'
             vvel = '%.1f' % vvel if vvel else '-'
             vdir = '%s' % vdir if vdir else '-'
-            vfil = '%.1f' % vfil if vfil else '-'
+            vfil = '%i' % vfil if vfil else '-'
 
             rec = ' & '.join(
                 (data, tmin, tmax, tmed, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil))
@@ -118,21 +92,7 @@ class annuario_talsano(object):
 
         righe = ''.join(righe)
 
-        # n = len(dati[da:a])
-        # dtmed /= n
-        # dtesc /= n
-        # dpress /= n
-        # dur /= n
-        #
-        # # formattazione rigo decadale
-        # dpress = '%.1f' % dpress if dpress else '-'
-        # dur = '%.1f' % dur if dur else '-'
-        #
-        # decadale = ' & '.join(
-        #     ('%.1f' % dtmin, '%.1f' % dtmax, '%.1f' % dtmed, '%.1f' % dtesc, dpress, dur, '%.1f' % dmm,
-        #      '%i' % ddurata))
-
-        return righe  # , #decadale
+        return righe
 
     def _dati_grafici(self):
         # todo aggiungere scarto
