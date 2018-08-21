@@ -1,5 +1,4 @@
 # 09.11.17: rev0
-import datetime
 import itertools
 from pprint import pprint as pp
 
@@ -90,6 +89,52 @@ def importa_vecchi_dati():
     importa_vecchio_db.importa_csv()
 
 
+class talsano(object):
+    def __init__(self):
+        # resetta_db()
+        importa_vecchi_dati()
+
+        self.annuario_talsano = annuario.annuario_talsano()
+
+        self.latex()
+        # self.grafici()
+
+    def latex(self):
+        mesi = itertools.cycle(range(1, 12 + 1))
+
+        with open(FANNUARIO, 'w') as fout:
+            for anno in range(2001, 2005 + 1):
+                for mese in mesi:
+                    print(anno, mese)
+                    tex = self.annuario_talsano.latex_mese(mese, anno)
+                    fout.write(tex)
+                    # break
+
+                    if mese == 12:
+                        break
+                # break
+
+    def grafici(self):
+        # grafici temperature
+        # todo aggiungere grafico escursione giornaliera
+        grafici.annuario_t_mese(self.annuario_talsano.tmin_mese, 'tmin')
+        grafici.annuario_t_mese(self.annuario_talsano.tmax_mese, 'tmax')
+        grafici.annuario_t_mese(self.annuario_talsano.tmed_mese, 'tmed')
+
+        grafici.annuario_t_anno(self.annuario_talsano.tmin_anno, 'tmin')
+        grafici.annuario_t_anno(self.annuario_talsano.tmax_anno, 'tmax')
+        grafici.annuario_t_anno(self.annuario_talsano.tmed_anno, 'tmed')
+
+        # grafici pioggia
+        grafici.annuario_p_anno(self.annuario_talsano.p_anno)
+        grafici.annuario_p_mese(self.annuario_talsano.p_mese)
+
+        grafici.annuario_pg_anno(self.annuario_talsano.pg_anno)
+        grafici.annuario_pg_mese(self.annuario_talsano.pg_mese)
+
+        grafici.annuario_pf_anno(self.annuario_talsano.pf_anno)
+
+
 if __name__ == '__main__':
     # """redige bollettini per il mese indicato."""
     # mese = '1710'
@@ -159,39 +204,4 @@ if __name__ == '__main__':
     # bollettino = bollettino_mensile(anno, mese)
 
     """Annuaario Talsano"""
-    # resetta_db()
-    # importa_vecchi_dati()
-    annuario_talsano = annuario.annuario_talsano()
-
-    mesi = itertools.cycle(range(1, 12 + 1))
-
-    with open(FANNUARIO, 'w') as fout:
-        for anno in range(2001, 2006 + 1):
-            for mese in mesi:
-                print(anno, mese)
-                tex = annuario_talsano.latex_mese(mese, anno)
-                fout.write(tex)
-                break
-
-                if mese == 12:
-                     break
-            break
-
-    # grafici temperature
-    # todo aggiungere grafico escursione giornaliera
-    # grafici.annuario_t_mese(annuario_talsano.tmin_mese, 'tmin')
-    # grafici.annuario_t_mese(annuario_talsano.tmax_mese, 'tmax')
-    # grafici.annuario_t_mese(annuario_talsano.tmed_mese, 'tmed')
-    #
-    # grafici.annuario_t_anno(annuario_talsano.tmin_anno, 'tmin')
-    # grafici.annuario_t_anno(annuario_talsano.tmax_anno, 'tmax')
-    # grafici.annuario_t_anno(annuario_talsano.tmed_anno, 'tmed')
-    #
-    # # grafici pioggia
-    # grafici.annuario_p_anno(annuario_talsano.p_anno)
-    # grafici.annuario_p_mese(annuario_talsano.p_mese)
-    #
-    # grafici.annuario_pg_anno(annuario_talsano.pg_anno)
-    # grafici.annuario_pg_mese(annuario_talsano.pg_mese)
-
-    # grafici.annuario_pf_anno(annuario_talsano.pf_anno)
+    talsano()
