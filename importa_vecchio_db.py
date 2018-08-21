@@ -15,5 +15,7 @@ def importa_csv():
         ['data', 'tmed', 'tmin', 'tmax', 'press', 'ur', 'tens', 'mm', 'durata', 'nuvol', 'vvel', 'vdir',
          'vfil']]
 
+    dati['press'] = (dati['press'] + 700) * 1.33322387415
+
     with lite.connect(NOME_DB) as con:
         dati.to_sql('Annuario_Talsano_G', con, if_exists='replace', index=False)
