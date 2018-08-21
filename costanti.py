@@ -99,7 +99,7 @@ TABELLA_MESE2 = r"""
 \subsection{%(mese)s %(anno)i}
 
 \begin{sideways}
-\begin{tabular}{c....a...e.....}
+\begin{tabular}{c....a...e..c.}
 \toprule
 \multirow{2}{*}{\parbox{11mm}{\centering Giorno\\ del mese}}  &
 \multicolumn{4}{c}{Temperatura}   &
@@ -123,7 +123,7 @@ TABELLA_MESE2 = r"""
 &
 \multicolumn{1}{c}{\multirow{2}{*}{\parbox{12mm}{\centering velocit\`a\\ ~[km/h]~}}} &
 \multicolumn{1}{c}{\multirow{2}{*}{\parbox{14mm}{\centering direzione\\ ~}}}&
-\multicolumn{1}{c}{\multirow{2}{*}{\parbox{9mm}{\centering filato\\ ~[km]~}}}&
+\multicolumn{1}{c}{\multirow{2}{*}{\parbox{9mm}{\centering filato\\ ~[km]~}}}
 \\
 
 \cmidrule{2-5}
