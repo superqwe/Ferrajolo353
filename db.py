@@ -133,6 +133,27 @@ class DB(object):
         except lite.OperationalError:
             print('tabella esistente: Annuario_G')
 
+        try:
+            cmd = """CREATE TABLE Annuario_Talsano_M(
+                        data DATE NOT NULL,
+                        tmed   FLOAT,
+                        tmin   FLOAT,
+                        tmax   FLOAT,
+                        pres   FLOAT,
+                        ur     FLOAT,
+                        tens   FLOAT,
+                        mm     FLOAT,
+                        durata INT,
+                        nuvol  FLOAT,
+                        vvel   FLOAT,
+                        vdir   TEXT,
+                        vfil   INT
+                    )"""
+            self.cur.execute(cmd)
+            self.db.commit()
+        except lite.OperationalError:
+            print('tabella esistente: Annuario_M')
+
     def crea_tabelle_bollettino_crea(self):
         self.cur.execute('DROP TABLE IF EXISTS Bollettino1')
         self.cur.execute('DROP TABLE IF EXISTS Bollettino2')

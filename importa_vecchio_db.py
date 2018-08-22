@@ -1,10 +1,12 @@
+import calendar
 import itertools
 import sqlite3 as lite
+from pprint import pprint as pp
 
+import numpy as np
 import pandas
 
 from costanti import *
-import numpy as np
 
 DATI = 'dati/stat_g.tbl'
 
@@ -26,22 +28,48 @@ def importa_csv():
 
     # tabella mensile
     print('\nTabella Mensile')
+
     mesi = itertools.cycle(range(1, 12 + 1))
 
-    for anno in range(2001, 2001 + 1):
+    dati_mensili = []
+    for anno in range(1975, 2006 + 1):
         for mese in mesi:
-            print(anno, mese)
-            a = tabella[(tabella['data'] >= '2001-01-01') & (tabella['data'] < '2001-02-01')]
-            print(a)
-            print()
-            # todo vdir
-            b = a.agg({'tmed': np.mean, 'tmin': np.min, 'tmax': np.max, 'press': np.mean, 'ur': np.mean,
-                       'tens': np.mean, 'mm': np.sum, 'durata': np.sum, 'nuvol': np.mean, 'vvel': np.mean,
-                       #'vdir': XXX
-                        'vfil': np.sum})
-            print(b)
-            break
+            gg = calendar.monthrange(anno, mese)[1]
+            dal = datetime.date(anno, mese, 1)
+            al = datetime.date(anno, mese, gg)
+
+            dati = tabella[(tabella['data'] >= '%s' % dal) & (tabella['data'] <= '%s' % al)]
+
+            # todo  da fare così
+            # b = dati.agg({'tmed': np.mean, 'tmin': np.min, 'tmax': np.max, 'press': np.mean, 'ur': np.mean,
+            #            'tens': np.mean, 'mm': np.sum, 'durata': np.sum, 'nuvol': np.mean, 'vvel': np.mean,
+            #            #'vdir': XXX
+            #             'vfil': np.sum})
+
+            ## todo vdir
+            tmed = np.mean(dati.tmed)
+            tmin = np.min(dati.tmin)
+            tmax = np.max(dati.tmax)
+            press = np.mean(dati.press)
+            ur = np.mean(dati.ur)
+            tens = np.mean(dati.tens)
+            mm = np.sum(dati.mm)
+            durata = np.sum(dati.durata)
+            nuvol = np.mean(dati.nuvol)
+            vvel = np.mean(dati.vvel)
+            vdir = 'XXX'
+            vfil = np.sum(dati.vfil)
+
+            rec = (dal, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil)
+            dati_mensili.append(rec)
+
+            # break
 
             if mese == 12:
                 break
-        break
+        # break
+
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+        cur.executemany('INSERT INTO Annuario_Talsano_M VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        dati_mensili)
