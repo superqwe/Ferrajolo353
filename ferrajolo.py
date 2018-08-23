@@ -91,12 +91,12 @@ def importa_vecchi_dati():
 
 class talsano(object):
     def __init__(self):
-        # resetta_db()
+        resetta_db()
         importa_vecchi_dati()
 
-        self.annuario_talsano = annuario.annuario_talsano()
-
-        self.latex()
+        # self.annuario_talsano = annuario.annuario_talsano()
+        #
+        # self.latex()
         # self.grafici()
 
     def latex(self):

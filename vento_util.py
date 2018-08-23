@@ -1,6 +1,5 @@
-# 21.11.17: rev0
-
 from pprint import pprint as pp
+import pandas as pd
 
 CALMA = 5 / 3.6
 
@@ -109,3 +108,29 @@ def direzione_vento(direzione, velocita, velocita_0_calma=True):
         if velocita_0_calma:
             velocita = 0.0
         return '-', velocita
+
+
+class vento_con_settori(object):
+    def __init__(self, dati):
+        """
+        calcola la direzione dominate
+        :param dati: ['N', 'N', 'C', 'NO', ...]
+        """
+        self.dati = dati
+
+        self._direzione_dominante()
+
+    def _direzione_dominante(self):
+        occorrenze = self.dati['vdir'].value_counts()
+        occorrenze = zip(occorrenze.values, occorrenze.index)
+
+        for c, d in occorrenze:
+            dominante = d
+
+            # scarta il valore C
+            if d == 'C':
+                continue
+
+            break
+
+        self.dominante = dominante

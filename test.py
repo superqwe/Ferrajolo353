@@ -7,6 +7,7 @@ import bollettino
 import pioggia_util
 import util
 import vento_util
+import pandas as pd
 
 
 class test_pioggia_util(unittest.TestCase):
@@ -126,6 +127,15 @@ class test_vento_util(unittest.TestCase):
         # caso vento CALMO senza  correzione velocita per CALMA
         atteso = '-', 1.0
         risultato = vento_util.direzione_vento(50, 1.0, False)
+        self.assertEqual(risultato, atteso)
+
+    def test_vento_con_settori(self):
+        # tipico
+        dati = pd.DataFrame({'vdir': ['SE', 'SE', 'N', 'O', 'O', 'SE', 'SE', 'SE', 'N', 'N', 'C', 'C', 'C',
+                                      'C', 'C', 'C', 'C', 'C']})
+        atteso = 'SE'
+        vento = vento_util.vento_con_settori(dati)
+        risultato = vento.dominante
         self.assertEqual(risultato, atteso)
 
 
