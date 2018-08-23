@@ -124,16 +124,20 @@ class vento_con_settori(object):
         occorrenze = self.dati['vdir'].value_counts()
         occorrenze = zip(occorrenze.values, occorrenze.index)
 
+        cmax = 0
+        ldominante = []
         try:
             for c, d in occorrenze:
-                dominante = d
-
                 # scarta il valore C
                 if d == 'C':
                     continue
 
-                break
+                if c >= cmax:
+                    ldominante.append(d)
+                    cmax = c
 
+            dominante = ', '.join(ldominante)
             self.dominante = dominante
+
         except UnboundLocalError:
             self.dominante = None

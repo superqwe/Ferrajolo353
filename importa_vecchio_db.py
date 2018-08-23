@@ -57,6 +57,7 @@ def importa_csv():
             durata = np.sum(dati.durata)
             nuvol = np.mean(dati.nuvol)
             vvel = np.mean(dati.vvel)
+            # todo vdir: prendere i dati orari
             vdir = vento_util.vento_con_settori(dati[['vdir']]).dominante
             vfil = np.sum(dati.vfil)
 
@@ -84,13 +85,6 @@ def importa_csv():
 
         dati = tabella[(tabella['data'] >= '%s' % dal) & (tabella['data'] <= '%s' % al)]
 
-        # todo  da fare così
-        # b = dati.agg({'tmed': np.mean, 'tmin': np.min, 'tmax': np.max, 'press': np.mean, 'ur': np.mean,
-        #            'tens': np.mean, 'mm': np.sum, 'durata': np.sum, 'nuvol': np.mean, 'vvel': np.mean,
-        #            #'vdir': XXX
-        #             'vfil': np.sum})
-
-        ## todo vdir
         tmed = np.mean(dati.tmed)
         tmin = np.min(dati.tmin)
         tmax = np.max(dati.tmax)
@@ -101,6 +95,7 @@ def importa_csv():
         durata = np.sum(dati.durata)
         nuvol = np.mean(dati.nuvol)
         vvel = np.mean(dati.vvel)
+        # todo vdir: prendere i dati orari
         vdir = vento_util.vento_con_settori(dati[['vdir']]).dominante
         vfil = np.sum(dati.vfil)
 
