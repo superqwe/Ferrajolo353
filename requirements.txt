@@ -13,6 +13,7 @@ MarkupSafe==1.0
 matplotlib==2.2.2
 numpy==1.15.0
 olefile==0.44
+pandas==0.23.4
 pbr==3.1.1
 Pillow==5.2.0
 Pygments==2.2.0

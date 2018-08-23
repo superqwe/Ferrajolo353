@@ -73,3 +73,43 @@ def importa_csv():
         cur = con.cursor()
         cur.executemany('INSERT INTO Annuario_Talsano_M VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         dati_mensili)
+
+    # tabella annuale
+    print('\nTabella Annuale')
+
+    dati_annuali = []
+    for anno in range(1975, 2006 + 1):
+        dal = datetime.date(anno, 1, 1)
+        al = datetime.date(anno, 12, 31)
+
+        dati = tabella[(tabella['data'] >= '%s' % dal) & (tabella['data'] <= '%s' % al)]
+
+        # todo  da fare così
+        # b = dati.agg({'tmed': np.mean, 'tmin': np.min, 'tmax': np.max, 'press': np.mean, 'ur': np.mean,
+        #            'tens': np.mean, 'mm': np.sum, 'durata': np.sum, 'nuvol': np.mean, 'vvel': np.mean,
+        #            #'vdir': XXX
+        #             'vfil': np.sum})
+
+        ## todo vdir
+        tmed = np.mean(dati.tmed)
+        tmin = np.min(dati.tmin)
+        tmax = np.max(dati.tmax)
+        press = np.mean(dati.press)
+        ur = np.mean(dati.ur)
+        tens = np.mean(dati.tens)
+        mm = np.sum(dati.mm)
+        durata = np.sum(dati.durata)
+        nuvol = np.mean(dati.nuvol)
+        vvel = np.mean(dati.vvel)
+        vdir = 'XXX'
+        vfil = np.sum(dati.vfil)
+
+        rec = (anno, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil)
+        dati_annuali.append(rec)
+
+        # break
+
+    with lite.connect(NOME_DB) as con:
+        cur = con.cursor()
+        cur.executemany('INSERT INTO Annuario_Talsano_A VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        dati_annuali)
