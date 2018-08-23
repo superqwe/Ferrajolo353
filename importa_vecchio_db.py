@@ -47,7 +47,6 @@ def importa_csv():
             #            #'vdir': XXX
             #             'vfil': np.sum})
 
-            ## todo vdir
             tmed = np.mean(dati.tmed)
             tmin = np.min(dati.tmin)
             tmax = np.max(dati.tmax)
@@ -58,7 +57,7 @@ def importa_csv():
             durata = np.sum(dati.durata)
             nuvol = np.mean(dati.nuvol)
             vvel = np.mean(dati.vvel)
-            vdir = 'XXX'
+            vdir = vento_util.vento_con_settori(dati[['vdir']]).dominante
             vfil = np.sum(dati.vfil)
 
             rec = (dal, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil)
@@ -79,7 +78,7 @@ def importa_csv():
     print('\nTabella Annuale')
 
     dati_annuali = []
-    for anno in range(2001, 2001 + 1):
+    for anno in range(1975, 2006 + 1):
         dal = datetime.date(anno, 1, 1)
         al = datetime.date(anno, 12, 31)
 
@@ -103,7 +102,6 @@ def importa_csv():
         nuvol = np.mean(dati.nuvol)
         vvel = np.mean(dati.vvel)
         vdir = vento_util.vento_con_settori(dati[['vdir']]).dominante
-        # vdir = 'XXX'
         vfil = np.sum(dati.vfil)
 
         rec = (anno, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil)
