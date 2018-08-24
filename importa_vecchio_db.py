@@ -40,7 +40,8 @@ def importa_csv():
             al = datetime.date(anno, mese, gg)
 
             dati = tabella[(tabella['data'] >= '%s' % dal) & (tabella['data'] <= '%s' % al)]
-
+            dati['press'] = (dati['press'] + 700) * 1.33322387415
+            
             # todo  da fare così
             # b = dati.agg({'tmed': np.mean, 'tmin': np.min, 'tmax': np.max, 'press': np.mean, 'ur': np.mean,
             #            'tens': np.mean, 'mm': np.sum, 'durata': np.sum, 'nuvol': np.mean, 'vvel': np.mean,
@@ -84,7 +85,8 @@ def importa_csv():
         al = datetime.date(anno, 12, 31)
 
         dati = tabella[(tabella['data'] >= '%s' % dal) & (tabella['data'] <= '%s' % al)]
-
+        dati['press'] = (dati['press'] + 700) * 1.33322387415
+        
         tmed = np.mean(dati.tmed)
         tmin = np.min(dati.tmin)
         tmax = np.max(dati.tmax)
