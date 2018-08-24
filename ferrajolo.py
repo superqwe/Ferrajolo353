@@ -97,6 +97,7 @@ class talsano(object):
 
         self.latex_dati_giornalieri()
         self.latex_dati_mensili()
+        self.latex_dati_annuali()
         # self.grafici()
 
     def latex_dati_giornalieri(self):
@@ -119,6 +120,11 @@ class talsano(object):
             for anno in range(ANNO_INIZIO_ANNUARIO, ANNO_FINE_ANNUARIO + 1):
                 tex = self.annuario_talsano.latex_dati_mensili(anno)
                 fout.write(tex)
+
+    def latex_dati_annuali(self):
+        with open(FOUT_ANNUARIO_ANNI, 'w') as fout:
+            tex = self.annuario_talsano.latex_dati_anni()
+            fout.write(tex)
 
     def grafici(self):
         # grafici temperature

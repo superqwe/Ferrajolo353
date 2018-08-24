@@ -1,7 +1,6 @@
 # 27.07.18
 import calendar
 import sqlite3 as lite
-from pprint import pprint as pp
 
 import pandas as pd
 from matplotlib.cbook import boxplot_stats
@@ -147,6 +146,61 @@ class annuario_talsano(object):
                  BETWEEN '{dal}' AND '{al}'
                  '''.format(dal=dal,
                             al=al)
+
+        with lite.connect(NOME_DB) as con:
+            dati = pd.read_sql(cmd, con)
+
+            return (dati)
+
+    def latex_dati_anni(self):
+        dati = self.dati_annuali()
+
+        righe = []
+        for row in (dati.values):
+            data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
+
+            # data = data.split('-')[1]
+
+            try:
+                tesc = tmax - tmin
+            except TypeError:
+                tesc = 0
+
+            # formattazione righe
+            data = '%s' % data
+            tmin = '%.1f' % tmin if tmin != None else '-'
+            tmax = '%.1f' % tmax if tmax else '-'
+            tmed = '%.1f' % tmed if tmed else '-'
+            tesc = '%.1f' % tesc if tesc else '-'
+            press = '%.1f' % press if press else '-'
+            ur = '%.1f' % ur if ur else '-'
+            tens = '%.1f' % tens if tens else '-'
+            mm = '%.1f' % mm if mm != None else ''
+            durata = '%i' % durata if durata != None else ''
+            nuvol = '%.1f' % nuvol if not nuvol == None else '-'
+            vvel = '%.1f' % vvel if vvel else '-'
+            vdir = '%s' % vdir if vdir else '-'
+            vfil = '%i' % vfil if vfil else '-'
+
+            rec = ' & '.join(
+                (data, tmin, tmax, tmed, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil))
+            rec += '\\\\\n'
+
+            righe.append(rec)
+
+        righe = ''.join(righe)
+
+        # todo sistemare i dati nan in fase di richiesta dati
+        righe = righe.replace('nan', '-')
+
+        ltx = TABELLA_DATI_ANNUALI % ({'annuali': righe, })
+
+        return ltx
+
+    def dati_annuali(self):
+        cmd = '''SELECT *
+                 FROM Annuario_Talsano_A
+                 '''
 
         with lite.connect(NOME_DB) as con:
             dati = pd.read_sql(cmd, con)

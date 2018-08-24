@@ -44,7 +44,7 @@ TABELLA_DATI_GIORNALIERI = r"""
 \subsection{%(mese)s %(anno)i}
 
 \begin{sideways}
-\begin{tabular}{c....a...e..c.}
+\begin{tabular}{c....ac.dg..cg}
 \toprule
 \multirow{2}{*}{\parbox{11mm}{\centering Giorno\\ del mese}}  &
 \multicolumn{4}{c}{Temperatura}   &
@@ -103,7 +103,7 @@ TABELLA_DATI_MENSILI = r"""
 \subsection{%(anno)i}
 
 \begin{sideways}
-\begin{tabular}{c....a...e..c.}
+\begin{tabular}{c....ac.dg..cg}
 \toprule
 \multirow{2}{*}{\parbox{11mm}{\centering Mese}}  &
 \multicolumn{4}{c}{Temperatura}   &
@@ -142,6 +142,56 @@ TABELLA_DATI_MENSILI = r"""
 \midrule
 
 %(mensile)s
+
+
+\bottomrule
+\end{tabular}
+\end{sideways}
+"""
+
+TABELLA_DATI_ANNUALI = r"""
+\subsection{Medie Annuali}
+
+\begin{sideways}
+\begin{tabular}{c....ac.dg..cg}
+\toprule
+\multirow{2}{*}{\parbox{11mm}{\centering Anno}}  &
+\multicolumn{4}{c}{Temperatura}   &
+\multicolumn{1}{c}{\multirow{3}{*}{\parbox{19mm}{\centering Pressione\\ Barometrica\\ ~[hPa]~}}}  &
+\multicolumn{1}{c}{\multirow{3}{*}{\parbox{13mm}{\centering Umidità\\ relativa\\ ~[\%%]~}}} &
+\multicolumn{1}{c}{\multirow{3}{*}{\parbox{14mm}{\centering Tensione\\ di vapore\\ ~[XXX]~}}} &
+\multicolumn{2}{c}{Precipitazioni} &
+\multicolumn{1}{c}{\multirow{3}{*}{\parbox{17mm}{\centering Nuvolosit\`a\\ ~[decimi]~}}}&
+\multicolumn{3}{c}{Vento}
+\\
+
+\cmidrule{9-10}
+\cmidrule{12-14}
+&
+\multicolumn{4}{c}{[°C]}&
+&
+&
+&
+\multicolumn{1}{c}{\multirow{2}{*}{\parbox{9mm}{\centering totale\\ ~[mm]~}}} &
+\multicolumn{1}{c}{\multirow{2}{*}{\parbox{13mm}{\centering durata\\ ~[minuti]~}}}&
+&
+\multicolumn{1}{c}{\multirow{2}{*}{\parbox{12mm}{\centering velocit\`a\\ ~[km/h]~}}} &
+\multicolumn{1}{c}{\multirow{2}{*}{\parbox{17mm}{\centering direzione\\ ~dominante~}}}&
+\multicolumn{1}{c}{\multirow{2}{*}{\parbox{9mm}{\centering filato\\ ~[km]~}}}
+\\
+
+\cmidrule{2-5}
+&
+\multicolumn{1}{c}{minima} &
+\multicolumn{1}{c}{massima} &
+\multicolumn{1}{c}{media} &
+\multicolumn{1}{c}{escursione} &
+\\
+
+
+\midrule
+
+%(annuali)s
 
 
 \bottomrule
