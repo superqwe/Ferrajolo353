@@ -6,6 +6,7 @@ from pprint import pprint as pp
 from matplotlib.cbook import boxplot_stats
 
 from costanti import *
+import pandas as pd
 
 
 class annuario_talsano(object):
@@ -16,6 +17,22 @@ class annuario_talsano(object):
 
     def __init__(self):
         self._dati_grafici()
+
+    def latex_dati_giornalieri(self, mese, anno):
+        dati = self.mese(mese, anno)
+
+        d1 = self._decade(dati, 1)
+        d2 = self._decade(dati, 2)
+        d3 = self._decade(dati, 3)
+
+        ltx = TABELLA_DATI_GIORNALIERI % ({'mese': MESE[mese],
+                                           'anno': anno,
+                                           'decade1': d1,
+                                           'decade2': d2,
+                                           'decade3': d3,
+                                           })
+
+        return ltx
 
     def mese(self, mese, anno):
         dal = datetime.date(anno, mese, 1)
@@ -33,22 +50,6 @@ class annuario_talsano(object):
 
             return (dati)
 
-    def latex_mese(self, mese, anno):
-        dati = self.mese(mese, anno)
-
-        d1 = self._decade(dati, 1)
-        d2 = self._decade(dati, 2)
-        d3 = self._decade(dati, 3)
-
-        ltx = TABELLA_MESE2 % ({'mese': MESE[mese],
-                                'anno': anno,
-                                'decade1': d1,
-                                'decade2': d2,
-                                'decade3': d3,
-                                })
-
-        return ltx
-
     def _decade(self, dati, decade):
         da = 10 * (decade - 1)
         a = da + 10
@@ -59,8 +60,6 @@ class annuario_talsano(object):
         righe = []
         for d in dati[da:a]:
             data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = d
-
-            # print(d)
 
             data = str(int(data[-2:]))
 
@@ -93,6 +92,63 @@ class annuario_talsano(object):
         righe = ''.join(righe)
 
         return righe
+
+    def latex_dati_mensili(self, anno):
+        dati = self.dati_mensili(anno)
+
+        righe = []
+        for row in (dati.values):
+            data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
+
+            data = data.split('-')[1]
+
+            try:
+                tesc = tmax - tmin
+            except TypeError:
+                tesc = 0
+
+            # formattazione righe
+            tmin = '%.1f' % tmin if tmin else '-'
+            tmax = '%.1f' % tmax if tmax else '-'
+            tmed = '%.1f' % tmed if tmed else '-'
+            tesc = '%.1f' % tesc if tesc else '-'
+            press = '%.1f' % press if press else '-'
+            ur = '%.1f' % ur if ur else '-'
+            tens = '%.1f' % tens if tens else '-'
+            mm = '%.1f' % mm if mm else ''
+            durata = '%i' % durata if durata else ''
+            nuvol = '%.1f' % nuvol if not nuvol == None else '-'
+            vvel = '%.1f' % vvel if vvel else '-'
+            vdir = '%s' % vdir if vdir else '-'
+            vfil = '%i' % vfil if vfil else '-'
+
+            rec = ' & '.join(
+                (data, tmin, tmax, tmed, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil))
+            rec += '\\\\\n'
+
+            righe.append(rec)
+
+        righe = ''.join(righe)
+
+        ltx = TABELLA_DATI_MENSILI % ({'anno': anno, 'mensile': righe})
+
+        return ltx
+
+    def dati_mensili(self, anno):
+        dal = datetime.date(anno, 1, 1)
+        al = datetime.date(anno, 12, 31)
+
+        cmd = '''SELECT *
+                 FROM Annuario_Talsano_M
+                 WHERE data
+                 BETWEEN '{dal}' AND '{al}'
+                 '''.format(dal=dal,
+                            al=al)
+
+        with lite.connect(NOME_DB) as con:
+            dati = pd.read_sql(cmd, con)
+
+            return (dati)
 
     def _dati_grafici(self):
         # todo aggiungere scarto

@@ -1,4 +1,3 @@
-# 09.11.17: rev0
 import itertools
 from pprint import pprint as pp
 
@@ -9,7 +8,7 @@ import db as DB
 import db_util
 import grafici
 import importa_vecchio_db
-from costanti import FANNUARIO
+from costanti import *
 
 
 def crea_db():
@@ -91,28 +90,35 @@ def importa_vecchi_dati():
 
 class talsano(object):
     def __init__(self):
-        resetta_db()
-        importa_vecchi_dati()
+        # resetta_db()
+        # importa_vecchi_dati()
 
-        # self.annuario_talsano = annuario.annuario_talsano()
-        #
-        # self.latex()
+        self.annuario_talsano = annuario.annuario_talsano()
+
+        self.latex_dati_giornalieri()
+        self.latex_dati_mensili()
         # self.grafici()
 
-    def latex(self):
+    def latex_dati_giornalieri(self):
         mesi = itertools.cycle(range(1, 12 + 1))
 
-        with open(FANNUARIO, 'w') as fout:
-            for anno in range(2001, 2005 + 1):
+        with open(FOUT_ANNUARIO_GIORNI, 'w') as fout:
+            for anno in range(ANNO_INIZIO_ANNUARIO, ANNO_FINE_ANNUARIO + 1):
                 for mese in mesi:
-                    print(anno, mese)
-                    tex = self.annuario_talsano.latex_mese(mese, anno)
+                    # print(anno, mese)
+                    tex = self.annuario_talsano.latex_dati_giornalieri(mese, anno)
                     fout.write(tex)
                     # break
 
                     if mese == 12:
                         break
                 # break
+
+    def latex_dati_mensili(self):
+        with open(FOUT_ANNUARIO_MESI, 'w') as fout:
+            for anno in range(ANNO_INIZIO_ANNUARIO, ANNO_FINE_ANNUARIO + 1):
+                tex = self.annuario_talsano.latex_dati_mensili(anno)
+                fout.write(tex)
 
     def grafici(self):
         # grafici temperature
