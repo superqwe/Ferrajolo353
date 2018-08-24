@@ -126,7 +126,7 @@ TABELLA_DATI_MENSILI = r"""
 \multicolumn{1}{c}{\multirow{2}{*}{\parbox{13mm}{\centering durata\\ ~[minuti]~}}}&
 &
 \multicolumn{1}{c}{\multirow{2}{*}{\parbox{12mm}{\centering velocit\`a\\ ~[km/h]~}}} &
-\multicolumn{1}{c}{\multirow{2}{*}{\parbox{14mm}{\centering direzione\\ ~}}}&
+\multicolumn{1}{c}{\multirow{2}{*}{\parbox{17mm}{\centering direzione\\ ~dominante~}}}&
 \multicolumn{1}{c}{\multirow{2}{*}{\parbox{9mm}{\centering filato\\ ~[km]~}}}
 \\
 

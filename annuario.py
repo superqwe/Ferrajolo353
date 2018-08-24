@@ -3,10 +3,10 @@ import calendar
 import sqlite3 as lite
 from pprint import pprint as pp
 
+import pandas as pd
 from matplotlib.cbook import boxplot_stats
 
 from costanti import *
-import pandas as pd
 
 
 class annuario_talsano(object):
@@ -108,15 +108,15 @@ class annuario_talsano(object):
                 tesc = 0
 
             # formattazione righe
-            tmin = '%.1f' % tmin if tmin else '-'
+            tmin = '%.1f' % tmin if tmin != None else '-'
             tmax = '%.1f' % tmax if tmax else '-'
             tmed = '%.1f' % tmed if tmed else '-'
             tesc = '%.1f' % tesc if tesc else '-'
             press = '%.1f' % press if press else '-'
             ur = '%.1f' % ur if ur else '-'
             tens = '%.1f' % tens if tens else '-'
-            mm = '%.1f' % mm if mm else ''
-            durata = '%i' % durata if durata else ''
+            mm = '%.1f' % mm if mm != None else ''
+            durata = '%i' % durata if durata != None else ''
             nuvol = '%.1f' % nuvol if not nuvol == None else '-'
             vvel = '%.1f' % vvel if vvel else '-'
             vdir = '%s' % vdir if vdir else '-'
@@ -129,6 +129,9 @@ class annuario_talsano(object):
             righe.append(rec)
 
         righe = ''.join(righe)
+
+        # todo sistemare i dati nan in fase di richiesta dati
+        righe = righe.replace('nan', '-')
 
         ltx = TABELLA_DATI_MENSILI % ({'anno': anno, 'mensile': righe})
 
