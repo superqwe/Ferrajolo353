@@ -212,11 +212,11 @@ class annuario_talsano(object):
         # temperatura
         self.tmin_mese = self._t_mese('tmin')
         self.tmax_mese = self._t_mese('tmax')
-        self.tmed_mese = self._t_mese('t')
+        self.tmed_mese = self._t_mese('tmed')
 
         self.tmin_anno = self._t_anno('tmin')
         self.tmax_anno = self._t_anno('tmax')
-        self.tmed_anno = self._t_anno('t')
+        self.tmed_anno = self._t_anno('tmed')
 
         # pioggia
         self.p_anno = self._p_anno()
@@ -235,21 +235,21 @@ class annuario_talsano(object):
 
         with lite.connect(NOME_DB) as con:
             cur = con.cursor()
-            tmin = []
+            temperatura = []
 
             for mese in range(1, 12 + 1):
                 mese = '%02i' % mese
                 cmd = '''SELECT {parametro}
-                         FROM Giornaliero
+                         FROM Annuario_Talsano_G
                          WHERE {parametro} IS NOT NULL 
                          AND strftime('%m', data)=='{mese}'
                          AND data BETWEEN '{dal}' AND '{al}'
                       '''.format(dal=dal, al=al, mese=mese, parametro=parametro)
 
                 dati = cur.execute(cmd).fetchall()
-                tmin.append([x[0] for x in dati])
+                temperatura.append([x[0] for x in dati])
 
-        return tmin
+        return temperatura
 
     def _t_anno(self, parametro):
         dati = {'tmin': [],
@@ -269,7 +269,7 @@ class annuario_talsano(object):
                 al = datetime.date(anno, 12, 31)
 
                 cmd = '''SELECT {parametro}
-                             FROM Giornaliero
+                             FROM Annuario_Talsano_G
                              WHERE {parametro} IS NOT NULL 
                              AND data BETWEEN '{dal}' AND '{al}'
                           '''.format(dal=dal, al=al, parametro=parametro)
@@ -300,7 +300,7 @@ class annuario_talsano(object):
                 al = datetime.date(anno, 12, 31)
 
                 cmd = '''SELECT {parametro}
-                             FROM Giornaliero
+                             FROM Annuario_Talsano_G
                              WHERE {parametro} IS NOT NULL 
                              AND data BETWEEN '{dal}' AND '{al}'
                           '''.format(dal=dal, al=al, parametro=parametro)
@@ -324,7 +324,7 @@ class annuario_talsano(object):
             for mese in range(1, 12 + 1):
                 mese = '%02i' % mese
                 cmd = '''SELECT {parametro}
-                         FROM Mensile
+                         FROM Annuario_Talsano_M
                          WHERE {parametro} IS NOT NULL 
                          AND strftime('%m', data)=='{mese}'
                          AND data BETWEEN '{dal}' AND '{al}'
@@ -347,7 +347,7 @@ class annuario_talsano(object):
                 al = datetime.date(anno, 12, 31)
 
                 cmd = '''SELECT count({parametro})
-                             FROM Giornaliero
+                             FROM Annuario_Talsano_G
                              WHERE {parametro} > 0 
                              AND data BETWEEN '{dal}' AND '{al}'
                           '''.format(dal=dal, al=al, parametro=parametro)
@@ -376,7 +376,7 @@ class annuario_talsano(object):
                     mese = '%02i' % mese
 
                     cmd = '''SELECT count({parametro})
-                             FROM Giornaliero
+                             FROM Annuario_Talsano_G
                              WHERE {parametro} > 0 
                              AND strftime('%m', data)=='{mese}'
                              AND data BETWEEN '{dal}' AND '{al}'
@@ -402,7 +402,7 @@ class annuario_talsano(object):
             al = datetime.date(2006, 12, 31)
 
             cmd = '''SELECT {parametro}
-                                FROM Giornaliero
+                                FROM Annuario_Talsano_G
                                 WHERE {parametro} > 0 
                                 AND data BETWEEN '{dal}' AND '{al}'
                              '''.format(dal=dal, al=al, parametro=parametro)

@@ -1,9 +1,4 @@
-# 01.08.18
-
 import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib.cbook as cbook
-from pprint import pprint as pp
 
 
 def annuario_t_mese(dati, parametro, formato='pdf'):
@@ -16,7 +11,10 @@ def annuario_t_mese(dati, parametro, formato='pdf'):
                        patch_artist=True,
                        labels=labels,
                        notch=False,
-                       flierprops=mysym)
+                       flierprops=mysym,
+                       # meanline=True,
+                       # meanprops={'color': (1, 0, 0)}
+                       )
 
     colori_box = {'tmax': 'red',
                   'tmed': 'green',
@@ -32,10 +30,10 @@ def annuario_t_mese(dati, parametro, formato='pdf'):
     for medians in bxplt['medians']:
         medians.set_color(colori_medians[parametro])
 
-    ax.grid(True)
-    plt.ylim(-8, 41)
-    # plt.show()
-    plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
+    # ax.grid(True)
+    plt.ylim(-11, 41)
+    plt.show()
+    # plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
 
 
 def annuario_t_anno(dati, parametro):
@@ -55,7 +53,7 @@ def annuario_t_anno(dati, parametro):
             ncol += 1
 
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=ncol)
-    ax.grid(True)
+    # ax.grid(True)
     plt.ylim(-8, 41)
 
     # plt.show()
@@ -114,7 +112,7 @@ def annuario_p_mese(dati, formato='pdf'):
     for medians in bxplt['medians']:
         medians.set_color(colori_medians[parametro])
 
-    ax.grid(True)
+    # ax.grid(True)
     # plt.ylim(-8, 41)
 
     # plt.show()
@@ -174,7 +172,7 @@ def annuario_pg_mese(dati, formato='pdf'):
     for medians in bxplt['medians']:
         medians.set_color(colori_medians[parametro])
 
-    ax.grid(True)
+    # ax.grid(True)
 
     # plt.show()
     plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
@@ -191,8 +189,8 @@ def annuario_pf_anno(dati, formato='pdf'):
             bins,
             density=True,
             cumulative=True,
-
             )
-    plt.grid(True)
-    plt.show()
-    # plt.savefig('annuario/%s_anno.%s' % (parametro, formato), format=formato)
+
+    # plt.grid(True)
+    # plt.show()
+    plt.savefig('annuario/%s_anno.%s' % (parametro, formato), format=formato)
