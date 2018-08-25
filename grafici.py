@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 
 def annuario_t_mese(dati, parametro, formato='pdf'):
+    # todo obsoleto
     labels = ['G', 'F', 'M', 'A', 'M', 'G', 'L', 'A', 'S', 'O', 'N', 'D']
 
     colori_box = {'tmax': 'red',
@@ -30,10 +31,64 @@ def annuario_t_mese(dati, parametro, formato='pdf'):
                        whiskerprops=whisker_sym
                        )
 
+    # todo tracciare solo asse x
     # ax.grid(True)
     plt.ylim(-11, 41)
     # plt.show()
     plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
+
+
+def annuario_t_mese2(dati, formato='pdf'):
+    labels = ['G', 'F', 'M', 'A', 'M', 'G', 'L', 'A', 'S', 'O', 'N', 'D']
+
+    titolo = {0: 'Temperatura Massima',
+              1: 'Temperatura Media',
+              2: 'Temperatura Minima'}
+
+    grandezza = {0: 'tmax',
+                 1: 'tmed',
+                 2: 'tmin'}
+
+    colori_box = {'tmax': 'red',
+                  'tmed': 'green',
+                  'tmin': 'RoyalBlue'}
+
+    colori_medians = {'tmax': 'salmon',
+                      'tmed': 'palegreen',
+                      'tmin': 'skyblue'}
+
+    plt.figure(figsize=(8.3, 11.7), dpi=600)
+    # plt.figure()
+
+    for x in range(3):
+        plt.subplot(311 + x)
+
+        box_sym = dict(color=colori_box[grandezza[x]], facecolor=colori_box[grandezza[x]])
+        cap_sym = dict(color='black')
+        flier_sym = dict(markersize=2, markeredgecolor=colori_box[grandezza[x]])
+        mean_sym = dict(marker='+', markeredgecolor='black')
+        median_sym = dict(color=colori_medians[grandezza[x]])
+        whisker_sym = dict(color=colori_box[grandezza[x]])
+
+        plt.title(titolo[x])
+        # plt.plot((0, 13), (0, 0), color='black', linewidth=.5)
+        bxplt = plt.boxplot(dati[x],
+                            patch_artist=True,
+                            labels=labels,
+                            notch=False,
+                            boxprops=box_sym,
+                            capprops=cap_sym,
+                            flierprops=flier_sym,
+                            medianprops=median_sym,
+                            whiskerprops=whisker_sym,
+                            showmeans=True,
+                            meanprops=mean_sym,
+                            meanline=False)
+        plt.ylim(-8, 41)
+        plt.grid(axis='y')
+
+    plt.savefig('annuario/%s_mese.%s' % ('t', formato), format=formato, dpi=600)
+    # plt.show()
 
 
 def annuario_t_anno(dati, parametro):

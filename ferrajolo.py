@@ -95,10 +95,11 @@ class talsano(object):
 
         self.annuario_talsano = annuario.annuario_talsano()
 
-        self.latex_dati_giornalieri()
-        self.latex_dati_mensili()
-        self.latex_dati_annuali()
-        # self.grafici()
+        # self.latex_dati_giornalieri()
+        # self.latex_dati_mensili()
+        # self.latex_dati_annuali()
+
+        self.grafici()
 
     def latex_dati_giornalieri(self):
         mesi = itertools.cycle(range(1, 12 + 1))
@@ -129,22 +130,26 @@ class talsano(object):
     def grafici(self):
         # grafici temperature
         # todo aggiungere grafico escursione giornaliera
-        grafici.annuario_t_mese(self.annuario_talsano.tmin_mese, 'tmin')
-        grafici.annuario_t_mese(self.annuario_talsano.tmax_mese, 'tmax')
-        grafici.annuario_t_mese(self.annuario_talsano.tmed_mese, 'tmed')
-
-        grafici.annuario_t_anno(self.annuario_talsano.tmin_anno, 'tmin')
-        grafici.annuario_t_anno(self.annuario_talsano.tmax_anno, 'tmax')
-        grafici.annuario_t_anno(self.annuario_talsano.tmed_anno, 'tmed')
-
-        # grafici pioggia
-        grafici.annuario_p_anno(self.annuario_talsano.p_anno)
-        grafici.annuario_p_mese(self.annuario_talsano.p_mese)
-
-        grafici.annuario_pg_anno(self.annuario_talsano.pg_anno)
-        grafici.annuario_pg_mese(self.annuario_talsano.pg_mese)
-
-        grafici.annuario_pf_anno(self.annuario_talsano.pf_anno)
+        # grafici.annuario_t_mese(self.annuario_talsano.tmin_mese, 'tmin')
+        # grafici.annuario_t_mese(self.annuario_talsano.tmax_mese, 'tmax')
+        # grafici.annuario_t_mese(self.annuario_talsano.tmed_mese, 'tmed')
+        grafici.annuario_t_mese2((self.annuario_talsano.tmax_mese,
+                                  self.annuario_talsano.tmed_mese,
+                                  self.annuario_talsano.tmin_mese))
+        #
+        # todo mettere le temperature su di un unigo grafico
+        # grafici.annuario_t_anno(self.annuario_talsano.tmin_anno, 'tmin')
+        # grafici.annuario_t_anno(self.annuario_talsano.tmax_anno, 'tmax')
+        # grafici.annuario_t_anno(self.annuario_talsano.tmed_anno, 'tmed')
+        #
+        # # grafici pioggia
+        # grafici.annuario_p_anno(self.annuario_talsano.p_anno)
+        # grafici.annuario_p_mese(self.annuario_talsano.p_mese)
+        #
+        # grafici.annuario_pg_anno(self.annuario_talsano.pg_anno)
+        # grafici.annuario_pg_mese(self.annuario_talsano.pg_mese)
+        #
+        # grafici.annuario_pf_anno(self.annuario_talsano.pf_anno)
 
 
 if __name__ == '__main__':
