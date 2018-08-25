@@ -68,9 +68,9 @@ class annuario_talsano(object):
                 tesc = 0
 
             # formattazione righe
-            tmin = '%.1f' % tmin if tmin else '-'
-            tmax = '%.1f' % tmax if tmax else '-'
-            tmed = '%.1f' % tmed if tmed else '-'
+            tmin = '%.1f' % tmin if tmin != None else '-'
+            tmax = '%.1f' % tmax if tmax != None else '-'
+            tmed = '%.1f' % tmed if tmed != None else '-'
             tesc = '%.1f' % tesc if tesc else '-'
             press = '%.1f' % press if press else '-'
             ur = '%.1f' % ur if ur else '-'
@@ -93,18 +93,14 @@ class annuario_talsano(object):
         return righe
 
     def latex_dati_mensili(self, anno):
+        # todo creare tabella con due anni
         dati = self.dati_mensili(anno)
 
         righe = []
         for row in (dati.values):
-            data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
+            data, tmed, tmin, tmax, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
 
             data = data.split('-')[1]
-
-            try:
-                tesc = tmax - tmin
-            except TypeError:
-                tesc = 0
 
             # formattazione righe
             tmin = '%.1f' % tmin if tmin != None else '-'
@@ -157,14 +153,7 @@ class annuario_talsano(object):
 
         righe = []
         for row in (dati.values):
-            data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
-
-            # data = data.split('-')[1]
-
-            try:
-                tesc = tmax - tmin
-            except TypeError:
-                tesc = 0
+            data, tmed, tmin, tmax, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
 
             # formattazione righe
             data = '%s' % data
