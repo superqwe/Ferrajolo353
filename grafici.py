@@ -4,18 +4,6 @@ import matplotlib.pyplot as plt
 def annuario_t_mese(dati, parametro, formato='pdf'):
     labels = ['G', 'F', 'M', 'A', 'M', 'G', 'L', 'A', 'S', 'O', 'N', 'D']
 
-    mysym = dict(markersize=2)
-
-    fig, ax = plt.subplots()
-    bxplt = ax.boxplot(dati,
-                       patch_artist=True,
-                       labels=labels,
-                       notch=False,
-                       flierprops=mysym,
-                       # meanline=True,
-                       # meanprops={'color': (1, 0, 0)}
-                       )
-
     colori_box = {'tmax': 'red',
                   'tmed': 'green',
                   'tmin': 'blue'}
@@ -23,17 +11,29 @@ def annuario_t_mese(dati, parametro, formato='pdf'):
     colori_medians = {'tmax': 'salmon',
                       'tmed': 'palegreen',
                       'tmin': 'skyblue'}
-    # pp(bxplt)
-    for box in bxplt['boxes']:
-        box.set_facecolor(colori_box[parametro])
 
-    for medians in bxplt['medians']:
-        medians.set_color(colori_medians[parametro])
+    box_sym = dict(facecolor=colori_box[parametro])
+    cap_sym = dict(color='black')
+    flier_sym = dict(markersize=2, markeredgecolor=colori_box[parametro])
+    median_sym = dict(color=colori_medians[parametro])
+    whisker_sym = dict(color=colori_box[parametro])
+
+    fig, ax = plt.subplots()
+    bxplt = ax.boxplot(dati,
+                       patch_artist=True,
+                       labels=labels,
+                       notch=False,
+                       boxprops=box_sym,
+                       capprops=cap_sym,
+                       flierprops=flier_sym,
+                       medianprops=median_sym,
+                       whiskerprops=whisker_sym
+                       )
 
     # ax.grid(True)
     plt.ylim(-11, 41)
-    plt.show()
-    # plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
+    # plt.show()
+    plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
 
 
 def annuario_t_anno(dati, parametro):
