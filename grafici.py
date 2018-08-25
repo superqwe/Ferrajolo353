@@ -20,16 +20,15 @@ def annuario_t_mese(dati, parametro, formato='pdf'):
     whisker_sym = dict(color=colori_box[parametro])
 
     fig, ax = plt.subplots()
-    bxplt = ax.boxplot(dati,
-                       patch_artist=True,
-                       labels=labels,
-                       notch=False,
-                       boxprops=box_sym,
-                       capprops=cap_sym,
-                       flierprops=flier_sym,
-                       medianprops=median_sym,
-                       whiskerprops=whisker_sym
-                       )
+    ax.boxplot(dati,
+               patch_artist=True,
+               labels=labels,
+               notch=False,
+               boxprops=box_sym,
+               capprops=cap_sym,
+               flierprops=flier_sym,
+               medianprops=median_sym,
+               whiskerprops=whisker_sym)
 
     # todo tracciare solo asse x
     # ax.grid(True)
@@ -49,7 +48,7 @@ def annuario_t_mese2(dati, formato='pdf'):
                  1: 'tmed',
                  2: 'tmin'}
 
-    colori_box = {'tmax': 'red',
+    colori_box = {'tmax': 'OrangeRed',
                   'tmed': 'green',
                   'tmin': 'RoyalBlue'}
 
@@ -71,21 +70,21 @@ def annuario_t_mese2(dati, formato='pdf'):
         whisker_sym = dict(color=colori_box[grandezza[x]])
 
         plt.title(titolo[x])
-        # plt.plot((0, 13), (0, 0), color='black', linewidth=.5)
-        bxplt = plt.boxplot(dati[x],
-                            patch_artist=True,
-                            labels=labels,
-                            notch=False,
-                            boxprops=box_sym,
-                            capprops=cap_sym,
-                            flierprops=flier_sym,
-                            medianprops=median_sym,
-                            whiskerprops=whisker_sym,
-                            showmeans=True,
-                            meanprops=mean_sym,
-                            meanline=False)
         plt.ylim(-8, 41)
         plt.grid(axis='y')
+        
+        plt.boxplot(dati[x],
+                    patch_artist=True,
+                    labels=labels,
+                    notch=False,
+                    boxprops=box_sym,
+                    capprops=cap_sym,
+                    flierprops=flier_sym,
+                    medianprops=median_sym,
+                    whiskerprops=whisker_sym,
+                    showmeans=True,
+                    meanprops=mean_sym,
+                    meanline=False)
 
     plt.savefig('annuario/%s_mese.%s' % ('t', formato), format=formato, dpi=600)
     # plt.show()

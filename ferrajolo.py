@@ -90,16 +90,16 @@ def importa_vecchi_dati():
 
 class talsano(object):
     def __init__(self):
-        # resetta_db()
-        # importa_vecchi_dati()
+        resetta_db()
+        importa_vecchi_dati()
 
-        self.annuario_talsano = annuario.annuario_talsano()
+        # self.annuario_talsano = annuario.annuario_talsano()
 
         # self.latex_dati_giornalieri()
         # self.latex_dati_mensili()
         # self.latex_dati_annuali()
 
-        self.grafici()
+        # self.grafici()
 
     def latex_dati_giornalieri(self):
         mesi = itertools.cycle(range(1, 12 + 1))
