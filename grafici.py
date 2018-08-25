@@ -72,7 +72,8 @@ def annuario_t_mese2(dati, formato='pdf'):
         plt.title(titolo[x])
         plt.ylim(-8, 41)
         plt.grid(axis='y')
-        
+        plt.ylabel('[°C]')
+
         plt.boxplot(dati[x],
                     patch_artist=True,
                     labels=labels,
