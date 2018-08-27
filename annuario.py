@@ -92,7 +92,7 @@ class annuario_talsano(object):
 
         return righe
 
-    def formatta_righe_dati_mensili(self, row):
+    def _formatta_righe_dati_mensili(self, row):
         data, tmed, tmin, tmax, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
 
         data = data.split('-')[1]
@@ -126,11 +126,11 @@ class annuario_talsano(object):
         righe2 = []
 
         for row in (dati1.values):
-            rec = self.formatta_righe_dati_mensili(row)
+            rec = self._formatta_righe_dati_mensili(row)
             righe1.append(rec)
 
         for row in (dati2.values):
-            rec = self.formatta_righe_dati_mensili(row)
+            rec = self._formatta_righe_dati_mensili(row)
             righe2.append(rec)
 
         righe1 = ''.join(righe1)
