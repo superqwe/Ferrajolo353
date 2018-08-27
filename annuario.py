@@ -92,43 +92,56 @@ class annuario_talsano(object):
 
         return righe
 
+    def formatta_righe_dati_mensili(self, row):
+        data, tmed, tmin, tmax, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
+
+        data = data.split('-')[1]
+
+        # formattazione righe
+        tmin = '%.1f' % tmin if tmin != None else '-'
+        tmax = '%.1f' % tmax if tmax else '-'
+        tmed = '%.1f' % tmed if tmed else '-'
+        tesc = '%.1f' % tesc if tesc else '-'
+        press = '%.1f' % press if press else '-'
+        ur = '%.1f' % ur if ur else '-'
+        tens = '%.1f' % tens if tens else '-'
+        mm = '%.1f' % mm if mm != None else ''
+        durata = '%i' % durata if durata != None else ''
+        nuvol = '%.1f' % nuvol if not nuvol == None else '-'
+        vvel = '%.1f' % vvel if vvel else '-'
+        vdir = '%s' % vdir if vdir else '-'
+        vfil = '%i' % vfil if vfil else '-'
+
+        rec = ' & '.join(
+            (data, tmin, tmax, tmed, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil))
+        rec += '\\\\\n'
+
+        return rec
+
     def latex_dati_mensili(self, anno):
-        # todo creare tabella con due anni
-        dati = self.dati_mensili(anno)
+        dati1 = self.dati_mensili(anno)
+        dati2 = self.dati_mensili(anno + 1)
 
-        righe = []
-        for row in (dati.values):
-            data, tmed, tmin, tmax, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
+        righe1 = []
+        righe2 = []
 
-            data = data.split('-')[1]
+        for row in (dati1.values):
+            rec = self.formatta_righe_dati_mensili(row)
+            righe1.append(rec)
 
-            # formattazione righe
-            tmin = '%.1f' % tmin if tmin != None else '-'
-            tmax = '%.1f' % tmax if tmax else '-'
-            tmed = '%.1f' % tmed if tmed else '-'
-            tesc = '%.1f' % tesc if tesc else '-'
-            press = '%.1f' % press if press else '-'
-            ur = '%.1f' % ur if ur else '-'
-            tens = '%.1f' % tens if tens else '-'
-            mm = '%.1f' % mm if mm != None else ''
-            durata = '%i' % durata if durata != None else ''
-            nuvol = '%.1f' % nuvol if not nuvol == None else '-'
-            vvel = '%.1f' % vvel if vvel else '-'
-            vdir = '%s' % vdir if vdir else '-'
-            vfil = '%i' % vfil if vfil else '-'
+        for row in (dati2.values):
+            rec = self.formatta_righe_dati_mensili(row)
+            righe2.append(rec)
 
-            rec = ' & '.join(
-                (data, tmin, tmax, tmed, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil))
-            rec += '\\\\\n'
-
-            righe.append(rec)
-
-        righe = ''.join(righe)
+        righe1 = ''.join(righe1)
+        righe2 = ''.join(righe2)
 
         # todo sistemare i dati nan in fase di richiesta dati
-        righe = righe.replace('nan', '-')
+        righe1 = righe1.replace('nan', '-')
+        righe2 = righe2.replace('nan', '-')
 
-        ltx = TABELLA_DATI_MENSILI % ({'anno': anno, 'mensile': righe})
+        ltx = TABELLA_DATI_MENSILI % ({'anno1': anno, 'mensile1': righe1,
+                                       'anno2': anno + 1, 'mensile2': righe2})
 
         return ltx
 

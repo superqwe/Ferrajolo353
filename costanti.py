@@ -100,7 +100,7 @@ TABELLA_DATI_GIORNALIERI = r"""
 """
 
 TABELLA_DATI_MENSILI = r"""
-\subsection{%(anno)i}
+\subsection{%(anno1)i--%(anno2)i}
 
 \begin{sideways}
 \begin{tabular}{c....ac.dg..cg}
@@ -138,11 +138,19 @@ TABELLA_DATI_MENSILI = r"""
 \multicolumn{1}{c}{escursione} &
 \\
 
-
+\midrule
+\rowcolor{gray!30}
+\multicolumn{14}{c}{%(anno1)i}\\
 \midrule
 
-%(mensile)s
+%(mensile1)s
 
+\midrule
+\rowcolor{gray!30}
+\multicolumn{14}{c}{%(anno2)i}\\
+\midrule
+
+%(mensile2)s
 
 \bottomrule
 \end{tabular}
