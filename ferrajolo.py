@@ -95,13 +95,16 @@ class talsano(object):
 
         self.annuario_talsano = annuario.annuario_talsano()
 
-        self.latex_dati_giornalieri()
-        # self.latex_dati_mensili()
-        # self.latex_dati_annuali()
+        # self.latex()
 
         self.grafici()
 
-    def latex_dati_giornalieri(self):
+    def latex(self):
+        self._latex_dati_giornalieri()
+        self._latex_dati_mensili()
+        self._latex_dati_annuali()
+
+    def _latex_dati_giornalieri(self):
         mesi = itertools.cycle(range(1, 12 + 1))
 
         with open(FOUT_ANNUARIO_GIORNI, 'w') as fout:
@@ -116,13 +119,13 @@ class talsano(object):
                         break
                 # break
 
-    def latex_dati_mensili(self):
+    def _latex_dati_mensili(self):
         with open(FOUT_ANNUARIO_MESI, 'w') as fout:
             for anno in range(ANNO_INIZIO_ANNUARIO, ANNO_FINE_ANNUARIO + 1, 2):
                 tex = self.annuario_talsano.latex_dati_mensili(anno)
                 fout.write(tex)
 
-    def latex_dati_annuali(self):
+    def _latex_dati_annuali(self):
         with open(FOUT_ANNUARIO_ANNI, 'w') as fout:
             tex = self.annuario_talsano.latex_dati_anni()
             fout.write(tex)
