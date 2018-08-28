@@ -145,11 +145,8 @@ class talsano(object):
         #                           self.annuario_talsano.tmin_mese))
 
         # todo aggiungere grafico escursione giornaliera
-        grafici.annuario_t_anno2((self.annuario_talsano.tmax_anno,
-                                  self.annuario_talsano.tmed_anno,
-                                  self.annuario_talsano.tmin_anno,
-                                  ))
-        #
+        grafici.annuario_t_anno2(self.annuario_talsano.t_anno)
+
         # # grafici pioggia
         # grafici.annuario_p_anno(self.annuario_talsano.p_anno)
         # grafici.annuario_p_mese(self.annuario_talsano.p_mese)
