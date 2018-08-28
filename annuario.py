@@ -1,6 +1,7 @@
 # 27.07.18
 import calendar
 import sqlite3 as lite
+from pprint import pprint as pp
 
 import pandas as pd
 from matplotlib.cbook import boxplot_stats
@@ -172,6 +173,7 @@ class annuario_talsano(object):
     def latex_dati_anni(self):
         dati = self.dati_annuali()
 
+        # tabella dati
         righe = []
         for row in (dati.values):
             rec = self._formatta_righe_dati(row, 'anno')
@@ -183,9 +185,20 @@ class annuario_talsano(object):
         # todo sistemare i dati nan in fase di richiesta dati
         righe = righe.replace('nan', '-')
 
-        ltx = TABELLA_DATI_ANNUALI % ({'annuali': righe, })
+        ltx_dati = TABELLA_DATI_ANNUALI % ({'annuali': righe, })
 
-        return ltx
+        # tabella statistica
+        # todo riprendere da qui
+        stat = boxplot_stats(self.t_anno[0])
+
+        parametri = ('mean', 'med', 'q1', 'q3', 'whislo', 'whishi')
+        for st in stat:
+            row = ('%.1f' % st[x] for x in parametri)
+
+            row = ' & '.join(row)
+            print(row)
+
+        return ltx_dati, 'ciao'
 
     def dati_annuali(self):
         cmd = '''SELECT *

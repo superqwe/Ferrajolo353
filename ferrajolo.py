@@ -95,13 +95,12 @@ class talsano(object):
 
         self.annuario_talsano = annuario.annuario_talsano()
 
-        # self.latex()
-
-        self.grafici()
+        self.latex()
+        # self.grafici()
 
     def latex(self):
-        self._latex_dati_giornalieri()
-        self._latex_dati_mensili()
+        # self._latex_dati_giornalieri()
+        # self._latex_dati_mensili()
         self._latex_dati_annuali()
 
     def _latex_dati_giornalieri(self):
@@ -125,9 +124,15 @@ class talsano(object):
                 fout.write(tex)
 
     def _latex_dati_annuali(self):
+        tex = self.annuario_talsano.latex_dati_anni()
+
+        # tabella dati
         with open(FOUT_ANNUARIO_ANNI, 'w') as fout:
-            tex = self.annuario_talsano.latex_dati_anni()
-            fout.write(tex)
+            fout.write(tex[0])
+
+        # tabella statistiche
+        with open(FOUT_ANNUARIO_STATISTICHE_ANNI, 'w') as fout:
+            fout.write(tex[1])
 
     def grafici(self):
         # grafici temperature
