@@ -1,3 +1,5 @@
+from pprint import pprint as pp
+
 import matplotlib.pyplot as plt
 
 
@@ -62,6 +64,7 @@ def annuario_t_mese2(dati, formato='pdf'):
     for x in range(3):
         plt.subplot(311 + x)
 
+        #todo spostare i *_sym in constanti
         box_sym = dict(color=colori_box[grandezza[x]], facecolor=colori_box[grandezza[x]])
         cap_sym = dict(color='black')
         flier_sym = dict(markersize=2, markeredgecolor=colori_box[grandezza[x]])
@@ -92,6 +95,7 @@ def annuario_t_mese2(dati, formato='pdf'):
 
 
 def annuario_t_anno(dati, parametro):
+    # todo obsoleto
     x = range(1975, 2006 + 1)
     ncol = 3
     fig, ax = plt.subplots()
@@ -111,8 +115,64 @@ def annuario_t_anno(dati, parametro):
     # ax.grid(True)
     plt.ylim(-8, 41)
 
+    plt.show()
+    # plt.savefig('annuario/%s_anno.pdf' % parametro, format='pdf')
+
+
+def annuario_t_anno2(dati):
+    # todo sistemare etichette asse x
+    labels = range(1975, 2006 + 1)
+
+    plt.figure(figsize=(8.3, 11.7), dpi=600)
+    # plt.figure()
+
+    titolo = {0: 'Temperatura Massima',
+              1: 'Temperatura Media',
+              2: 'Temperatura Minima'}
+
+    grandezza = {0: 'tmax',
+                 1: 'tmed',
+                 2: 'tmin'}
+
+    colori_box = {'tmax': 'OrangeRed',
+                  'tmed': 'green',
+                  'tmin': 'RoyalBlue'}
+
+    colori_medians = {'tmax': 'salmon',
+                      'tmed': 'palegreen',
+                      'tmin': 'skyblue'}
+
+    for x in range(3):
+        plt.subplot(311 + x)
+
+        # todo spostare i *_sym in constanti
+        box_sym = dict(color=colori_box[grandezza[x]], facecolor=colori_box[grandezza[x]])
+        cap_sym = dict(color='black')
+        flier_sym = dict(markersize=2, markeredgecolor=colori_box[grandezza[x]])
+        mean_sym = dict(marker='+', markeredgecolor='black')
+        median_sym = dict(color=colori_medians[grandezza[x]])
+        whisker_sym = dict(color=colori_box[grandezza[x]])
+
+        plt.title(titolo[x])
+        plt.ylim(-8, 41)
+        plt.grid(axis='y')
+        plt.ylabel('[°C]')
+
+        plt.boxplot(dati[x],
+                    patch_artist=True,
+                    # labels=labels,
+                    notch=False,
+                    boxprops=box_sym,
+                    capprops=cap_sym,
+                    flierprops=flier_sym,
+                    medianprops=median_sym,
+                    whiskerprops=whisker_sym,
+                    showmeans=True,
+                    meanprops=mean_sym,
+                    meanline=False)
+
     # plt.show()
-    plt.savefig('annuario/%s_anno.pdf' % parametro, format='pdf')
+    plt.savefig('annuario/t_anno.pdf', format='pdf')
 
 
 def annuario_p_anno(dati):

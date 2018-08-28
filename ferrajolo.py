@@ -131,20 +131,24 @@ class talsano(object):
             fout.write(tex)
 
     def grafici(self):
-        # grafici temperature
-        # todo aggiungere grafico escursione giornaliera
         # grafici.annuario_t_mese(self.annuario_talsano.tmin_mese, 'tmin')
         # grafici.annuario_t_mese(self.annuario_talsano.tmax_mese, 'tmax')
         # grafici.annuario_t_mese(self.annuario_talsano.tmed_mese, 'tmed')
+        #
+        # grafici.annuario_t_anno(self.annuario_talsano.tmin_anno, 'tmin')
+        # grafici.annuario_t_anno(self.annuario_talsano.tmax_anno, 'tmax')
+        # grafici.annuario_t_anno(self.annuario_talsano.tmed_anno, 'tmed')
 
+        # grafici temperature
         # grafici.annuario_t_mese2((self.annuario_talsano.tmax_mese,
         #                           self.annuario_talsano.tmed_mese,
         #                           self.annuario_talsano.tmin_mese))
-        #
-        # todo mettere le temperature su di un unigo grafico
-        grafici.annuario_t_anno(self.annuario_talsano.tmin_anno, 'tmin')
-        # grafici.annuario_t_anno(self.annuario_talsano.tmax_anno, 'tmax')
-        # grafici.annuario_t_anno(self.annuario_talsano.tmed_anno, 'tmed')
+
+        # todo aggiungere grafico escursione giornaliera
+        grafici.annuario_t_anno2((self.annuario_talsano.tmax_anno,
+                                  self.annuario_talsano.tmed_anno,
+                                  self.annuario_talsano.tmin_anno,
+                                  ))
         #
         # # grafici pioggia
         # grafici.annuario_p_anno(self.annuario_talsano.p_anno)

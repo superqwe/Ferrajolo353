@@ -204,9 +204,9 @@ class annuario_talsano(object):
         self.tmax_mese = self._t_mese('tmax')
         self.tmed_mese = self._t_mese('tmed')
 
-        self.tmin_anno = self._t_anno('tmin')
-        self.tmax_anno = self._t_anno('tmax')
-        self.tmed_anno = self._t_anno('tmed')
+        self.tmin_anno = self._t_anno2('tmin')
+        self.tmax_anno = self._t_anno2('tmax')
+        self.tmed_anno = self._t_anno2('tmed')
 
         # pioggia
         self.p_anno = self._p_anno()
@@ -242,6 +242,7 @@ class annuario_talsano(object):
         return temperatura
 
     def _t_anno(self, parametro):
+        # todo obsoleto
         dati = {'tmin': [],
                 'tmax': [],
                 'tmean': [],
@@ -276,6 +277,28 @@ class annuario_talsano(object):
                 dati['tmax'].append(stat[0]['whishi'])
                 dati['tmin'].append(stat[0]['whislo'])
                 dati['fliers'].append(stat[0]['fliers'])
+
+        return dati
+
+    def _t_anno2(self, parametro):
+
+        with lite.connect(NOME_DB) as con:
+            cur = con.cursor()
+
+            dati = []
+            for anno in range(1975, 2006 + 1):
+                dal = datetime.date(anno, 1, 1)
+                al = datetime.date(anno, 12, 31)
+
+                cmd = '''SELECT {parametro}
+                             FROM Annuario_Talsano_G
+                             WHERE {parametro} IS NOT NULL 
+                             AND data BETWEEN '{dal}' AND '{al}'
+                          '''.format(dal=dal, al=al, parametro=parametro)
+
+                res = cur.execute(cmd).fetchall()
+                res = ([x[0] for x in res])
+                dati.append(res)
 
         return dati
 
