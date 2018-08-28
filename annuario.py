@@ -200,11 +200,8 @@ class annuario_talsano(object):
     def _dati_grafici(self):
         # todo aggiungere scarto
         # temperatura
-        self.tmin_mese = self._t_mese('tmin')
-        self.tmax_mese = self._t_mese('tmax')
-        self.tmed_mese = self._t_mese('tmed')
-
-        self.t_anno = self._t_anno2()
+        self.t_mese = self._t_mese()
+        self.t_anno = self._t_anno()
 
         # pioggia
         self.p_anno = self._p_anno()
@@ -217,68 +214,33 @@ class annuario_talsano(object):
 
         # self._frequenza_giorni_piovosi()
 
-    def _t_mese(self, parametro):
+    def _t_mese(self):
         dal = datetime.date(1975, 1, 1)
         al = datetime.date(2006, 12, 31)
 
         with lite.connect(NOME_DB) as con:
             cur = con.cursor()
-            temperatura = []
 
-            for mese in range(1, 12 + 1):
-                mese = '%02i' % mese
-                cmd = '''SELECT {parametro}
-                         FROM Annuario_Talsano_G
-                         WHERE {parametro} IS NOT NULL 
-                         AND strftime('%m', data)=='{mese}'
-                         AND data BETWEEN '{dal}' AND '{al}'
-                      '''.format(dal=dal, al=al, mese=mese, parametro=parametro)
+            parametri = {0: 'tmax', 1: 'tmed', 2: 'tmin'}
+            dati = [[], [], []]
+            for par in range(3):
 
-                dati = cur.execute(cmd).fetchall()
-                temperatura.append([x[0] for x in dati])
-
-        return temperatura
-
-    def _t_anno(self, parametro):
-        # todo obsoleto
-        dati = {'tmin': [],
-                'tmax': [],
-                'tmean': [],
-                'tmed': [],
-                'tq1': [],
-                'tq3': [],
-                'fliers': []
-                }
-
-        with lite.connect(NOME_DB) as con:
-            cur = con.cursor()
-
-            for anno in range(1975, 2006 + 1):
-                dal = datetime.date(anno, 1, 1)
-                al = datetime.date(anno, 12, 31)
-
-                cmd = '''SELECT {parametro}
+                for mese in range(1, 12 + 1):
+                    mese = '%02i' % mese
+                    cmd = '''SELECT {parametro}
                              FROM Annuario_Talsano_G
                              WHERE {parametro} IS NOT NULL 
+                             AND strftime('%m', data)=='{mese}'
                              AND data BETWEEN '{dal}' AND '{al}'
-                          '''.format(dal=dal, al=al, parametro=parametro)
+                          '''.format(dal=dal, al=al, mese=mese, parametro=parametri[par])
 
-                res = cur.execute(cmd).fetchall()
-                res = ([x[0] for x in res])
-
-                stat = boxplot_stats(res)
-
-                dati['tmean'].append(stat[0]['mean'])
-                dati['tmed'].append(stat[0]['med'])
-                dati['tq1'].append(stat[0]['q1'])
-                dati['tq3'].append(stat[0]['q3'])
-                dati['tmax'].append(stat[0]['whishi'])
-                dati['tmin'].append(stat[0]['whislo'])
-                dati['fliers'].append(stat[0]['fliers'])
+                    res = cur.execute(cmd).fetchall()
+                    res = [x[0] for x in res]
+                    dati[par].append(res)
 
         return dati
 
-    def _t_anno2(self):
+    def _t_anno(self):
 
         with lite.connect(NOME_DB) as con:
             cur = con.cursor()

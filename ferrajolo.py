@@ -108,16 +108,15 @@ class talsano(object):
         mesi = itertools.cycle(range(1, 12 + 1))
 
         with open(FOUT_ANNUARIO_GIORNI, 'w') as fout:
+
             for anno in range(ANNO_INIZIO_ANNUARIO, ANNO_FINE_ANNUARIO + 1):
+
                 for mese in mesi:
-                    # print(anno, mese)
                     tex = self.annuario_talsano.latex_dati_giornalieri(mese, anno)
                     fout.write(tex)
-                    # break
 
                     if mese == 12:
                         break
-                # break
 
     def _latex_dati_mensili(self):
         with open(FOUT_ANNUARIO_MESI, 'w') as fout:
@@ -131,20 +130,9 @@ class talsano(object):
             fout.write(tex)
 
     def grafici(self):
-        # grafici.annuario_t_mese(self.annuario_talsano.tmin_mese, 'tmin')
-        # grafici.annuario_t_mese(self.annuario_talsano.tmax_mese, 'tmax')
-        # grafici.annuario_t_mese(self.annuario_talsano.tmed_mese, 'tmed')
-        #
-        # grafici.annuario_t_anno(self.annuario_talsano.tmin_anno, 'tmin')
-        # grafici.annuario_t_anno(self.annuario_talsano.tmax_anno, 'tmax')
-        # grafici.annuario_t_anno(self.annuario_talsano.tmed_anno, 'tmed')
-
         # grafici temperature
-        # grafici.annuario_t_mese2((self.annuario_talsano.tmax_mese,
-        #                           self.annuario_talsano.tmed_mese,
-        #                           self.annuario_talsano.tmin_mese))
-
         # todo aggiungere grafico escursione giornaliera
+        grafici.annuario_t_mese2(self.annuario_talsano.t_mese)
         grafici.annuario_t_anno2(self.annuario_talsano.t_anno)
 
         # # grafici pioggia
