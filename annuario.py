@@ -58,16 +58,19 @@ class annuario_talsano(object):
 
         righe = []
         for d in dati[da:a]:
+            # todo estrarre dal db tesc
             data, tmed, tmin, tmax, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = d
 
             data = str(int(data[-2:]))
 
+            # todo estrarre dal db
             try:
                 tesc = tmax - tmin
             except TypeError:
                 tesc = 0
 
             # formattazione righe
+            # todo utilizzare _formatta_righe_dati
             tmin = '%.1f' % tmin if tmin != None else '-'
             tmax = '%.1f' % tmax if tmax != None else '-'
             tmed = '%.1f' % tmed if tmed != None else '-'
@@ -92,22 +95,27 @@ class annuario_talsano(object):
 
         return righe
 
-    def _formatta_righe_dati_mensili(self, row):
+    def _formatta_righe_dati(self, row, grandezza='anno'):
         data, tmed, tmin, tmax, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
 
-        data = data.split('-')[1]
+        if grandezza == 'anno':
+            data = '%s' % data
+        if grandezza == 'mese':
+            data = data.split('-')[1]
+        if grandezza == 'giorno':
+            pass
 
         # formattazione righe
-        tmin = '%.1f' % tmin if tmin != None else '-'
+        tmin = '%.1f' % tmin if tmin is not None else '-'
         tmax = '%.1f' % tmax if tmax else '-'
         tmed = '%.1f' % tmed if tmed else '-'
         tesc = '%.1f' % tesc if tesc else '-'
         press = '%.1f' % press if press else '-'
         ur = '%.1f' % ur if ur else '-'
         tens = '%.1f' % tens if tens else '-'
-        mm = '%.1f' % mm if mm != None else ''
-        durata = '%i' % durata if durata != None else ''
-        nuvol = '%.1f' % nuvol if not nuvol == None else '-'
+        mm = '%.1f' % mm if mm is not None else ''
+        durata = '%i' % durata if durata is not None else ''
+        nuvol = '%.1f' % nuvol if nuvol else '-'
         vvel = '%.1f' % vvel if vvel else '-'
         vdir = '%s' % vdir if vdir else '-'
         vfil = '%i' % vfil if vfil else '-'
@@ -126,11 +134,11 @@ class annuario_talsano(object):
         righe2 = []
 
         for row in (dati1.values):
-            rec = self._formatta_righe_dati_mensili(row)
+            rec = self._formatta_righe_dati(row, 'mese')
             righe1.append(rec)
 
         for row in (dati2.values):
-            rec = self._formatta_righe_dati_mensili(row)
+            rec = self._formatta_righe_dati(row, 'mese')
             righe2.append(rec)
 
         righe1 = ''.join(righe1)
@@ -166,27 +174,7 @@ class annuario_talsano(object):
 
         righe = []
         for row in (dati.values):
-            data, tmed, tmin, tmax, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil = row
-
-            # formattazione righe
-            data = '%s' % data
-            tmin = '%.1f' % tmin if tmin != None else '-'
-            tmax = '%.1f' % tmax if tmax else '-'
-            tmed = '%.1f' % tmed if tmed else '-'
-            tesc = '%.1f' % tesc if tesc else '-'
-            press = '%.1f' % press if press else '-'
-            ur = '%.1f' % ur if ur else '-'
-            tens = '%.1f' % tens if tens else '-'
-            mm = '%.1f' % mm if mm != None else ''
-            durata = '%i' % durata if durata != None else ''
-            nuvol = '%.1f' % nuvol if not nuvol == None else '-'
-            vvel = '%.1f' % vvel if vvel else '-'
-            vdir = '%s' % vdir if vdir else '-'
-            vfil = '%i' % vfil if vfil else '-'
-
-            rec = ' & '.join(
-                (data, tmin, tmax, tmed, tesc, press, ur, tens, mm, durata, nuvol, vvel, vdir, vfil))
-            rec += '\\\\\n'
+            rec = self._formatta_righe_dati(row, 'anno')
 
             righe.append(rec)
 

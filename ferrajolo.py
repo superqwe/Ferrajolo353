@@ -95,11 +95,11 @@ class talsano(object):
 
         self.annuario_talsano = annuario.annuario_talsano()
 
-        # self.latex_dati_giornalieri()
-        self.latex_dati_mensili()
+        self.latex_dati_giornalieri()
+        # self.latex_dati_mensili()
         # self.latex_dati_annuali()
 
-        # self.grafici()
+        self.grafici()
 
     def latex_dati_giornalieri(self):
         mesi = itertools.cycle(range(1, 12 + 1))
@@ -133,12 +133,13 @@ class talsano(object):
         # grafici.annuario_t_mese(self.annuario_talsano.tmin_mese, 'tmin')
         # grafici.annuario_t_mese(self.annuario_talsano.tmax_mese, 'tmax')
         # grafici.annuario_t_mese(self.annuario_talsano.tmed_mese, 'tmed')
-        grafici.annuario_t_mese2((self.annuario_talsano.tmax_mese,
-                                  self.annuario_talsano.tmed_mese,
-                                  self.annuario_talsano.tmin_mese))
+
+        # grafici.annuario_t_mese2((self.annuario_talsano.tmax_mese,
+        #                           self.annuario_talsano.tmed_mese,
+        #                           self.annuario_talsano.tmin_mese))
         #
         # todo mettere le temperature su di un unigo grafico
-        # grafici.annuario_t_anno(self.annuario_talsano.tmin_anno, 'tmin')
+        grafici.annuario_t_anno(self.annuario_talsano.tmin_anno, 'tmin')
         # grafici.annuario_t_anno(self.annuario_talsano.tmax_anno, 'tmax')
         # grafici.annuario_t_anno(self.annuario_talsano.tmed_anno, 'tmed')
         #
