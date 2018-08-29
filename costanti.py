@@ -202,8 +202,28 @@ TABELLA_DATI_ANNUALI = r"""
 
 %(annuali)s
 
-
 \bottomrule
 \end{tabular}
 \end{sideways}
+"""
+
+TABELLA_DATI_ANNUALI_STATISTICI = r"""
+\subsection{Statistiche dati annuali}
+
+\begin{tabular}{c......}
+\toprule
+Anno &
+\multicolumn{1}{c}{Media} &
+\multicolumn{1}{c}{Mediana} &
+\multicolumn{1}{c}{Q1} &
+\multicolumn{1}{c}{Q2} &
+\multicolumn{1}{c}{whislo} &
+\multicolumn{1}{c}{whishi} 
+\\
+
+\midrule
+%(annuali)s
+
+\bottomrule
+\end{tabular}
 """

@@ -188,17 +188,21 @@ class annuario_talsano(object):
         ltx_dati = TABELLA_DATI_ANNUALI % ({'annuali': righe, })
 
         # tabella statistica
-        # todo riprendere da qui
         stat = boxplot_stats(self.t_anno[0])
-
+        dati_statistici = []
+        anni = range(ANNO_INIZIO_ANNUARIO, ANNO_FINE_ANNUARIO + 1)
         parametri = ('mean', 'med', 'q1', 'q3', 'whislo', 'whishi')
-        for st in stat:
-            row = ('%.1f' % st[x] for x in parametri)
+        for st, anno in zip(stat, anni):
+            row = ['%.1f' % st[x] for x in parametri]
+            row.insert(0, '%s' % anno)
 
-            row = ' & '.join(row)
-            print(row)
+            row = ' & '.join(row) + r' \\'
+            dati_statistici.append(row)
 
-        return ltx_dati, 'ciao'
+        dati_statistici = '\n'.join(dati_statistici)
+        ltx_dati_statistici = TABELLA_DATI_ANNUALI_STATISTICI % ({'annuali': dati_statistici, })
+
+        return ltx_dati, ltx_dati_statistici
 
     def dati_annuali(self):
         cmd = '''SELECT *
