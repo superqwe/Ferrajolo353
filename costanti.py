@@ -226,7 +226,7 @@ TABELLA_DATI_ANNUALI_STATISTICI = r"""
 \multicolumn{1}{c}{Q1} &
 \multicolumn{1}{c}{Q2} &
 \multicolumn{1}{c}{whislo} &
-\multicolumn{1}{c}{whishi} & 
+\multicolumn{1}{c}{whishi}  & 
 
 \multicolumn{1}{c}{Media} &
 \multicolumn{1}{c}{Mediana} &
@@ -240,7 +240,8 @@ TABELLA_DATI_ANNUALI_STATISTICI = r"""
 \multicolumn{1}{c}{Q1} &
 \multicolumn{1}{c}{Q2} &
 \multicolumn{1}{c}{whislo} &
-\multicolumn{1}{c}{whishi} 
+\multicolumn{1}{c}{whishi} &
+\multicolumn{1}{c}{fliers}
 \\
 
 \midrule

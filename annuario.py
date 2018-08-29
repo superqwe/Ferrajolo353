@@ -175,8 +175,8 @@ class annuario_talsano(object):
 
         # tabella dati
         righe = []
-        for row in (dati.values):
-            rec = self._formatta_righe_dati(row, 'anno')
+        for row_tmax in (dati.values):
+            rec = self._formatta_righe_dati(row_tmax, 'anno')
 
             righe.append(rec)
 
@@ -187,13 +187,21 @@ class annuario_talsano(object):
 
         ltx_dati = TABELLA_DATI_ANNUALI % ({'annuali': righe, })
 
+        #todo fare una tabella per ogni singolo parametro
         # tabella statistica
-        stat = boxplot_stats(self.t_anno[0])
+        stat_max = boxplot_stats(self.t_anno[0])
+        stat_med = boxplot_stats(self.t_anno[1])
+        stat_min = boxplot_stats(self.t_anno[2])
+
         dati_statistici = []
         anni = range(ANNO_INIZIO_ANNUARIO, ANNO_FINE_ANNUARIO + 1)
         parametri = ('mean', 'med', 'q1', 'q3', 'whislo', 'whishi')
-        for st, anno in zip(stat, anni):
-            row = ['%.1f' % st[x] for x in parametri]
+        for st_max, st_med, st_min, anno in zip(stat_max, stat_med, stat_min, anni):
+            row_tmax = ['%.1f' % st_max[x] for x in parametri]
+            row_tmed = ['%.1f' % st_med[x] for x in parametri]
+            row_tmin = ['%.1f' % st_min[x] for x in parametri]
+
+            row = row_tmax + row_tmed + row_tmin
             row.insert(0, '%s' % anno)
 
             row = ' & '.join(row) + r' \\'
