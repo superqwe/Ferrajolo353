@@ -210,9 +210,31 @@ TABELLA_DATI_ANNUALI = r"""
 TABELLA_DATI_ANNUALI_STATISTICI = r"""
 \subsection{Statistiche dati annuali}
 
-\begin{tabular}{c......}
+\begin{sideways}
+\begin{tabular}{c......|......|......}
 \toprule
-Anno &
+\multirow{2}{*}{\parbox{11mm}{\centering Anno}} &
+\multicolumn{6}{c}{Temperatura Massima}&
+\multicolumn{6}{c}{Temperatura Media}&
+\multicolumn{6}{c}{Temperatura Minima}
+\\
+
+%%\cline{2-19}
+&
+\multicolumn{1}{c}{Media} &
+\multicolumn{1}{c}{Mediana} &
+\multicolumn{1}{c}{Q1} &
+\multicolumn{1}{c}{Q2} &
+\multicolumn{1}{c}{whislo} &
+\multicolumn{1}{c}{whishi} & 
+
+\multicolumn{1}{c}{Media} &
+\multicolumn{1}{c}{Mediana} &
+\multicolumn{1}{c}{Q1} &
+\multicolumn{1}{c}{Q2} &
+\multicolumn{1}{c}{whislo} &
+\multicolumn{1}{c}{whishi} &
+
 \multicolumn{1}{c}{Media} &
 \multicolumn{1}{c}{Mediana} &
 \multicolumn{1}{c}{Q1} &
@@ -226,4 +248,5 @@ Anno &
 
 \bottomrule
 \end{tabular}
+\end{sideways}
 """
