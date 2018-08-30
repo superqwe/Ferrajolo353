@@ -187,55 +187,29 @@ class annuario_talsano(object):
 
         ltx_dati = TABELLA_DATI_ANNUALI % ({'annuali': righe, })
 
-        # todo fare funzione
         # tabella statistica
-        stat_max = boxplot_stats(self.t_anno[0])
-        stat_med = boxplot_stats(self.t_anno[1])
-        stat_min = boxplot_stats(self.t_anno[2])
-
-        dati_statistici_tmax = []
-        dati_statistici_tmed = []
-        dati_statistici_tmin = []
         anni = range(ANNO_INIZIO_ANNUARIO, ANNO_FINE_ANNUARIO + 1)
         parametri = ('mean', 'med', 'q1', 'q3', 'whislo', 'whishi')
-        for st_max, st_med, st_min, anno in zip(stat_max, stat_med, stat_min, anni):
-            row_tmax = ['%.1f' % st_max[x] for x in parametri]
-            row_tmed = ['%.1f' % st_med[x] for x in parametri]
-            row_tmin = ['%.1f' % st_min[x] for x in parametri]
 
-            fliers_tmax = ['%.1f' % x for x in st_max['fliers']] if st_max['fliers'] else ['-', ]
-            fliers_tmed = ['%.1f' % x for x in st_med['fliers']] if st_med['fliers'] else ['-', ]
-            fliers_tmin = ['%.1f' % x for x in st_min['fliers']] if st_min['fliers'] else ['-', ]
+        ltx_dati_statistici = []
+        for grandezza in range(3):
+            stat = boxplot_stats(self.t_anno[grandezza])
+            dati_statistici = []
 
-            fliers_tmax = [', '.join(fliers_tmax), ]
-            fliers_tmed = [', '.join(fliers_tmed), ]
-            fliers_tmin = [', '.join(fliers_tmin), ]
+            for st, anno in zip(stat, anni):
+                row = ['%.1f' % st[x] for x in parametri]
+                fliers = ['%.1f' % x for x in st['fliers']] if st['fliers'] else ['-', ]
+                fliers = [', '.join(fliers), ]
+                row += fliers
+                row.insert(0, '%s' % anno)
+                row = ' & '.join(row) + r' \\'
+                dati_statistici.append(row)
 
-            row_tmax += fliers_tmax
-            row_tmed += fliers_tmed
-            row_tmin += fliers_tmin
+            dati_statistici = '\n'.join(dati_statistici)
+            ltx = TABELLA_DATI_ANNUALI_STATISTICI % ({'annuali': dati_statistici, })
+            ltx_dati_statistici.append(ltx)
 
-            row_tmax.insert(0, '%s' % anno)
-            row_tmed.insert(0, '%s' % anno)
-            row_tmin.insert(0, '%s' % anno)
-
-            row_tmax = ' & '.join(row_tmax) + r' \\'
-            row_tmed = ' & '.join(row_tmed) + r' \\'
-            row_tmin = ' & '.join(row_tmin) + r' \\'
-
-            dati_statistici_tmax.append(row_tmax)
-            dati_statistici_tmed.append(row_tmed)
-            dati_statistici_tmin.append(row_tmin)
-
-        dati_statistici_tmax = '\n'.join(dati_statistici_tmax)
-        dati_statistici_tmed = '\n'.join(dati_statistici_tmed)
-        dati_statistici_tmin = '\n'.join(dati_statistici_tmin)
-
-        ltx_dati_statistici_tmax = TABELLA_DATI_ANNUALI_STATISTICI % ({'annuali': dati_statistici_tmax, })
-        ltx_dati_statistici_tmed = TABELLA_DATI_ANNUALI_STATISTICI % ({'annuali': dati_statistici_tmed, })
-        ltx_dati_statistici_tmin = TABELLA_DATI_ANNUALI_STATISTICI % ({'annuali': dati_statistici_tmin, })
-
-        return ltx_dati, ltx_dati_statistici_tmax, ltx_dati_statistici_tmed, ltx_dati_statistici_tmin
+        return ltx_dati, ltx_dati_statistici
 
     def dati_annuali(self):
         cmd = '''SELECT *
