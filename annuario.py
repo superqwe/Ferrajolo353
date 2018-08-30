@@ -198,8 +198,8 @@ class annuario_talsano(object):
 
             for st, anno in zip(stat, anni):
                 row = ['%.1f' % st[x] for x in parametri]
-                fliers = ['%.1f' % x for x in st['fliers']] if st['fliers'] else ['-', ]
-                fliers = [', '.join(fliers), ]
+                fliers = ['%.1f' % x for x in st['fliers']] if st['fliers'] else ['~', ]
+                fliers = [ r'\parbox[t]{16mm}{\centering $%s$}'  % ', '.join(fliers), ]
                 row += fliers
                 row.insert(0, '%s' % anno)
                 row = ' & '.join(row) + r' \\'
