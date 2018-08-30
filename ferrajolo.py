@@ -133,6 +133,8 @@ class talsano(object):
         # tabella statistiche
         with open(FOUT_ANNUARIO_STATISTICHE_ANNI, 'w') as fout:
             fout.write(tex[1])
+            fout.write(tex[2])
+            fout.write(tex[3])
 
     def grafici(self):
         # grafici temperature
