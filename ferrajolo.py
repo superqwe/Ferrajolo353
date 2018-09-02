@@ -100,8 +100,8 @@ class talsano(object):
 
     def latex(self):
         # self._latex_dati_giornalieri()
-        # self._latex_dati_mensili()
-        self._latex_dati_annuali()
+        self._latex_dati_mensili()
+        # self._latex_dati_annuali()
 
     def _latex_dati_giornalieri(self):
         mesi = itertools.cycle(range(1, 12 + 1))

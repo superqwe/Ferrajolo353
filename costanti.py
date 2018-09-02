@@ -1,4 +1,5 @@
 import datetime
+import os
 
 # parse/format datetime.datetime
 DATETIME_PF = '%Y-%m-%d %H:%M:%S'
@@ -40,14 +41,16 @@ MESE = {1: 'Gennaio',
 ANNO_INIZIO_ANNUARIO = 1975
 ANNO_FINE_ANNUARIO = 2006
 
-with open('annuario/template/tabella_dati_giornalieri.tex') as fin:
+ANNUARIO_PATH_TEMPLATE = 'annuario/template/'
+
+with open(os.path.join(ANNUARIO_PATH_TEMPLATE, 'tabella_dati_giornalieri.tex')) as fin:
     TABELLA_DATI_GIORNALIERI = fin.read()
 
-with open('annuario/template/tabella_dati_mensili.tex') as fin:
+with open(os.path.join(ANNUARIO_PATH_TEMPLATE, 'tabella_dati_mensili.tex')) as fin:
     TABELLA_DATI_MENSILI = fin.read()
 
-with open('annuario/template/tabella_dati_annuali.tex') as fin:
+with open(os.path.join(ANNUARIO_PATH_TEMPLATE, 'tabella_dati_annuali.tex')) as fin:
     TABELLA_DATI_ANNUALI = fin.read()
 
-with open('annuario/template/tabella_dati_annuali_statistici.tex') as fin:
+with open(os.path.join(ANNUARIO_PATH_TEMPLATE, 'tabella_dati_annuali_statistici.tex')) as fin:
     TABELLA_DATI_ANNUALI_STATISTICI = fin.read()
