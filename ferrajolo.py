@@ -100,8 +100,21 @@ class talsano(object):
 
     def latex(self):
         # self._latex_dati_giornalieri()
-        self._latex_dati_mensili()
+        # self._latex_dati_mensili()
         self._latex_dati_annuali()
+
+        # self._latex_dati_statistici()
+
+    def _latex_dati_statistici(self):
+        # tabella statistiche temperature annuali
+        tex = self.annuario_talsano.latex_dati_annuali_statistici
+        with open(FOUT_ANNUARIO_STATISTICHE_ANNI, 'w') as fout:
+            for x in range(3):
+                fout.write(tex[x])
+
+        # tabella statistiche temperature mensili
+        with open(FOUT_ANNUARIO_STATISTICHE_MESI, 'w') as fout:
+            pass
 
     def _latex_dati_giornalieri(self):
         mesi = itertools.cycle(range(1, 12 + 1))
@@ -124,20 +137,11 @@ class talsano(object):
                 tex = self.annuario_talsano.latex_dati_mensili(anno)
                 fout.write(tex)
 
-        # tabella statistiche
-        pass
-
     def _latex_dati_annuali(self):
-        tex = self.annuario_talsano.latex_dati_anni()
+        tex = self.annuario_talsano.latex_dati_annuali
 
-        # tabella dati
         with open(FOUT_ANNUARIO_ANNI, 'w') as fout:
-            fout.write(tex[0])
-
-        # tabella statistiche
-        with open(FOUT_ANNUARIO_STATISTICHE_ANNI, 'w') as fout:
-            for x in range(3):
-                fout.write(tex[1][x])
+            fout.write(tex)
 
     def grafici(self):
         # grafici temperature

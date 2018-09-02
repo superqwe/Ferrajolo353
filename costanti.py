@@ -21,6 +21,7 @@ FOUT_CREA = '%i-%02i.csv'
 FOUT_ANNUARIO_GIORNI = 'annuario/tabelle_dati_giornalieri.tex'
 FOUT_ANNUARIO_MESI = 'annuario/tabelle_dati_mensili.tex'
 FOUT_ANNUARIO_ANNI = 'annuario/tabelle_dati_annuali.tex'
+FOUT_ANNUARIO_STATISTICHE_MESI = 'annuario/tabelle_dati_statistici_mensili.tex'
 FOUT_ANNUARIO_STATISTICHE_ANNI = 'annuario/tabelle_dati_statistici_annuali.tex'
 
 # mesi

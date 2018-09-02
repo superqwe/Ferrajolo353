@@ -17,6 +17,11 @@ class annuario_talsano(object):
 
     def __init__(self):
         self._dati_grafici()
+        self._dati_latex()
+
+    def _dati_latex(self):
+        self.latex_dati_annuali = self._latex_dati_annuali()
+        self.latex_dati_annuali_statistici = self._latex_dati_annuali_statistici()
 
     def latex_dati_giornalieri(self, mese, anno):
         dati = self.mese(mese, anno)
@@ -170,10 +175,9 @@ class annuario_talsano(object):
 
             return (dati)
 
-    def latex_dati_anni(self):
+    def _latex_dati_annuali(self):
         dati = self.dati_annuali()
 
-        # tabella dati
         righe = []
         for row_tmax in (dati.values):
             rec = self._formatta_righe_dati(row_tmax, 'anno')
@@ -187,7 +191,9 @@ class annuario_talsano(object):
 
         ltx_dati = TABELLA_DATI_ANNUALI % ({'annuali': righe, })
 
-        # tabella statistica
+        return ltx_dati
+
+    def _latex_dati_annuali_statistici(self):
         anni = range(ANNO_INIZIO_ANNUARIO, ANNO_FINE_ANNUARIO + 1)
         parametri = ('mean', 'med', 'q1', 'q3', 'whislo', 'whishi')
 
@@ -199,7 +205,7 @@ class annuario_talsano(object):
             for st, anno in zip(stat, anni):
                 row = ['%.1f' % st[x] for x in parametri]
                 fliers = ['%.1f' % x for x in st['fliers']] if st['fliers'] else ['~', ]
-                fliers = [ r'\parbox[t]{16mm}{\centering $%s$}'  % ', '.join(fliers), ]
+                fliers = [r'\parbox[t]{16mm}{\centering $%s$}' % ', '.join(fliers), ]
                 row += fliers
                 row.insert(0, '%s' % anno)
                 row = ' & '.join(row) + r' \\'
@@ -209,7 +215,7 @@ class annuario_talsano(object):
             ltx = TABELLA_DATI_ANNUALI_STATISTICI % ({'annuali': dati_statistici, })
             ltx_dati_statistici.append(ltx)
 
-        return ltx_dati, ltx_dati_statistici
+        return ltx_dati_statistici
 
     def dati_annuali(self):
         cmd = '''SELECT *
