@@ -36,7 +36,7 @@ def annuario_t_mese(dati, parametro, formato='pdf'):
     # ax.grid(True)
     plt.ylim(-11, 41)
     # plt.show()
-    plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
+    plt.savefig('annuario/grafici/%s_mese.%s' % (parametro, formato), format=formato)
 
 
 def annuario_t_mese2(dati, formato='pdf'):
@@ -90,7 +90,7 @@ def annuario_t_mese2(dati, formato='pdf'):
                     meanprops=mean_sym,
                     meanline=False)
 
-    plt.savefig('annuario/%s_mese.%s' % ('t', formato), format=formato, dpi=600)
+    plt.savefig('annuario/grafici/%s_mese.%s' % ('t', formato), format=formato, dpi=600)
     # plt.show()
 
 
@@ -116,7 +116,7 @@ def annuario_t_anno(dati, parametro):
     plt.ylim(-8, 41)
 
     plt.show()
-    # plt.savefig('annuario/%s_anno.pdf' % parametro, format='pdf')
+    # plt.savefig('annuario/grafici/%s_anno.pdf' % parametro, format='pdf')
 
 
 def annuario_t_anno2(dati):
@@ -172,7 +172,7 @@ def annuario_t_anno2(dati):
                     meanline=False)
 
     # plt.show()
-    plt.savefig('annuario/t_anno.pdf', format='pdf')
+    plt.savefig('annuario/grafici/t_anno.pdf', format='pdf')
 
 
 def annuario_p_anno(dati):
@@ -201,7 +201,7 @@ def annuario_p_anno(dati):
     # ax.grid(True)
 
     # plt.show()
-    plt.savefig('annuario/%s_anno.pdf' % 'mm', format='pdf')
+    plt.savefig('annuario/grafici/%s_anno.pdf' % 'mm', format='pdf')
 
 
 def annuario_p_mese(dati, formato='pdf'):
@@ -231,7 +231,7 @@ def annuario_p_mese(dati, formato='pdf'):
     # plt.ylim(-8, 41)
 
     # plt.show()
-    plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
+    plt.savefig('annuario/grafici/%s_mese.%s' % (parametro, formato), format=formato)
 
 
 def annuario_pg_anno(dati):
@@ -260,7 +260,7 @@ def annuario_pg_anno(dati):
     # ax.grid(True)
 
     # plt.show()
-    plt.savefig('annuario/%s_anno.pdf' % 'pg', format='pdf')
+    plt.savefig('annuario/grafici/%s_anno.pdf' % 'pg', format='pdf')
 
 
 def annuario_pg_mese(dati, formato='pdf'):
@@ -290,7 +290,7 @@ def annuario_pg_mese(dati, formato='pdf'):
     # ax.grid(True)
 
     # plt.show()
-    plt.savefig('annuario/%s_mese.%s' % (parametro, formato), format=formato)
+    plt.savefig('annuario/grafici/%s_mese.%s' % (parametro, formato), format=formato)
 
 
 def annuario_pf_anno(dati, formato='pdf'):
@@ -308,4 +308,4 @@ def annuario_pf_anno(dati, formato='pdf'):
 
     # plt.grid(True)
     # plt.show()
-    plt.savefig('annuario/%s_anno.%s' % (parametro, formato), format=formato)
+    plt.savefig('annuario/grafici/%s_anno.%s' % (parametro, formato), format=formato)
