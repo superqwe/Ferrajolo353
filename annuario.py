@@ -225,17 +225,27 @@ class annuario_talsano(object):
             stat = boxplot_stats(self.t_mese[grandezza])
             dati_statistici = []
 
-            for st, anno in zip(stat, range(1, 12 + 1)):
+            for st, mese in zip(stat, range(1, 12 + 1)):
                 row = ['%.1f' % st[x] for x in parametri]
 
                 fliers = [x for x in st['fliers']]
                 fliers.sort()
-                fliers = ['%.1f' % x for x in fliers] if fliers else ['~', ]
-                fliers = [r'\parbox[t]{90mm}{\centering %s}' % ', '.join(fliers), ]
+                fliers = ['%.1f' % x for x in fliers] if fliers else ['$-$', ]
+                fliers = [r'\parbox[t]{90mm}{%s}' % ', '.join(fliers), ]
 
                 row += fliers
-                row.insert(0, '%s' % anno)
+                row.insert(0, '%s' % mese)
                 row = ' & '.join(row) + r' \\'
+
+                if mese == 1:
+                    row += '\n\\arrayrulecolor{palegray}\n\\midrule'
+                elif mese < 12:
+                    row += '\n\\midrule'
+                else:
+                    row += '\n\\arrayrulecolor{black}'
+
+                #     \arrayrulecolor{light-gray}
+
                 dati_statistici.append(row)
 
             dati_statistici = '\n'.join(dati_statistici)
