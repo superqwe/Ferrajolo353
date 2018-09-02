@@ -1,4 +1,3 @@
-# 27.07.18
 import calendar
 import sqlite3 as lite
 from pprint import pprint as pp
@@ -22,6 +21,7 @@ class annuario_talsano(object):
     def _dati_latex(self):
         self.latex_dati_annuali = self._latex_dati_annuali()
         self.latex_dati_annuali_statistici = self._latex_dati_annuali_statistici()
+        self.latex_dati_mensili_statistici = self._latex_dati_mensili_statistici()
 
     def latex_dati_giornalieri(self, mese, anno):
         dati = self.mese(mese, anno)
@@ -213,6 +213,33 @@ class annuario_talsano(object):
 
             dati_statistici = '\n'.join(dati_statistici)
             ltx = TABELLA_DATI_ANNUALI_STATISTICI % ({'annuali': dati_statistici, })
+            ltx_dati_statistici.append(ltx)
+
+        return ltx_dati_statistici
+
+    def _latex_dati_mensili_statistici(self):
+        parametri = ('mean', 'med', 'q1', 'q3', 'whislo', 'whishi')
+
+        ltx_dati_statistici = []
+        for grandezza in range(3):
+            stat = boxplot_stats(self.t_mese[grandezza])
+            dati_statistici = []
+
+            for st, anno in zip(stat, range(1, 12 + 1)):
+                row = ['%.1f' % st[x] for x in parametri]
+
+                fliers = [x for x in st['fliers']]
+                fliers.sort()
+                fliers = ['%.1f' % x for x in fliers] if fliers else ['~', ]
+                fliers = [r'\parbox[t]{90mm}{\centering %s}' % ', '.join(fliers), ]
+
+                row += fliers
+                row.insert(0, '%s' % anno)
+                row = ' & '.join(row) + r' \\'
+                dati_statistici.append(row)
+
+            dati_statistici = '\n'.join(dati_statistici)
+            ltx = TABELLA_DATI_MENSILI_STATISTICI % ({'annuali': dati_statistici, })
             ltx_dati_statistici.append(ltx)
 
         return ltx_dati_statistici

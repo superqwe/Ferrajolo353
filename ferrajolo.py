@@ -101,9 +101,9 @@ class talsano(object):
     def latex(self):
         # self._latex_dati_giornalieri()
         # self._latex_dati_mensili()
-        self._latex_dati_annuali()
+        # self._latex_dati_annuali()
 
-        # self._latex_dati_statistici()
+        self._latex_dati_statistici()
 
     def _latex_dati_statistici(self):
         # tabella statistiche temperature annuali
@@ -113,8 +113,10 @@ class talsano(object):
                 fout.write(tex[x])
 
         # tabella statistiche temperature mensili
+        tex = self.annuario_talsano.latex_dati_mensili_statistici
         with open(FOUT_ANNUARIO_STATISTICHE_MESI, 'w') as fout:
-            pass
+            for x in range(3):
+                fout.write(tex[x])
 
     def _latex_dati_giornalieri(self):
         mesi = itertools.cycle(range(1, 12 + 1))

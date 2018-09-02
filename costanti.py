@@ -55,3 +55,6 @@ with open(os.path.join(ANNUARIO_PATH_TEMPLATE, 'tabella_dati_annuali.tex')) as f
 
 with open(os.path.join(ANNUARIO_PATH_TEMPLATE, 'tabella_dati_annuali_statistici.tex')) as fin:
     TABELLA_DATI_ANNUALI_STATISTICI = fin.read()
+
+with open(os.path.join(ANNUARIO_PATH_TEMPLATE, 'tabella_dati_mensili_statistici.tex')) as fin:
+    TABELLA_DATI_MENSILI_STATISTICI = fin.read()
